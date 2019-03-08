@@ -9,36 +9,73 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import org.deloitte.td.dto.MigrationDto;
 
 public class AemTarget {
 
   private Map<String,String> taxonomy;
+  private Map<String,String> otherFiles;
+  private List<MigrationDto> dataMigration;
 
   public AemTarget() {
     taxonomy = loadTaxonomy("/Users/jimmyhernandez/Documents/projects/td/config-files/taxonomy.csv");
+  }
+
+  public void run() {
+    dataMigration = loadMigrationFile("/Users/jimmyhernandez/Documents/projects/td/config-files/source2.csv");
+    taxonomy = loadTaxonomy("/Users/jimmyhernandez/Documents/projects/td/config-files/taxonomy.csv");
+    otherFiles = mappingFile("/Users/jimmyhernandez/Documents/projects/td/config-files/others.csv");
+
+    //System.out.println(otherFiles.get("79101"));
+    List<String> results = new ArrayList<>();
+
+    int counter = 0;
+    for(MigrationDto m: dataMigration){
+      String aemPath = null;
+      if ( m.getContainers().equals("ORPHAN") ) {
+        aemPath = otherFiles.get(m.getId());
+      } else if ( m.getContainers().contains("$Containers:") ) {
+        if (m.getContainers().contains("MBNA")) {
+          aemPath = mbna(m.getContainers());
+        } else if ( m.getContainers().contains("|") && !m.getContainers().contains("MBNA") ) {
+          aemPath = multipleContainer(m.getContainers());
+        } else if ( !m.getContainers().contains("MBNA") && !m.getContainers().equals("$Containers:TD:TD (Can)") && !m.getContainers().contains("|") ) {
+          aemPath = notMbna(m.getContainers());
+        }
+      }
+//        String rcontainer = m.getContainers().isEmpty() ? otherFiles.get(m.getId()) : m.getContainers();
+      if (aemPath != null) {
+        results.add(aemPath+"\t"+m.getId());
+      }
+
+    }
+
+    Path file = Paths.get("/Users/jimmyhernandez/Documents/projects/td/config-files/the-file-name2.csv");
+    try {
+      Files.write(file, results, Charset.forName("UTF-8"));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+
     List<String> records = loadContainerFile("/Users/jimmyhernandez/Documents/projects/td/config-files/containers-example.csv");
     containersReview(records);
-//    multipleContainer("$Containers:TD:TD (Can)|$Containers:TD|$Containers:TD:TD (Can):TD Internal Agency:Content Marketing:tres|$Containers:TD:TD (Can):TD Internal Agency:Business Banking:Test1:Test2");
   }
 
   public void containersReview(List<String> records) {
 
     List<String> results = new ArrayList<String>();
 
-//    System.out.println(findAemPath("$Containers:TD:TD (Can):Insurance:AMG Insurance"));
 
     for(String rec : records) {
       if (rec.contains("$Containers:")) {
 
         if(rec.contains("MBNA")) {
-//          System.out.println(rec + " > " + mbna(rec));
           results.add(rec+ "\t"+mbna(rec));
         }
 
         if (rec.contains("|") && !rec.contains("MBNA")) {
-//          System.out.println(rec + " > " + multipleContainer(rec));
           results.add(rec + "\t" + multipleContainer(rec));
         }
 
@@ -72,8 +109,6 @@ public class AemTarget {
     StringTokenizer results = new StringTokenizer(cleanPath, ":");
     int tokens = results.countTokens();
 
-//    System.out.println("Counter " + tokens);
-
     while (results.hasMoreElements()) {
       String token = results.nextToken();
       if(level < maxLevel) {
@@ -82,7 +117,6 @@ public class AemTarget {
       }
     }
 
-//    System.out.println(cantoPath);
     return taxonomy.get(cantoPath.toUpperCase());
   }
 
@@ -113,49 +147,6 @@ public class AemTarget {
     return findAemPath(tokens[index]);
   }
 
-  public String multipleContainerRule(String container) {
-    String path = null;
-    int previousLevel = 0;
-    String previousPath = null;
-    String tempPath = "";
-
-    List<String> tokens = new ArrayList<String>();
-    StringTokenizer tokenizer = new StringTokenizer(container, "|");
-    while (tokenizer.hasMoreElements()) {
-      tempPath = "";
-      String t = tokenizer.nextToken();
-      String h = t.replace("$Containers:","");
-      int po = h.lastIndexOf(":");
-
-      String result = h.substring(0,po);
-      StringTokenizer results = new StringTokenizer(result, ":");
-      int level = 0;
-      int maxLevel = results.countTokens() - 1;
-
-      while (results.hasMoreElements()) {
-        if(level < maxLevel) {
-          String token1 = results.nextToken();
-          level++;
-          tempPath += level < maxLevel ? token1 + ":" : token1;
-
-        } else {
-          break;
-        }
-      }
-
-      if(previousLevel == 0) {
-        previousLevel = maxLevel;
-        previousPath = tempPath;
-        path = tempPath;
-      } else if (maxLevel > previousLevel) {
-        previousLevel = maxLevel;
-        previousPath = tempPath;
-        path = tempPath;
-      }
-
-    }
-    return taxonomy.get(path);
-  }
 
   public Map<String,String> loadTaxonomy(String path) {
     Map<String,String> map = new HashMap<String, String>();
@@ -179,6 +170,28 @@ public class AemTarget {
     return map;
   }
 
+  public Map<String,String> mappingFile(String path) {
+    Map<String,String> map = new HashMap<String, String>();
+
+    BufferedReader br = null;
+    String _line = "";
+
+    try {
+      br = new BufferedReader(new FileReader(path));
+      while((_line = br.readLine()) != null) {
+        String[] lines = _line.split("\t");
+        map.put(lines[0],lines[1]);
+      }
+      br.close();
+
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return map;
+  }
+
   public List<String> loadContainerFile(String path) {
     List<String> records = new ArrayList<String>();
     BufferedReader br = null;
@@ -187,8 +200,6 @@ public class AemTarget {
       br = new BufferedReader(new FileReader(path));
       while((_line = br.readLine()) != null) {
         records.add(_line);
-//        String[] asset = _line.split(csvSplitBy);
-//        records.add(Arrays.asList(asset));
       }
       br.close();
 
@@ -200,7 +211,30 @@ public class AemTarget {
     return records;
   }
 
-  public String targetPath() {
-    return "Target Path";
+  public List<MigrationDto> loadMigrationFile(String path) {
+    List<MigrationDto> records = new ArrayList<MigrationDto>();
+    BufferedReader br = null;
+    String _line = "";
+    try {
+      br = new BufferedReader(new FileReader(path));
+      while((_line = br.readLine()) != null) {
+        String[] lines = _line.split("\\t");
+
+        MigrationDto mdto = new MigrationDto();
+        mdto.setId(lines[0]);
+        mdto.setFileName(lines[1]);
+        mdto.setFilesize(lines[2]);
+        mdto.setContainers(lines[3]);
+        records.add(mdto);
+      }
+      br.close();
+
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return records;
   }
+
 }
