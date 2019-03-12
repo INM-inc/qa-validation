@@ -11,11 +11,13 @@ public class AssetModel {
     private String channel;
     private String branchID;
     private String agencyName;
+    private String agencyNameOther;
     private String description;
     private String language;
     private String groupName;
     private String photoSource;
     private String usageRights;
+    private String usageRightsOther;
     private String approvalStatus;
     private String imageHeight;
     private String imageWidth;
@@ -26,6 +28,9 @@ public class AssetModel {
     private String dateFileCaptured;
     private String fileFormat;
     private String fileSize;
+    private String dateRecordLastModified;
+    private String dateFileCataloged;
+    private String catalogedBy;
 
     public String getActivityProposalNumber() {
         return activityProposalNumber;
@@ -99,6 +104,14 @@ public class AssetModel {
         this.agencyName = agencyName;
     }
 
+    public String getAgencyNameOther() {
+        return agencyNameOther;
+    }
+
+    public void setAgencyNameOther(String agencyNameOther) {
+        this.agencyNameOther = agencyNameOther;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -137,6 +150,14 @@ public class AssetModel {
 
     public void setUsageRights(String usageRights) {
         this.usageRights = usageRights;
+    }
+
+    public String getUsageRightsOther() {
+        return usageRightsOther;
+    }
+
+    public void setUsageRightsOther(String usageRightsOther) {
+        this.usageRightsOther = usageRightsOther;
     }
 
     public String getApprovalStatus() {
@@ -217,6 +238,30 @@ public class AssetModel {
 
     public void setFileSize(String fileSize) {
         this.fileSize = fileSize;
+    }
+
+    public String getDateRecordLastModified() {
+        return dateRecordLastModified;
+    }
+
+    public void setDateRecordLastModified(String dateRecordLastModified) {
+        this.dateRecordLastModified = dateRecordLastModified;
+    }
+
+    public String getDateFileCataloged() {
+        return dateFileCataloged;
+    }
+
+    public void setDateFileCataloged(String dateFileCataloged) {
+        this.dateFileCataloged = dateFileCataloged;
+    }
+
+    public String getCatalogedBy() {
+        return catalogedBy;
+    }
+
+    public void setCatalogedBy(String catalogedBy) {
+        this.catalogedBy = catalogedBy;
     }
 
 }
