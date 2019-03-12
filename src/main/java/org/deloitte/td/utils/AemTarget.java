@@ -20,8 +20,8 @@ import javax.net.ssl.*;
 
 public class AemTarget {
 
-  private Map<String,String> taxonomy;
-  private Map<String,String> otherFiles;
+  private Map<String,String> paths;
+  private Map<String,String> orphans;
   private Map<String,String> props;
   private List<MigrationDto> dataMigration;
 
@@ -29,10 +29,13 @@ public class AemTarget {
     props = conf();
   }
 
-  public void run(String assetsPath, String rootPath) {
-    dataMigration = loadMigrationFile(rootPath + "/config-files/containers.csv");
-    taxonomy = loadTaxonomy(rootPath + "/config-files/paths.csv");
-    otherFiles = mappingFile(rootPath + "/config-files/orphans.csv");
+  public void run() {
+
+    String assetsPath = props.get("assetPath");
+
+    dataMigration = loadMigrationFile(props.get("containers"));
+    paths = loadTaxonomy(props.get("paths"));
+    orphans = mappingFile(props.get("orphans"));
 
     List<String> results = new ArrayList<>();
     List<String> foundAssets = new ArrayList<>();
@@ -41,7 +44,7 @@ public class AemTarget {
     for(MigrationDto m: dataMigration){
       String aemPath = null;
       if ( m.getContainers().equals("ORPHAN") ) {
-        aemPath = otherFiles.get(m.getId());
+        aemPath = orphans.get(m.getId());
       } else if ( m.getContainers().contains("$Containers:") ) {
         if (m.getContainers().contains("MBNA")) {
           aemPath = mbna(m.getContainers());
@@ -81,10 +84,10 @@ public class AemTarget {
 
     }
 
-    wrCsvFile(foundAssets,"found",rootPath+"/results/");
-    wrCsvFile(notFoundAssets,"not-found",rootPath+"/results/");
+    wrCsvFile(foundAssets,props.get("foundFile"));
+    wrCsvFile(notFoundAssets,props.get("notFoundFile"));
 
-    Path file = Paths.get(rootPath + "/results/results.csv");
+    Path file = Paths.get(props.get("resultsFile"));
     try {
       Files.write(file, results, Charset.forName("UTF-8"));
     } catch (IOException e) {
@@ -112,7 +115,7 @@ public class AemTarget {
       }
     }
 
-    return taxonomy.get(cantoPath.toUpperCase());
+    return paths.get(cantoPath.toUpperCase());
   }
 
   public String notMbna(String container) {
@@ -123,7 +126,7 @@ public class AemTarget {
   public String mbna(String container) {
     String path = null;
     if (container.contains("MBNA & CUETS")) {
-      path = taxonomy.get("MBNA");
+      path = paths.get("MBNA");
     }
     return path;
   }
@@ -220,8 +223,8 @@ public class AemTarget {
     return records;
   }
 
-  public void wrCsvFile(List<String> data, String fileName, String path) {
-    Path filePath = Paths.get(path + "/" + fileName + ".csv");
+  public void wrCsvFile(List<String> data, String path) {
+    Path filePath = Paths.get(path);
     try {
       Files.write(filePath, data, Charset.forName("UTF-8"));
     } catch (IOException e) {
@@ -359,6 +362,17 @@ public class AemTarget {
       result.put("aemServer",prop.getProperty("aemServer"));
       result.put("aemUserName",prop.getProperty("aemUserName"));
       result.put("aemPassword",prop.getProperty("aemPassword"));
+
+      result.put("resultsFile",prop.getProperty("resultsFile"));
+      result.put("foundFile",prop.getProperty("foundFile"));
+      result.put("notFoundFile",prop.getProperty("notFoundFile"));
+
+      result.put("rootPath",prop.getProperty("rootPath"));
+      result.put("assetPath",prop.getProperty("assetPath"));
+
+      result.put("containers",prop.getProperty("containers"));
+      result.put("paths",prop.getProperty("paths"));
+      result.put("orphans",prop.getProperty("orphans"));
 
       inputStream.close();
 
