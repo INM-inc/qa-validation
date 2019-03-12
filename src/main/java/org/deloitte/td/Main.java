@@ -8,6 +8,8 @@ import java.util.List;
 public class Main {
   public static void main(String[] args) {
     AemTarget aem = new AemTarget();
-    aem.run();
+    if (args.length > 0) {
+      aem.run(args[0],args[1]);
+    }
   }
 }
