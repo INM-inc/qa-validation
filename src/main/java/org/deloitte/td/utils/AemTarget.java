@@ -34,7 +34,7 @@ public class AemTarget {
     otherFiles = mappingFile("/Users/averzea/Documents/td-config-files/others.csv");
 
     // System.out.println(otherFiles.get("79101"));
-    List<String> results = new ArrayList<>();
+    List<String> results = new ArrayList<String>();
 
     int counter = 0;
     for (MigrationDto m : dataMigration) {
