@@ -1,267 +1,261 @@
 package org.deloitte.td.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class AssetModel {
 
-    private String activityProposalNumber;
-    private String projectName;
-    private String assetType;
-    private String[] keywords;
-    private String inMarket;
-    private String expiryDate;
-    private String channel;
-    private String branchID;
-    private String agencyName;
-    private String agencyNameOther;
-    private String description;
-    private String language;
-    private String groupName;
-    private String photoSource;
-    private String usageRights;
-    private String usageRightsOther;
-    private String approvalStatus;
-    private String imageHeight;
-    private String imageWidth;
-    private String printDimensions;
-    private String resolutionHorizontal;
-    private String resolutionVertical;
-    private String photographer;
-    private String dateFileCaptured;
-    private String fileFormat;
-    private String fileSize;
-    private String dateRecordLastModified;
-    private String dateFileCataloged;
-    private String catalogedBy;
+    private HashMap<String, String> activityProposalNumber = new HashMap<>();
+    private HashMap<String, String> projectName = new HashMap<>();
+    private HashMap<String, String> assetType = new HashMap<>();
+    private HashMap<String, ArrayList<String>> keywords = new HashMap<>();
+    private HashMap<String, String> inMarketDate = new HashMap<>();
+    private HashMap<String, String> expiryDate = new HashMap<>();
+    private HashMap<String, ArrayList<String>> channels = new HashMap<>();
+    private HashMap<String, String> branchID = new HashMap<>();
+    private HashMap<String, String> agencyName = new HashMap<>();
+    private HashMap<String, String> description = new HashMap<>();
+    private HashMap<String, String> language = new HashMap<>();
+    private HashMap<String, ArrayList<String>> linesOfBusiness = new HashMap<>();
+    private HashMap<String, String> photoSource = new HashMap<>();
+    private HashMap<String, String> usageRights = new HashMap<>();
+    private HashMap<String, String> approvalStatus = new HashMap<>();
+    private HashMap<String, String> imageWidth = new HashMap<>();
+    private HashMap<String, String> imageHeight = new HashMap<>();
+    private HashMap<String, String> printDimensions = new HashMap<>();
+    private HashMap<String, String> resolutionHorizontal = new HashMap<>();
+    private HashMap<String, String> resolutionVertical = new HashMap<>();
+    private HashMap<String, String> photographer = new HashMap<>();
+    private HashMap<String, String> dateFileCaptured = new HashMap<>();
+    private HashMap<String, String> fileFormat = new HashMap<>();
+    private HashMap<String, String> fileSize = new HashMap<>();
+    private HashMap<String, String> dateRecordLastModified = new HashMap<>();
+    private HashMap<String, String> dateFileCataloged = new HashMap<>();
+    private HashMap<String, String> catalogedBy = new HashMap<>();
+    private String taxonomy2NewPath;
 
-    public String getActivityProposalNumber() {
+    public HashMap<String, String> getActivityProposalNumber() {
         return activityProposalNumber;
     }
 
     public void setActivityProposalNumber(String activityProposalNumber) {
-        this.activityProposalNumber = activityProposalNumber;
+        this.activityProposalNumber.put("AP (Activity Proposal) Number", activityProposalNumber);
     }
 
-    public String getProjectName() {
+    public HashMap<String, String> getProjectName() {
         return projectName;
     }
 
     public void setProjectName(String projectName) {
-        this.projectName = projectName;
+        this.projectName.put("Project Name", projectName);
     }
 
-    public String getAssetType() {
+    public HashMap<String, String> getAssetType() {
         return assetType;
     }
 
     public void setAssetType(String assetType) {
-        this.projectName = assetType;
+        this.assetType.put("Asset Type", assetType);
     }
 
-    public String[] getKeywords() {
+    public HashMap<String, ArrayList<String>> getKeywords() {
         return keywords;
     }
 
-    public void setKeywords(String[] keywords) {
-        this.keywords = keywords;
+    public void setKeywords(ArrayList<String> keywords) {
+        this.keywords.put("Keywords", keywords);
     }
 
-    public String getInMarket() {
-        return inMarket;
+    public HashMap<String, String> getInMarketDate() {
+        return inMarketDate;
     }
 
-    public void setInMarket(String inMarket) {
-        this.projectName = inMarket;
+    public void setInMarketDate(String inMarketDate) {
+        this.inMarketDate.put("In Market", inMarketDate);
     }
 
-    public String getExpiryDate() {
+    public HashMap<String, String> getExpiryDate() {
         return expiryDate;
     }
 
     public void setExpiryDate(String expiryDate) {
-        this.expiryDate = expiryDate;
+        this.expiryDate.put("Expiry Date", expiryDate);
     }
 
-    public String getChannel() {
-        return channel;
+    public HashMap<String, ArrayList<String>> getChannels() {
+        return channels;
     }
 
-    public void setChannel(String channel) {
-        this.channel = channel;
+    public void setChannels(ArrayList<String> channels) {
+        this.channels.put("Channel", channels);
     }
 
-    public String getBranchID() {
+    public HashMap<String, String> getBranchID() {
         return branchID;
     }
 
     public void setBranchID(String branchID) {
-        this.branchID = branchID;
+        this.branchID.put("Branch ID", branchID);
     }
 
-    public String getAgencyName() {
+    public HashMap<String, String> getAgencyName() {
         return agencyName;
     }
 
     public void setAgencyName(String agencyName) {
-        this.agencyName = agencyName;
+        this.agencyName.put("Agency Name", agencyName);
     }
 
-    public String getAgencyNameOther() {
-        return agencyNameOther;
-    }
-
-    public void setAgencyNameOther(String agencyNameOther) {
-        this.agencyNameOther = agencyNameOther;
-    }
-
-    public String getDescription() {
+    public HashMap<String, String> getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description.put("Description", description);
     }
 
-    public String getLanguage() {
+    public HashMap<String, String> getLanguage() {
         return language;
     }
 
     public void setLanguage(String language) {
-        this.language = language;
+        this.language.put("Language", language);
     }
 
-    public String getGroupName() {
-        return groupName;
+    public HashMap<String, ArrayList<String>> getLOBs() {
+        return linesOfBusiness;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setLOBs(ArrayList<String> linesOfBusiness) {
+        this.linesOfBusiness.put("Lines Of Business", linesOfBusiness);
     }
 
-    public String getPhotoSource() {
+    public HashMap<String, String> getPhotoSource() {
         return photoSource;
     }
 
     public void setPhotoSource(String photoSource) {
-        this.photoSource = photoSource;
+        this.photoSource.put("Photo Source", photoSource);
     }
 
-    public String getUsageRights() {
+    public HashMap<String, String> getUsageRights() {
         return usageRights;
     }
 
     public void setUsageRights(String usageRights) {
-        this.usageRights = usageRights;
+        this.usageRights.put("Usage Rights", usageRights);
     }
 
-    public String getUsageRightsOther() {
-        return usageRightsOther;
-    }
-
-    public void setUsageRightsOther(String usageRightsOther) {
-        this.usageRightsOther = usageRightsOther;
-    }
-
-    public String getApprovalStatus() {
+    public HashMap<String, String> getApprovalStatus() {
         return approvalStatus;
     }
 
     public void setApprovalStatus(String approvalStatus) {
-        this.approvalStatus = approvalStatus;
+        this.approvalStatus.put("Approval Status", approvalStatus);
     }
 
-    public String getImageWidth() {
+    public HashMap<String, String> getImageWidth() {
         return imageWidth;
     }
 
     public void setImageWidth(String imageWidth) {
-        this.imageWidth = imageWidth;
+        this.imageWidth.put("Image Width", imageWidth);
     }
 
-    public String getImageHeight() {
+    public HashMap<String, String> getImageHeight() {
         return imageHeight;
     }
 
     public void setImageHeight(String imageHeight) {
-        this.imageHeight = imageHeight;
+        this.imageHeight.put("Image Height", imageHeight);
     }
 
-    public String getPrintDimensions() {
+    public HashMap<String, String> getPrintDimensions() {
         return printDimensions;
     }
 
     public void setPrintDimensions(String printDimensions) {
-        this.printDimensions = printDimensions;
+        this.printDimensions.put("Print Dimensions", printDimensions);
     }
 
-    public String getResolutionHorizontal() {
+    public HashMap<String, String> getResolutionHorizontal() {
         return resolutionHorizontal;
     }
 
     public void setResolutionHorizontal(String resolutionHorizontal) {
-        this.resolutionHorizontal = resolutionHorizontal;
+        this.resolutionHorizontal.put("Resolution (Horizontal)", resolutionHorizontal);
     }
 
-    public String getResolutionVertical() {
+    public HashMap<String, String> getResolutionVertical() {
         return resolutionVertical;
     }
 
     public void setResolutionVertical(String resolutionVertical) {
-        this.resolutionVertical = resolutionVertical;
+        this.resolutionVertical.put("Resolution (Vertical)", resolutionVertical);
     }
 
-    public String getPhotographer() {
+    public HashMap<String, String> getPhotographer() {
         return photographer;
     }
 
     public void setPhotographer(String photographer) {
-        this.photographer = photographer;
+        this.photographer.put("Photographer or Creator", photographer);
     }
 
-    public String getDateFileCaptured() {
+    public HashMap<String, String> getDateFileCaptured() {
         return dateFileCaptured;
     }
 
     public void setDateFileCaptured(String dateFileCaptured) {
-        this.dateFileCaptured = dateFileCaptured;
+        this.dateFileCaptured.put("Date File Captured", dateFileCaptured);
     }
 
-    public String getFileFormat() {
+    public HashMap<String, String> getFileFormat() {
         return fileFormat;
     }
 
     public void setFileFormat(String fileFormat) {
-        this.fileFormat = fileFormat;
+        this.fileFormat.put("File Format", fileFormat);
     }
 
-    public String getFileSize() {
+    public HashMap<String, String> getFileSize() {
         return fileSize;
     }
 
     public void setFileSize(String fileSize) {
-        this.fileSize = fileSize;
+        this.fileSize.put("File Size", fileSize);
     }
 
-    public String getDateRecordLastModified() {
+    public HashMap<String, String> getDateRecordLastModified() {
         return dateRecordLastModified;
     }
 
     public void setDateRecordLastModified(String dateRecordLastModified) {
-        this.dateRecordLastModified = dateRecordLastModified;
+        this.dateRecordLastModified.put("Date Record Last Modified", dateRecordLastModified);
     }
 
-    public String getDateFileCataloged() {
+    public HashMap<String, String> getDateFileCataloged() {
         return dateFileCataloged;
     }
 
     public void setDateFileCataloged(String dateFileCataloged) {
-        this.dateFileCataloged = dateFileCataloged;
+        this.dateFileCataloged.put("Date File Cataloged", dateFileCataloged);
     }
 
-    public String getCatalogedBy() {
+    public HashMap<String, String> getCatalogedBy() {
         return catalogedBy;
     }
 
     public void setCatalogedBy(String catalogedBy) {
-        this.catalogedBy = catalogedBy;
+        this.catalogedBy.put("Cataloged By", catalogedBy);
+    }
+
+    public String getTaxonomy2NewPath() {
+        return taxonomy2NewPath;
+    }
+
+    public void setTaxonomy2NewPath(String taxonomy2NewPath) {
+        this.taxonomy2NewPath = taxonomy2NewPath;
     }
 
 }

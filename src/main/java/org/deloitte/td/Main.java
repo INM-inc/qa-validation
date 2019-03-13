@@ -15,8 +15,10 @@ public class Main {
   public static void main(String[] args) {
 
     List<AssetModel> fromCSV = RetrieveMetadataCSV.retrieveFromCSV();
-    Iterator iterator = fromCSV.iterator();
-    System.out.println(iterator.next());
+    String result = RetrieveMetadataAEM.retrieveFromAEM();
+
+
+//    Iterator iterator = fromCSV.iterator();
     // for (AssetModel asset : fromCSV) {
     // System.out.println(asset);
     // }
