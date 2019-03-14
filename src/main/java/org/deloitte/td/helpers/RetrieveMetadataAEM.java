@@ -13,7 +13,10 @@ import java.security.cert.X509Certificate;
 
 public class RetrieveMetadataAEM {
 
-    public static String retrieveFromAEM() {
+    public static JsonObject retrieveFromAEM() {
+
+
+        JsonObject aemAssetMetadata = new JsonObject();
 
         try {
 
@@ -79,9 +82,11 @@ public class RetrieveMetadataAEM {
             rd.close();
 
             JsonParser jsonParser = new JsonParser();
-            JsonObject jo = (JsonObject) jsonParser.parse(result.toString());
+            aemAssetMetadata = (JsonObject) jsonParser.parse(result.toString());
+            aemAssetMetadata.addProperty("outcome", "success");
+            System.out.println(aemAssetMetadata.toString());
 
-            System.out.println("dam:sha1" + jo.get("dam:sha1"));
+//            System.out.println("dam:sha1" + jo.get("dam:sha1"));
 
             // if (resultSha1.equals(jo.get("dam:sha1"))) {
             // System.out.println("true");
@@ -91,12 +96,14 @@ public class RetrieveMetadataAEM {
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            aemAssetMetadata.addProperty("outcome", "fail");
         } catch (IOException e) {
             e.printStackTrace();
+            aemAssetMetadata.addProperty("outcome", "fail");
         }
 
 
-        return "RetrieveMetadataAEM";
+        return aemAssetMetadata;
     }
 
 }

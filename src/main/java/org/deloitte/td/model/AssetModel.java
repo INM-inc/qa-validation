@@ -14,6 +14,7 @@ public class AssetModel {
     private HashMap<String, ArrayList<String>> channels = new HashMap<>();
     private HashMap<String, String> branchID = new HashMap<>();
     private HashMap<String, String> agencyName = new HashMap<>();
+    private HashMap<String, String> agencyProjectID = new HashMap<>();
     private HashMap<String, String> description = new HashMap<>();
     private HashMap<String, String> language = new HashMap<>();
     private HashMap<String, ArrayList<String>> linesOfBusiness = new HashMap<>();
@@ -22,7 +23,6 @@ public class AssetModel {
     private HashMap<String, String> approvalStatus = new HashMap<>();
     private HashMap<String, String> imageWidth = new HashMap<>();
     private HashMap<String, String> imageHeight = new HashMap<>();
-    private HashMap<String, String> printDimensions = new HashMap<>();
     private HashMap<String, String> resolutionHorizontal = new HashMap<>();
     private HashMap<String, String> resolutionVertical = new HashMap<>();
     private HashMap<String, String> photographer = new HashMap<>();
@@ -31,7 +31,6 @@ public class AssetModel {
     private HashMap<String, String> fileSize = new HashMap<>();
     private HashMap<String, String> dateRecordLastModified = new HashMap<>();
     private HashMap<String, String> dateFileCataloged = new HashMap<>();
-    private HashMap<String, String> catalogedBy = new HashMap<>();
     private String taxonomy2NewPath;
 
     public HashMap<String, String> getActivityProposalNumber() {
@@ -106,6 +105,14 @@ public class AssetModel {
         this.agencyName.put("Agency Name", agencyName);
     }
 
+    public HashMap<String, String> getAgencyProjectID() {
+        return agencyProjectID;
+    }
+
+    public void setAgencyProjectID(String agencyProjectID) {
+        this.agencyProjectID.put("Agency Project ID", agencyProjectID);
+    }
+
     public HashMap<String, String> getDescription() {
         return description;
     }
@@ -127,7 +134,7 @@ public class AssetModel {
     }
 
     public void setLOBs(ArrayList<String> linesOfBusiness) {
-        this.linesOfBusiness.put("Lines Of Business", linesOfBusiness);
+        this.linesOfBusiness.put("Line Of Business", linesOfBusiness);
     }
 
     public HashMap<String, String> getPhotoSource() {
@@ -168,14 +175,6 @@ public class AssetModel {
 
     public void setImageHeight(String imageHeight) {
         this.imageHeight.put("Image Height", imageHeight);
-    }
-
-    public HashMap<String, String> getPrintDimensions() {
-        return printDimensions;
-    }
-
-    public void setPrintDimensions(String printDimensions) {
-        this.printDimensions.put("Print Dimensions", printDimensions);
     }
 
     public HashMap<String, String> getResolutionHorizontal() {
@@ -240,14 +239,6 @@ public class AssetModel {
 
     public void setDateFileCataloged(String dateFileCataloged) {
         this.dateFileCataloged.put("Date File Cataloged", dateFileCataloged);
-    }
-
-    public HashMap<String, String> getCatalogedBy() {
-        return catalogedBy;
-    }
-
-    public void setCatalogedBy(String catalogedBy) {
-        this.catalogedBy.put("Cataloged By", catalogedBy);
     }
 
     public String getTaxonomy2NewPath() {

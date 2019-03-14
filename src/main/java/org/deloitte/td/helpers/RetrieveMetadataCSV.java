@@ -71,6 +71,7 @@ public class RetrieveMetadataCSV {
                         asset.setUsageRights(lines[69]);
                     }
 
+                    asset.setAgencyProjectID(lines[67]);
                     asset.setActivityProposalNumber(lines[9]);
                     asset.setProjectName(lines[56]);
                     asset.setAssetType(lines[82]);
@@ -83,7 +84,6 @@ public class RetrieveMetadataCSV {
                     asset.setApprovalStatus(lines[5]);
                     asset.setImageWidth(lines[29]);
                     asset.setImageHeight(lines[28]);
-                    asset.setPrintDimensions(lines[75]);
                     asset.setResolutionVertical(lines[31]);
                     asset.setResolutionHorizontal(lines[17]);
                     asset.setPhotographer(lines[45]);
@@ -92,7 +92,6 @@ public class RetrieveMetadataCSV {
                     asset.setFileSize(lines[11]);
                     asset.setDateRecordLastModified(lines[21]);
                     asset.setDateFileCataloged(lines[22]);
-                    asset.setCatalogedBy(lines[16]);
                     records.add(asset);
                 }
                 counter++;
