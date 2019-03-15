@@ -44,21 +44,41 @@ public class CompareMetadata {
     public static HashMap<String, String> checkForDifferences(ArrayList<AssetModel> fromCSV, JsonObject fromAEM) {
 
         HashMap<String, String> aemMappings = getAEMMappings();
+        HashMap<String, String> differences = new HashMap<>();
+
+        /*
+         * Check AEM Column Names
+         */
+        for (AssetModel asset : fromCSV) {
+            for (Map.Entry<String, String> proposalNumber : asset.getActivityProposalNumber().entrySet()) {
+                 String expectedColumnName = proposalNumber.getKey();
+            }
+        }
+        /*
+         * If column names don't match, write this to differences and quit.
+         */
+
+        for (AssetModel asset : fromCSV) {
+            for (Map.Entry<String, String> proposalNumber : asset.getActivityProposalNumber().entrySet()) {
+                String expectedColumnName = proposalNumber.getValue();
+
+            }
+        }
+
+
         for (Map.Entry<String, String> aemMapping : aemMappings.entrySet()) {
             String taxonomy2FieldName = aemMapping.getKey();
             String aemMetadataKey = aemMapping.getValue();
+            for (AssetModel asset : fromCSV) {
+
+            }
+            String csvMetadataValue = fromCSV.get(taxonomy2FieldName);
             String aemMetadataValue = fromAEM.get(aemMetadataKey).getAsString();
-//            String csvMetadataValue = fromCSV.
-
-
-//            if (level4.equalsIgnoreCase(aemMappings.getKey())) {
-//                taxonomy2KeywordsToAdd.add(taxonomy2KeyAndKeyword.getValue());
-//            }
         }
         
 
 
-        HashMap<String, String> differences = new HashMap<>();
+
 
         return differences;
 
