@@ -32,7 +32,10 @@ public class AssetModel {
     private HashMap<String, String> dateRecordLastModified = new HashMap<>();
     private HashMap<String, String> dateFileCataloged = new HashMap<>();
     private HashMap<String, String> catalogedBy = new HashMap<>();
+    private String fileName;
+    private String container;
     private String taxonomy2NewPath;
+    private String sha;
 
     public HashMap<String, String> getActivityProposalNumber() {
         return activityProposalNumber;
@@ -256,6 +259,30 @@ public class AssetModel {
 
     public void setTaxonomy2NewPath(String taxonomy2NewPath) {
         this.taxonomy2NewPath = taxonomy2NewPath;
+    }
+
+    public String getContainer() {
+        return container;
+    }
+
+    public void setContainer(String container) {
+        this.container = container;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getSha() {
+        return sha;
+    }
+
+    public void setSha(String sha) {
+        this.sha = sha;
     }
 
 }

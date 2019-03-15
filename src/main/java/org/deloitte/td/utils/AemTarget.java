@@ -30,7 +30,7 @@ public class AemTarget {
     props = conf();
   }
 
-  public void run() {
+  public HashMap<String, HashMap<String, String>> run() {
     String HEADER_RESULT = "Canto Id\tFile name\tAEM Migration Path\tAEM URL\tFilesize\tSha1 Code\tAEM Found";
     String HEADER_NOT_FOUND_FILES = "Canto Id\tCanto path\tRenamed file\tFile name\tAsset exist";
 
@@ -49,11 +49,14 @@ public class AemTarget {
     int i = 0;
     int max = 6;
 
+    HashMap<String, HashMap<String, String>> shaAndFilesMetadata = new HashMap<>();
+
     for (MigrationDto dto : dataMigration) {
       // Get Canto path based on Id
       String assetFile = "NA";
       String cantoPath = cantoInfo.get(dto.getId());
       File asset = new File(cantoPath);
+      HashMap<String, String> fileMetadata = new HashMap<>();
       if ( asset.exists() && asset.isDirectory() ) {
         // Get Asset based on filename - search Assets renamed folder
         assetFile = props.get("cantoAssetsRenamedFolder") +"/"+dto.getFileName();
@@ -66,6 +69,7 @@ public class AemTarget {
           String sha1Code = generateSha(asset);
 
           String assetAemFile = props.get("aemServer") + aemPath + "/" + dto.getFileName();
+
           // Http Get to validated if the asset exist on AEM
           HttpURLConnection assetConn = assetAemValidation(assetAemFile,props.get("aemUserName"),props.get("aemPassword"));
           String aemAssetFound = "Not Found";
@@ -80,21 +84,63 @@ public class AemTarget {
             e.printStackTrace();
           }
 
+
           cantoResults.add(dto.getId()+"\t"+dto.getFileName()+"\t"+aemPath+"\t"+assetAemFile+"\t"+asset.length()+"\t"+sha1Code+"\t"+aemAssetFound);
+
+          fileMetadata.put("File Name", dto.getFileName());
+          fileMetadata.put("Containers", getCorrectContainer(dto.getContainers()));
+          fileMetadata.put("AEM PATH", aemPath);
+          shaAndFilesMetadata.put(sha1Code, fileMetadata);
+
+
         } else {
           notFoundAssets.add(dto.getId()+"\t"+cantoPath+"\t"+assetFile+"\t"+dto.getFileName()+"\t"+asset.exists());
+          fileMetadata.put("File Name", "");
+          fileMetadata.put("Containers", "");
+          fileMetadata.put("AEM PATH", "");
+          shaAndFilesMetadata.put("", fileMetadata);
         }
 
       } else {
         notFoundAssets.add(dto.getId()+"\t"+cantoPath+"\t"+assetFile+"\t"+dto.getFileName()+"\t"+asset.exists());
+        fileMetadata.put("File Name", "");
+        fileMetadata.put("Containers", "");
+        fileMetadata.put("AEM PATH", "");
+        shaAndFilesMetadata.put("", fileMetadata);
       }
       i++;
     }
+    return shaAndFilesMetadata;
 
 
-    wrCsvFile(cantoResults,props.get("cantoResults"));
-    wrCsvFile(notFoundAssets,props.get("notFoundFile"));
+//    wrCsvFile(cantoResults,props.get("cantoResults"));
+//    wrCsvFile(notFoundAssets,props.get("notFoundFile"));
 
+  }
+
+  public String getCorrectContainer(String containers) {
+    String aemPath = null;
+    if ( containers.contains("$Containers:") ) {
+      containers = containers.split("\\$Containers:")[1];
+      if (containers.contains("MBNA")) {
+        return "MBNA";
+      } else if (containers.contains("|") && !containers.contains("MBNA")) {
+        String[] tokens = containers.split("\\|");
+
+        int index = 0;
+        int elementLength = tokens[0].length();
+        for(int i=1; i< tokens.length; i++) {
+          if(tokens[i].length() > elementLength) {
+            index = i; elementLength = tokens[i].length();
+          }
+        }
+        return tokens[index];
+      } else {
+        return containers;
+      }
+    } else {
+      return "NO_CONTAINER";
+    }
   }
 
   public String getAemPath(MigrationDto m) {

@@ -6,13 +6,35 @@ import java.util.Map;
 
 public class TaxonomyChanges {
 
+    public static String getCorrectContainer(String containerField) {
+
+        containerField = containerField.split("\\$Containers:")[1];
+        if (containerField.contains("MBNA")) {
+            return "MBNA";
+        }
+        if (containerField.contains("|")) {
+            String[] tokens = containerField.split("\\|");
+            int index = 0;
+            int elementLength = tokens[0].length();
+            for (int i = 1; i < tokens.length; i++) {
+                if (tokens[i].length() > elementLength) {
+                    index = i;
+                    elementLength = tokens[i].length();
+                }
+            }
+            containerField = tokens[index];
+        }
+        return containerField;
+
+    }
+
     /*
-     * Structure of the Container: $Containers:TD:TD (Can):Credit Cards:EVEREST DIGITAL:...
+     * Structure of the Corrected Container: $Containers:TD:TD (Can):Credit Cards:EVEREST DIGITAL:...
      * Level 4 is 5th element.
      */
-    public static String getContainerLevel4(String container) {
+    public static String getContainerLevel4(String containerField) {
 
-        String[] containerLevels = container.split(":");
+        String[] containerLevels = containerField.split(":");
         if (containerLevels.length < 4) {
             return "NO_LEVEL_4";
         } else {

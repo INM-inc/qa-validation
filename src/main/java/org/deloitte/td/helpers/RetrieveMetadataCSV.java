@@ -21,10 +21,9 @@ public class RetrieveMetadataCSV {
             br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/source3.csv"));
             while ((line = br.readLine()) != null) {
 
-                if (counter > 0) {
-                    String[] lines = line.split("\\t");
+                String[] lines = line.split("\\t");
+                if (counter > 0 && !lines[64].equalsIgnoreCase("Archive") && !lines[5].equalsIgnoreCase("Rejected") && lines[19].contains("$Containers:")) {
                     AssetModel asset = new AssetModel();
-                    System.out.println(counter);
 
                     // Initial Keywords, LOBs, Channels and Path.
                     ArrayList<String> keywords = new ArrayList<>(Arrays.asList(lines[79].split(", ")));
@@ -33,8 +32,8 @@ public class RetrieveMetadataCSV {
                     asset.setTaxonomy2NewPath("NO_NEW_PATH");
 
                     // Additions to Initial Keywords, LOBs, Channels and Path based on Taxonomy Tab 2.
-                    String container = lines[19];
-                    String level4 = TaxonomyChanges.getContainerLevel4(container);
+                    String containerField = TaxonomyChanges.getCorrectContainer(lines[19]);
+                    String level4 = TaxonomyChanges.getContainerLevel4(containerField);
                     if (!level4.equals("NO_LEVEL_4")) {
 
                         ArrayList<String> keywordAdditions = TaxonomyChanges.addKeywords(level4);
@@ -53,7 +52,6 @@ public class RetrieveMetadataCSV {
                     asset.setKeywords(keywords);
                     asset.setLOBs(lobs);
                     asset.setChannels(channels);
-//                    System.out.println(asset.getChannels().entrySet().iterator().next());
 
                     // Agency Name
                     String agencyNameOther = lines[76];
@@ -71,6 +69,8 @@ public class RetrieveMetadataCSV {
                         asset.setUsageRights(lines[69]);
                     }
 
+                    asset.setContainer(containerField);
+                    asset.setFileName(lines[8]);
                     asset.setAgencyProjectID(lines[67]);
                     asset.setActivityProposalNumber(lines[9]);
                     asset.setProjectName(lines[56]);

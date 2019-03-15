@@ -41,6 +41,21 @@ public class CompareMetadata {
 
     }
 
+    public static HashMap<String, HashMap<String, String>> getDropdownValuesMappings() {
+
+        HashMap<String, String> approvalStatusMappings = new HashMap<>();
+        approvalStatusMappings.put("#Not Applicable", "Draft");
+        approvalStatusMappings.put("#Unknown", "Draft");
+        approvalStatusMappings.put("Approved ", "Approved");
+        approvalStatusMappings.put("On Hold", "Draft");
+        approvalStatusMappings.put("Pending", "Draft");
+        approvalStatusMappings.put("Rejected", "Draft");
+
+        HashMap<String, String> agencyNameMappings = new HashMap<>();
+
+
+    }
+
     public static HashMap<String, String> checkForDifferences(ArrayList<AssetModel> fromCSV, JsonObject fromAEM) {
 
         HashMap<String, String> aemMappings = getAEMMappings();
@@ -72,8 +87,8 @@ public class CompareMetadata {
             for (AssetModel asset : fromCSV) {
 
             }
-            String csvMetadataValue = fromCSV.get(taxonomy2FieldName);
-            String aemMetadataValue = fromAEM.get(aemMetadataKey).getAsString();
+//            String csvMetadataValue = fromCSV.get(taxonomy2FieldName);
+//            String aemMetadataValue = fromAEM.get(aemMetadataKey).getAsString();
         }
         
 
