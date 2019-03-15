@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyManagementException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.*;
@@ -19,187 +20,119 @@ import javax.net.ssl.*;
 
 public class AemTarget {
 
-  private Map<String, String> taxonomy;
-  private Map<String, String> otherFiles;
+  private Map<String,String> paths;
+  private Map<String,String> orphans;
+  private Map<String,String> props;
+  private Map<String,String> cantoInfo;
   private List<MigrationDto> dataMigration;
 
   public AemTarget() {
-    taxonomy = loadTaxonomy("/Users/averzea/Documents/td-config-files/taxonomy.csv");
+    props = conf();
   }
 
   public void run() {
-    dataMigration = loadMigrationFile("/Users/averzea/Documents/td-config-files/source2.csv");
-    // taxonomy =
-    // loadTaxonomy("/Users/jimmyhernandez/Documents/projects/td/config-files/taxonomy.csv");
-    otherFiles = mappingFile("/Users/averzea/Documents/td-config-files/others.csv");
+    String HEADER_RESULT = "Canto Id\tFile name\tAEM Migration Path\tAEM URL\tFilesize\tSha1 Code\tAEM Found";
+    String HEADER_NOT_FOUND_FILES = "Canto Id\tCanto path\tRenamed file\tFile name\tAsset exist";
 
-    // System.out.println(otherFiles.get("79101"));
-    List<String> results = new ArrayList<String>();
+    dataMigration = loadMigrationFile(props.get("containers"));
+    paths = loadTaxonomy(props.get("paths"));
+    orphans = mappingFile(props.get("orphans"));
+    cantoInfo = mappingFile(props.get("cantoInfo"));
 
-    int counter = 0;
-    for (MigrationDto m : dataMigration) {
-      String aemPath = null;
-      if (m.getContainers().equals("ORPHAN")) {
-        aemPath = otherFiles.get(m.getId());
-        // System.out.println(m.getId() + " " + aemPath);
-      } else if (m.getContainers().contains("$Containers:")) {
-        if (m.getContainers().contains("MBNA")) {
-          aemPath = mbna(m.getContainers());
-        } else if (m.getContainers().contains("|") && !m.getContainers().contains("MBNA")) {
-          aemPath = multipleContainer(m.getContainers());
-        } else if (!m.getContainers().contains("MBNA") && !m.getContainers().contains("|")) {
-          aemPath = notMbna(m.getContainers());
-        }
-      }
+    List<String> foundAssets = new ArrayList<>();
+    List<String> notFoundAssets = new ArrayList<>();
+    List<String> cantoResults = new ArrayList<>();
 
-      // if (aemPath != null) {
-      results.add(aemPath + "\t" + m.getId());
-      // }
+    cantoResults.add(HEADER_RESULT);
+    notFoundAssets.add(HEADER_NOT_FOUND_FILES);
 
-    }
+    int i = 0;
+    int max = 6;
 
-    Path file = Paths.get("/Users/averzea/Documents/td-config-files/path-result.csv");
-    try {
-      Files.write(file, results, Charset.forName("UTF-8"));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    for (MigrationDto dto : dataMigration) {
+      // Get Canto path based on Id
+      String assetFile = "NA";
+      String cantoPath = cantoInfo.get(dto.getId());
+      File asset = new File(cantoPath);
+      if ( asset.exists() && asset.isDirectory() ) {
+        // Get Asset based on filename - search Assets renamed folder
+        assetFile = props.get("cantoAssetsRenamedFolder") +"/"+dto.getFileName();
+        asset = new File(assetFile);
 
-    try {
+        if ( asset.length() > 0 ) {
+          // Get AEM path based on Container value
+          String aemPath = getAemPath(dto);
+          // Generate the sha code for the file
+          String sha1Code = generateSha(asset);
 
-      Authenticator.setDefault(new Authenticator() {
-        protected PasswordAuthentication getPasswordAuthentication() {
-          return new PasswordAuthentication("jimmyhernandez", "P@ssw0rd123!".toCharArray());
-        }
-      });
+          String assetAemFile = props.get("aemServer") + aemPath + "/" + dto.getFileName();
+          // Http Get to validated if the asset exist on AEM
+          HttpURLConnection assetConn = assetAemValidation(assetAemFile,props.get("aemUserName"),props.get("aemPassword"));
+          String aemAssetFound = "Not Found";
 
-      // Create a trust manager that does not validate certificate chains
-      TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-          return null;
-        }
+          try {
+            if(assetConn.getResponseCode() == 200) {
+              //                JsonObject md = aemMetadata(assetConn);
+              System.out.println("Found");
+              aemAssetFound = "Found";
+            }
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
 
-        public void checkClientTrusted(X509Certificate[] certs, String authType) {
-        }
-
-        public void checkServerTrusted(X509Certificate[] certs, String authType) {
-        }
-      } };
-
-      // Install the all-trusting trust manager
-      SSLContext sc = null;
-      try {
-        sc = SSLContext.getInstance("SSL");
-        sc.init(null, trustAllCerts, new java.security.SecureRandom());
-        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-      } catch (NoSuchAlgorithmException e) {
-        e.printStackTrace();
-      } catch (KeyManagementException e) {
-        e.printStackTrace();
-      }
-
-      // Create all-trusting host name verifier
-      HostnameVerifier allHostsValid = new HostnameVerifier() {
-        public boolean verify(String hostname, SSLSession session) {
-          return true;
-        }
-      };
-
-      // Install the all-trusting host verifier
-      HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-
-      URL url = new URL(
-          "https://13.88.236.91/content/dam/Canada/small-business-banking/5369-1018_SBB_Advice_Series-A_Banner-OCT19_TDCT_WB_A.jpg/jcr:content/metadata.json");
-      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-      conn.setRequestMethod("GET");
-      int code = conn.getResponseCode();
-
-      System.out.println(code);
-
-      StringBuilder result = new StringBuilder();
-      BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-      String line;
-
-      while ((line = rd.readLine()) != null) {
-        result.append(line);
-      }
-
-      rd.close();
-
-      JsonParser jsonParser = new JsonParser();
-      JsonObject jo = (JsonObject) jsonParser.parse(result.toString());
-
-      System.out.println("dam:sha1" + jo.get("dam:sha1"));
-
-      // if (resultSha1.equals(jo.get("dam:sha1"))) {
-      // System.out.println("true");
-      // } else {
-      // System.out.println("false");
-      // }
-
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-  }
-
-  public void containersReview(List<String> records) {
-
-    List<String> results = new ArrayList<String>();
-
-    for (String rec : records) {
-      if (rec.contains("$Containers:")) {
-
-        if (rec.contains("MBNA")) {
-          results.add(rec + "\t" + mbna(rec));
+          cantoResults.add(dto.getId()+"\t"+dto.getFileName()+"\t"+aemPath+"\t"+assetAemFile+"\t"+asset.length()+"\t"+sha1Code+"\t"+aemAssetFound);
+        } else {
+          notFoundAssets.add(dto.getId()+"\t"+cantoPath+"\t"+assetFile+"\t"+dto.getFileName()+"\t"+asset.exists());
         }
 
-        if (rec.contains("|") && !rec.contains("MBNA")) {
-          results.add(rec + "\t" + multipleContainer(rec));
-        }
-
-        if (rec.equals("$Containers:TD:TD (Can)")) {
-          results.add(rec + "\tSearch by Id");
-        }
-
-        if (!rec.contains("MBNA") && !rec.equals("$Containers:TD:TD (Can)") && !rec.contains("|")) {
-          results.add(rec + "\t" + notMbna(rec));
-        }
       } else {
-        results.add(rec + "\tNot to be migrated");
+        notFoundAssets.add(dto.getId()+"\t"+cantoPath+"\t"+assetFile+"\t"+dto.getFileName()+"\t"+asset.exists());
       }
+      i++;
     }
 
-    Path file = Paths.get("/Users/jimmyhernandez/Documents/projects/td/config-files/filtered.csv");
-    try {
-      Files.write(file, results, Charset.forName("UTF-8"));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+
+    wrCsvFile(cantoResults,props.get("cantoResults"));
+    wrCsvFile(notFoundAssets,props.get("notFoundFile"));
+
   }
+
+  public String getAemPath(MigrationDto m) {
+    String aemPath = null;
+    if ( m.getContainers().equals("ORPHAN") ) {
+      aemPath = orphans.get(m.getId());
+    } else if ( m.getContainers().contains("$Containers:") ) {
+      if (m.getContainers().contains("MBNA")) {
+        aemPath = mbna(m.getContainers());
+      } else if ( m.getContainers().contains("|") && !m.getContainers().contains("MBNA") ) {
+        aemPath = multipleContainer(m.getContainers());
+      } else if ( !m.getContainers().contains("MBNA") && !m.getContainers().contains("|") ) {
+        aemPath = notMbna(m.getContainers());
+      }
+    }
+    return aemPath;
+  }
+
+
 
   public String findAemPath(String container) {
     String cantoPath = "";
     int level = 0;
     int maxLevel = 4;
-    String cleanPath = container.replace("$Containers:", "");
+    String cleanPath = container.replace("$Containers:","");
 
     StringTokenizer results = new StringTokenizer(cleanPath, ":");
     int tokens = results.countTokens();
 
     while (results.hasMoreElements()) {
       String token = results.nextToken();
-      if (level < maxLevel) {
-        cantoPath += token;
+      if(level < maxLevel) {
+        cantoPath += token.trim();
         level++;
       }
     }
 
-    return taxonomy.get(cantoPath.toUpperCase());
+    return paths.get(cantoPath.toUpperCase());
   }
 
   public String notMbna(String container) {
@@ -210,7 +143,7 @@ public class AemTarget {
   public String mbna(String container) {
     String path = null;
     if (container.contains("MBNA & CUETS")) {
-      path = taxonomy.get("MBNA");
+      path = paths.get("MBNA");
     }
     return path;
   }
@@ -220,27 +153,27 @@ public class AemTarget {
 
     int index = 0;
     int elementLength = tokens[0].length();
-    for (int i = 1; i < tokens.length; i++) {
-      if (tokens[i].length() > elementLength) {
-        index = i;
-        elementLength = tokens[i].length();
+    for(int i=1; i< tokens.length; i++) {
+      if(tokens[i].length() > elementLength) {
+        index = i; elementLength = tokens[i].length();
       }
     }
 
     return findAemPath(tokens[index]);
   }
 
-  public Map<String, String> loadTaxonomy(String path) {
-    Map<String, String> map = new HashMap<String, String>();
+
+  public Map<String,String> loadTaxonomy(String path) {
+    Map<String,String> map = new HashMap<String, String>();
 
     BufferedReader br = null;
     String _line = "";
 
     try {
       br = new BufferedReader(new FileReader(path));
-      while ((_line = br.readLine()) != null) {
+      while((_line = br.readLine()) != null) {
         String[] lines = _line.split("\t");
-        map.put(lines[0].toUpperCase(), lines[1]);
+        map.put(lines[0].toUpperCase(),lines[1]);
       }
       br.close();
 
@@ -252,17 +185,17 @@ public class AemTarget {
     return map;
   }
 
-  public Map<String, String> mappingFile(String path) {
-    Map<String, String> map = new HashMap<String, String>();
+  public Map<String,String> mappingFile(String path) {
+    Map<String,String> map = new HashMap<String, String>();
 
     BufferedReader br = null;
     String _line = "";
 
     try {
       br = new BufferedReader(new FileReader(path));
-      while ((_line = br.readLine()) != null) {
+      while((_line = br.readLine()) != null) {
         String[] lines = _line.split("\t");
-        map.put(lines[0], lines[1]);
+        map.put(lines[0],lines[1]);
       }
       br.close();
 
@@ -274,23 +207,11 @@ public class AemTarget {
     return map;
   }
 
-  public List<String> loadContainerFile(String path) {
-    List<String> records = new ArrayList<String>();
-    BufferedReader br = null;
-    String _line = "";
-    try {
-      br = new BufferedReader(new FileReader(path));
-      while ((_line = br.readLine()) != null) {
-        records.add(_line);
-      }
-      br.close();
+  public File getFile(String sourceFile) {
 
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return records;
+    File asset = new File(sourceFile);
+
+    return asset;
   }
 
   public List<MigrationDto> loadMigrationFile(String path) {
@@ -299,7 +220,7 @@ public class AemTarget {
     String _line = "";
     try {
       br = new BufferedReader(new FileReader(path));
-      while ((_line = br.readLine()) != null) {
+      while((_line = br.readLine()) != null) {
         String[] lines = _line.split("\\t");
 
         MigrationDto mdto = new MigrationDto();
@@ -317,6 +238,197 @@ public class AemTarget {
       e.printStackTrace();
     }
     return records;
+  }
+
+  public void wrCsvFile(List<String> data, String path) {
+    Path filePath = Paths.get(path);
+    try {
+      Files.write(filePath, data, Charset.forName("UTF-8"));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public static String generateSha(File asset) {
+    String sha1 = "";
+    try {
+      if (asset.exists()) {
+        MessageDigest shaDigest = MessageDigest.getInstance("SHA-1");
+        sha1 = getFileChecksum(shaDigest, asset);
+      }
+    } catch (IOException| NoSuchAlgorithmException e) {
+      e.getMessage();
+    }
+    return sha1;
+  }
+
+  public static String getFileChecksum(MessageDigest digest, File file) throws IOException
+  {
+    //Get file input stream for reading the file content
+    FileInputStream fis = new FileInputStream(file);
+
+    //Create byte array to read data in chunks
+    byte[] byteArray = new byte[1024];
+    int bytesCount = 0;
+
+    //Read file data and update in message digest
+    while ((bytesCount = fis.read(byteArray)) != -1) {
+      digest.update(byteArray, 0, bytesCount);
+    }
+
+    //close the stream; We don't need it now.
+    fis.close();
+
+    //Get the hash's bytes
+    byte[] bytes = digest.digest();
+
+        /* This bytes[] has bytes in decimal format;
+        Convert it to hexadecimal format*/
+    StringBuilder sb = new StringBuilder();
+    for(int i=0; i< bytes.length ;i++)
+    {
+      sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+    }
+
+    //return complete hash
+    return sb.toString();
+  }
+
+  public HttpURLConnection assetAemValidation(String asset, final String userName, final String password) {
+    HttpURLConnection conn = null;
+
+    try {
+
+      String aemAssetFile = asset+"/jcr:content/metadata.json";
+
+      Authenticator.setDefault (new Authenticator() {
+        protected PasswordAuthentication getPasswordAuthentication() {
+          return new PasswordAuthentication(userName, password.toCharArray());
+        }
+      });
+
+      // Create a trust manager that does not validate certificate chains
+      TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
+        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+          return null;
+        }
+        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+        }
+        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+        }
+      }
+      };
+
+      // Install the all-trusting trust manager
+      SSLContext sc = null;
+      try {
+        sc = SSLContext.getInstance("SSL");
+        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+      } catch (NoSuchAlgorithmException e) {
+        e.printStackTrace();
+      } catch (KeyManagementException e) {
+        e.printStackTrace();
+      }
+
+
+      // Create all-trusting host name verifier
+      HostnameVerifier allHostsValid = new HostnameVerifier() {
+        public boolean verify(String hostname, SSLSession session) {
+          return true;
+        }
+      };
+
+      // Install the all-trusting host verifier
+      HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+
+      URL url = new URL(aemAssetFile);
+      conn = (HttpURLConnection) url.openConnection();
+
+      conn.setRequestMethod("GET");
+
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+
+    return conn;
+  }
+
+  public Map<String,String> conf() {
+    Map<String,String> result = new HashMap<>();
+    InputStream inputStream = null;
+
+    try {
+      Properties prop = new Properties();
+      String propFileName = "config.properties";
+
+      inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
+
+      if (inputStream != null) {
+        prop.load(inputStream);
+      } else {
+        throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
+      }
+
+      Date time = new Date(System.currentTimeMillis());
+
+      // get the property value and print it out
+      result.put("aemServer",prop.getProperty("aemServer"));
+      result.put("aemUserName",prop.getProperty("aemUserName"));
+      result.put("aemPassword",prop.getProperty("aemPassword"));
+
+      result.put("resultsFile",prop.getProperty("resultsFile"));
+      result.put("foundFile",prop.getProperty("foundFile"));
+      result.put("notFoundFile",prop.getProperty("notFoundFile"));
+
+      result.put("containers",prop.getProperty("containers"));
+      result.put("paths",prop.getProperty("paths"));
+      result.put("orphans",prop.getProperty("orphans"));
+
+      result.put("cantoInfo",prop.getProperty("cantoInfo"));
+      result.put("cantoResults",prop.getProperty("cantoResults"));
+      result.put("cantoAssetsRenamedFolder",prop.getProperty("cantoAssetsRenamedFolder"));
+
+      inputStream.close();
+
+    } catch (IOException ioe) {
+      System.out.println(ioe);
+    } catch (Exception e) {
+      System.out.println("Exception: " + e);
+    }
+
+
+    return result;
+  }
+
+  public JsonObject aemMetadata(HttpURLConnection conn) {
+    StringBuilder result = new StringBuilder();
+    BufferedReader rd = null;
+    JsonObject metadata = null;
+
+    try {
+      rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+      String line;
+
+      while((line = rd.readLine()) != null) {
+        result.append(line);
+      }
+
+      rd.close();
+
+      JsonParser jsonParser = new JsonParser();
+      metadata = (JsonObject)jsonParser.parse(result.toString());
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+
+    return metadata;
   }
 
 }
