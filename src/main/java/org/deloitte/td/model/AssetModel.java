@@ -31,6 +31,7 @@ public class AssetModel {
     private HashMap<String, String> fileSize = new HashMap<>();
     private HashMap<String, String> dateRecordLastModified = new HashMap<>();
     private HashMap<String, String> dateFileCataloged = new HashMap<>();
+    private HashMap<String, String> catalogedBy = new HashMap<>();
     private String taxonomy2NewPath;
 
     public HashMap<String, String> getActivityProposalNumber() {
@@ -239,6 +240,14 @@ public class AssetModel {
 
     public void setDateFileCataloged(String dateFileCataloged) {
         this.dateFileCataloged.put("Date File Cataloged", dateFileCataloged);
+    }
+
+    public HashMap<String, String> getCatalogedBy() {
+        return catalogedBy;
+    }
+
+    public void setCatalogedBy(String catalogedBy) {
+        this.catalogedBy.put("Cataloged By", catalogedBy);
     }
 
     public String getTaxonomy2NewPath() {

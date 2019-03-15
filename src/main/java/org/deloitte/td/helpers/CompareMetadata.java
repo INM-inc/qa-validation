@@ -41,14 +41,14 @@ public class CompareMetadata {
 
     }
 
-    public static ArrayList<String> checkForDifferences(ArrayList<AssetModel> fromCSV, JsonObject fromAEM) {
+    public static HashMap<String, String> checkForDifferences(ArrayList<AssetModel> fromCSV, JsonObject fromAEM) {
 
         HashMap<String, String> aemMappings = getAEMMappings();
         for (Map.Entry<String, String> aemMapping : aemMappings.entrySet()) {
             String taxonomy2FieldName = aemMapping.getKey();
             String aemMetadataKey = aemMapping.getValue();
             String aemMetadataValue = fromAEM.get(aemMetadataKey).getAsString();
-            String csvMetadataValue = fromCSV.ge
+//            String csvMetadataValue = fromCSV.
 
 
 //            if (level4.equalsIgnoreCase(aemMappings.getKey())) {
@@ -58,7 +58,7 @@ public class CompareMetadata {
         
 
 
-        ArrayList<String> differences = new ArrayList<>();
+        HashMap<String, String> differences = new HashMap<>();
 
         return differences;
 

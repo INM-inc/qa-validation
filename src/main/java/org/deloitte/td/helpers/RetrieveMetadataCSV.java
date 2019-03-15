@@ -92,6 +92,7 @@ public class RetrieveMetadataCSV {
                     asset.setFileSize(lines[11]);
                     asset.setDateRecordLastModified(lines[21]);
                     asset.setDateFileCataloged(lines[22]);
+                    asset.setCatalogedBy(lines[16]);
                     records.add(asset);
                 }
                 counter++;
