@@ -54,21 +54,26 @@ public class RetrieveMetadataCSV {
                     asset.setChannels(channels);
 
                     // Agency Name
-                    String agencyNameOther = lines[76];
-                    if (!agencyNameOther.isEmpty()) {
-                        asset.setAgencyName(agencyNameOther);
-                    } else {
-                        asset.setAgencyName(lines[30]);
-                    }
+//                    String agencyNameOther = lines[76];
+//                    asset.setAgencyName(lines[30]);
+//                    if (!agencyNameOther.isEmpty()) {
+//                        asset.setAgencyName(agencyNameOther);
+//                    } else {
+//                        asset.setAgencyName(lines[30]);
+//                    }
 
                     // Usage Rights
-                    String usageRightsOther = lines[32];
-                    if (!usageRightsOther.isEmpty()) {
-                        asset.setUsageRights(usageRightsOther);
-                    } else {
-                        asset.setUsageRights(lines[69]);
-                    }
+//                    String usageRightsOther = lines[32];
+//                    if (!usageRightsOther.isEmpty()) {
+//                        asset.setUsageRights(usageRightsOther);
+//                    } else {
+//                        asset.setUsageRights(lines[69]);
+//                    }
 
+                    asset.setUsageRights(lines[69]);
+                    asset.setUsageRightsOther(lines[32]);
+                    asset.setAgencyName(lines[30]);
+                    asset.setAgencyNameOther(lines[76]);
                     asset.setContainer(containerField);
                     asset.setFileName(lines[8]);
                     asset.setAgencyProjectID(lines[67]);

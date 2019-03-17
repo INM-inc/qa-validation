@@ -5,21 +5,23 @@ import java.util.HashMap;
 
 public class AssetModel {
 
-    private HashMap<String, String> activityProposalNumber = new HashMap<>();
-    private HashMap<String, String> projectName = new HashMap<>();
-    private HashMap<String, String> assetType = new HashMap<>();
-    private HashMap<String, ArrayList<String>> keywords = new HashMap<>();
+    private String activityProposalNumber;
+    private String projectName;
+    private String assetType;
+    private ArrayList<String> keywords;
     private HashMap<String, String> inMarketDate = new HashMap<>();
     private HashMap<String, String> expiryDate = new HashMap<>();
     private HashMap<String, ArrayList<String>> channels = new HashMap<>();
     private HashMap<String, String> branchID = new HashMap<>();
     private HashMap<String, String> agencyName = new HashMap<>();
+    private HashMap<String, String> agencyNameOther = new HashMap<>();
     private HashMap<String, String> agencyProjectID = new HashMap<>();
     private HashMap<String, String> description = new HashMap<>();
     private HashMap<String, String> language = new HashMap<>();
     private HashMap<String, ArrayList<String>> linesOfBusiness = new HashMap<>();
     private HashMap<String, String> photoSource = new HashMap<>();
     private HashMap<String, String> usageRights = new HashMap<>();
+    private HashMap<String, String> usageRightsOther = new HashMap<>();
     private HashMap<String, String> approvalStatus = new HashMap<>();
     private HashMap<String, String> imageWidth = new HashMap<>();
     private HashMap<String, String> imageHeight = new HashMap<>();
@@ -37,36 +39,36 @@ public class AssetModel {
     private String taxonomy2NewPath;
     private String sha;
 
-    public HashMap<String, String> getActivityProposalNumber() {
+    public String getActivityProposalNumber() {
         return activityProposalNumber;
     }
 
     public void setActivityProposalNumber(String activityProposalNumber) {
-        this.activityProposalNumber.put("AP (Activity Proposal) Number", activityProposalNumber);
+        this.activityProposalNumber = activityProposalNumber;
     }
 
-    public HashMap<String, String> getProjectName() {
+    public String getProjectName() {
         return projectName;
     }
 
     public void setProjectName(String projectName) {
-        this.projectName.put("Project Name", projectName);
+        this.projectName = projectName;
     }
 
-    public HashMap<String, String> getAssetType() {
+    public String getAssetType() {
         return assetType;
     }
 
     public void setAssetType(String assetType) {
-        this.assetType.put("Asset Type", assetType);
+        this.assetType = assetType;
     }
 
-    public HashMap<String, ArrayList<String>> getKeywords() {
+    public ArrayList<String> getKeywords() {
         return keywords;
     }
 
     public void setKeywords(ArrayList<String> keywords) {
-        this.keywords.put("Keywords", keywords);
+        this.keywords = keywords;
     }
 
     public HashMap<String, String> getInMarketDate() {
@@ -107,6 +109,14 @@ public class AssetModel {
 
     public void setAgencyName(String agencyName) {
         this.agencyName.put("Agency Name", agencyName);
+    }
+
+    public HashMap<String, String> getAgencyNameOther() {
+        return agencyNameOther;
+    }
+
+    public void setAgencyNameOther(String agencyNameOther) {
+        this.agencyNameOther.put("Agency Name Other", agencyNameOther);
     }
 
     public HashMap<String, String> getAgencyProjectID() {
@@ -155,6 +165,14 @@ public class AssetModel {
 
     public void setUsageRights(String usageRights) {
         this.usageRights.put("Usage Rights", usageRights);
+    }
+
+    public HashMap<String, String> getUsageRightsOther() {
+        return usageRights;
+    }
+
+    public void setUsageRightsOther(String usageRights) {
+        this.usageRights.put("Usage Rights Other", usageRights);
     }
 
     public HashMap<String, String> getApprovalStatus() {
