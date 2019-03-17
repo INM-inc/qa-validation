@@ -236,12 +236,15 @@ public class CompareMetadata {
         HashMap<String, String> lobMappings = getLOBMappings();
 
         for (Asset assetFromCSV : fromCSV) {
+
+            String assetKeyCSV = assetFromCSV.getContainer() + assetFromCSV.getFileName();
+
             for (Map.Entry<String, JsonObject> assetFromAEM : fromAEM.entrySet()) {
 
                 String assetFromAEMPath = assetFromAEM.getKey();
                 JsonObject assetFromAEMMetadata = assetFromAEM.getValue();
 
-                if (assetFromAEMMetadata.get("dam:sha1").toString().equals(assetFromCSV.getSha())) {
+                if (assetFromAEMMetadata.get(rootPath).toString().equals(assetKeyCSV)) {
 
                     ArrayList<String> metadataDifferences = new ArrayList<>();
 
