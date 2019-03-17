@@ -7,13 +7,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.deloitte.td.model.AssetModel;
+import org.deloitte.td.model.Asset;
 
 public class RetrieveMetadataCSV {
 
-    public static ArrayList<AssetModel> retrieveFromCSV() {
+    public static ArrayList<Asset> retrieveFromCSV() {
 
-        ArrayList<AssetModel> records = new ArrayList<>();
+        ArrayList<Asset> records = new ArrayList<>();
         BufferedReader br = null;
         String line = "";
         int counter = 0;
@@ -23,7 +23,7 @@ public class RetrieveMetadataCSV {
 
                 String[] lines = line.split("\\t");
                 if (counter > 0 && !lines[64].equalsIgnoreCase("Archive") && !lines[5].equalsIgnoreCase("Rejected") && lines[19].contains("$Containers:")) {
-                    AssetModel asset = new AssetModel();
+                    Asset asset = new Asset();
 
                     // Initial Keywords, LOBs, Channels and Path.
                     ArrayList<String> keywords = new ArrayList<>(Arrays.asList(lines[79].split(", ")));

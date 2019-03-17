@@ -1,6 +1,6 @@
 package org.deloitte.td.helpers;
 
-import org.deloitte.td.model.AssetModel;
+import org.deloitte.td.model.Asset;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,9 +8,9 @@ import java.util.Map;
 
 public class AddShaToMetadataCSV {
 
-    public static ArrayList<AssetModel> addShaToMetadataCSV(ArrayList<AssetModel> fromCSV, HashMap<String, HashMap<String, String>> fromAssetsRenamed) {
+    public static ArrayList<Asset> addShaToMetadataCSV(ArrayList<Asset> fromCSV, HashMap<String, HashMap<String, String>> fromAssetsRenamed) {
 
-        for (AssetModel assetFromCSV : fromCSV) {
+        for (Asset assetFromCSV : fromCSV) {
             for (Map.Entry<String, HashMap<String, String>> assetFromAssetsRenamed : fromAssetsRenamed.entrySet()) {
                 String fromCSVContainer = assetFromCSV.getContainer();
                 String fromCSVFileName = assetFromCSV.getFileName();

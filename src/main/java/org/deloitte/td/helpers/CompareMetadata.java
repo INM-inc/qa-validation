@@ -1,42 +1,43 @@
 package org.deloitte.td.helpers;
 
 import com.google.gson.JsonObject;
-import org.deloitte.td.model.AssetModel;
+import org.deloitte.td.model.Asset;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CompareMetadata {
 
-    public static HashMap<String, String> getAEMMappings() {
+    public static ArrayList<String> getAEMMappings() {
 
-        HashMap<String, String> aemMappings = new HashMap<>();
-        aemMappings.put("AP (Activity Proposal) Number", "td:apn");
-        aemMappings.put("Project Name", "td:projectname");
-        aemMappings.put("Asset Type", "td:assettype");
-        aemMappings.put("Keywords", "td:keywords");
-        aemMappings.put("In Market", "td:inmarket@date");
-        aemMappings.put("Expiry Date", "td:expiry@date");
-        aemMappings.put("Channel", "td:channel");
-        aemMappings.put("Branch ID", "td:branchid");
-        aemMappings.put("Agency Name", "td:agency");
-        aemMappings.put("Agency Project ID", "td:agencypid");
-        aemMappings.put("Description", "dc:description");
-        aemMappings.put("Language", "td:language");
-        aemMappings.put("Line Of Business", "td:lob");
-        aemMappings.put("Photo Source", "td:photosource");
-        aemMappings.put("Usage Rights", "td:usageright");
-        aemMappings.put("Approval Status", "td:approval");
-        aemMappings.put("Image Width", "tiff:ImageWidth");
-        aemMappings.put("Image Height", "tiff:ImageLength");
-        aemMappings.put("Resolution (Horizontal)", "tiff:XResolution");
-        aemMappings.put("Resolution (Vertical)", "tiff:YResolution");
-        aemMappings.put("Photographer or Creator", "dc:creator");
-        aemMappings.put("Date File Captured", "td:datefilecaptured");
-        aemMappings.put("File Format", "dam:FileFormat");
-        aemMappings.put("File Size", "dam:size");
-        aemMappings.put("Date Record Last Modified", "dc:modified@date");
-        aemMappings.put("Date File Cataloged", "td:catalogued@date");
+        ArrayList<String> aemMappings = new ArrayList<>();
+        aemMappings.add("td:apn");
+        aemMappings.add("td:projectname");
+        aemMappings.add("td:assettype");
+        aemMappings.add("td:keywords");
+        aemMappings.add("td:inmarket@date");
+        aemMappings.add("td:expiry@date");
+        aemMappings.add("td:channel");
+        aemMappings.add("td:branchid");
+        aemMappings.add("td:agency");
+        aemMappings.add("td:agencypid");
+        aemMappings.add("dc:description");
+        aemMappings.add("td:language");
+        aemMappings.add("td:lob");
+        aemMappings.add("td:photosource");
+        aemMappings.add("td:usageright");
+        aemMappings.add("td:approval");
+        aemMappings.add("tiff:ImageWidth");
+        aemMappings.add("tiff:ImageLength");
+        aemMappings.add("tiff:XResolution");
+        aemMappings.add("tiff:YResolution");
+        aemMappings.add("dc:creator");
+        aemMappings.add("td:datefilecaptured");
+        aemMappings.add("dam:FileFormat");
+        aemMappings.add("dam:size");
+        aemMappings.add("dc:modified@date");
+        aemMappings.add("td:catalogued@date");
         return aemMappings;
 
     }
@@ -155,6 +156,73 @@ public class CompareMetadata {
         assetTypeMappings.put("Email (Evite)", "Evite");
         assetTypeMappings.put("Envelope", "Envelope");
         assetTypeMappings.put("Festival Collateral", "");
+        assetTypeMappings.put("Flag", "Promo Flags");
+        assetTypeMappings.put("Flyer", "Flyer");
+        assetTypeMappings.put("Form", "Form");
+        assetTypeMappings.put("Guidelines", "Guidelines");
+        assetTypeMappings.put("Header", "");
+        assetTypeMappings.put("Icon", "Icon");
+        assetTypeMappings.put("Indicia", "Indicia");
+        assetTypeMappings.put("Info Sheet", "Info Sheet");
+        assetTypeMappings.put("Insert", "Insert");
+        assetTypeMappings.put("Insert/Buckslip", "Insert");
+        assetTypeMappings.put("Interceptor", "Interceptor");
+        assetTypeMappings.put("Invitation", "Invitation");
+        assetTypeMappings.put("Invoice", "Dependencies");
+        assetTypeMappings.put("Kiosk", "");
+        assetTypeMappings.put("Lanyards", "Merchandise");
+        assetTypeMappings.put("Letter", "Letter");
+        assetTypeMappings.put("Logo", "Logo");
+        assetTypeMappings.put("Market Commentary", "Market Commentary");
+        assetTypeMappings.put("Masthead", "Banner");
+        assetTypeMappings.put("Meeting Agenda", "Info Sheet");
+        assetTypeMappings.put("Merchandise", "Merchandise");
+        assetTypeMappings.put("Mobile", "");
+        assetTypeMappings.put("Newsletter", "Newsletter");
+        assetTypeMappings.put("Newspaper", "Advertisement");
+        assetTypeMappings.put("Notepad", "Template");
+        assetTypeMappings.put("Other", "");
+        assetTypeMappings.put("Photography", "Photography");
+        assetTypeMappings.put("Pocket Folder", "Pocket Folder");
+        assetTypeMappings.put("Portfolio Update", "Letter");
+        assetTypeMappings.put("POS", "");
+        assetTypeMappings.put("Postcard", "Postcard");
+        assetTypeMappings.put("Poster", "Poster");
+        assetTypeMappings.put("Premiums", "");
+        assetTypeMappings.put("Presentation (Power Point)", "Presentation");
+        assetTypeMappings.put("Print Banner", "Banner");
+        assetTypeMappings.put("Print Campaign", "");
+        assetTypeMappings.put("Privacy Notice", "");
+        assetTypeMappings.put("Prize", "");
+        assetTypeMappings.put("Program", "Info Sheet");
+        assetTypeMappings.put("Proposal", "Template");
+        assetTypeMappings.put("Pull-Up Banner", "Banner");
+        assetTypeMappings.put("Regulatory", "");
+        assetTypeMappings.put("Rights Documentation", "");
+        assetTypeMappings.put("Round (Precious Metals)", "Precious Metals");
+        assetTypeMappings.put("Sales Aid", "");
+        assetTypeMappings.put("Self-Mailer", "Envelope");
+        assetTypeMappings.put("Sign", "Signage");
+        assetTypeMappings.put("Signature", "Signature");
+        assetTypeMappings.put("Skirt", "Cling");
+        assetTypeMappings.put("Social Media", "");
+        assetTypeMappings.put("Sticker", "Cling");
+        assetTypeMappings.put("Take away", "Brochure");
+        assetTypeMappings.put("Take One", "Brochure");
+        assetTypeMappings.put("Template", "Template");
+        assetTypeMappings.put("Tent", "Merchandise");
+        assetTypeMappings.put("Tent Card", "Brochure");
+        assetTypeMappings.put("Thank-You Card", "Invitation");
+        assetTypeMappings.put("Tools", "");
+        assetTypeMappings.put("Training", "Info Sheet");
+        assetTypeMappings.put("Video", "Video");
+        assetTypeMappings.put("Wallet Card", "Infor");
+        assetTypeMappings.put("Web Banner", "Banner");
+        assetTypeMappings.put("Web page", "Wireframes");
+        assetTypeMappings.put("Wicket Sign", "");
+        assetTypeMappings.put("Wireframe", "Wireframe");
+        assetTypeMappings.put("Wordmarks", "Wordmarks");
+        assetTypeMappings.put("Wrap", "Cling");
 
         return assetTypeMappings;
 
@@ -163,6 +231,18 @@ public class CompareMetadata {
     public static HashMap<String, String> getUsageRightsMappings() {
 
         HashMap<String, String> usageRightsMappings = new HashMap<>();
+        usageRightsMappings.put("Shutterstock: All Digital [No print]", "Digital");
+        usageRightsMappings.put("Shutterstock: All Media [All Uses]", "Digital , Print");
+        usageRightsMappings.put("iStock [Standard] Store inside project zip - DO NOT USE in filename", "");
+        usageRightsMappings.put("iStock [Extended] Describe license purchased", "");
+        usageRightsMappings.put("Client Provided: WIth rights to use again [Provide usage rights information; expiry, how it can be used etc.]", "");
+        usageRightsMappings.put("Created Internally [Indicate restrictions]", "");
+        usageRightsMappings.put("Other [Please specify the rights associated with this file + link rights document in the description of this asset]", "");
+        usageRightsMappings.put("# Unknown", "");
+        usageRightsMappings.put("Editorial [Describe restrictions]", "");
+        usageRightsMappings.put("Royalty Free", "Royalty Free");
+        usageRightsMappings.put("TD Owned Photos", "Unlimited");
+        usageRightsMappings.put("TD Owned Image", "Unlimited");
 
         return usageRightsMappings;
 
@@ -171,6 +251,12 @@ public class CompareMetadata {
     public static HashMap<String, String> getPhotoSourceMappings() {
 
         HashMap<String, String> photoSourceMappings = new HashMap<>();
+        photoSourceMappings.put("Shutterstock", "Shutterstock");
+        photoSourceMappings.put("Shutterstock (Offset)", "Shutterstock");
+        photoSourceMappings.put("iStock", "iStock");
+        photoSourceMappings.put("Getty Images", "Getty Images");
+        photoSourceMappings.put("Pond5", "Pond5");
+        photoSourceMappings.put("Other", "Pond5");
 
         return photoSourceMappings;
 
@@ -185,41 +271,29 @@ public class CompareMetadata {
 
     }
 
-    public static HashMap<String, String> checkForDifferences(ArrayList<AssetModel> fromCSV, JsonObject fromAEM) {
+    public static HashMap<String, String> checkForDifferences(ArrayList<Asset> fromCSV, HashMap<String, JsonObject> fromAEM) {
 
-        HashMap<String, String> aemMappings = getAEMMappings();
         HashMap<String, String> differences = new HashMap<>();
+        ArrayList<String> aemMappings = getAEMMappings();
+        HashMap<String, String> approvalStatusMappings = getApprovalStatusMappings();
+        HashMap<String, String> agencyNameMappings = getAgencyNameMappings();
+        HashMap<String, String> languageMappings = getLanguageMappings();
+        HashMap<String, String> channelMappings = getChannelMappings();
+        HashMap<String, String> assetTypeMappings = getAssetTypeMappings();
+        HashMap<String, String> usageRightsMappings = getUsageRightsMappings();
+        HashMap<String, String> photoSourceMappings = getPhotoSourceMappings();
+        HashMap<String, String> lobMappings = getLOBMappings();
 
-        /*
-         * Check AEM Column Names
-         */
-        for (AssetModel asset : fromCSV) {
-            for (Map.Entry<String, String> proposalNumber : asset.getActivityProposalNumber().entrySet()) {
-                 String expectedColumnName = proposalNumber.getKey();
+        for (String aemMapping : aemMappings) {
+            String taxonomy2Field = aemMapping;
+            for (Asset asset : fromCSV) {
+                for (Map.Entry<String, JsonObject> aemAssetMetadata : fromAEM.entrySet()) {
+                    if (aemAssetMetadata.getValue().get("dam:sha1").equals(asset.getSha())) {
+
+                    }
+                }
             }
         }
-        /*
-         * If column names don't match, write this to differences and quit.
-         */
-
-        for (AssetModel asset : fromCSV) {
-            for (Map.Entry<String, String> proposalNumber : asset.getActivityProposalNumber().entrySet()) {
-                String expectedColumnName = proposalNumber.getValue();
-
-            }
-        }
-
-
-        for (Map.Entry<String, String> aemMapping : aemMappings.entrySet()) {
-            String taxonomy2FieldName = aemMapping.getKey();
-            String aemMetadataKey = aemMapping.getValue();
-            for (AssetModel asset : fromCSV) {
-
-            }
-//            String csvMetadataValue = fromCSV.get(taxonomy2FieldName);
-//            String aemMetadataValue = fromAEM.get(aemMetadataKey).getAsString();
-        }
-        
 
 
 

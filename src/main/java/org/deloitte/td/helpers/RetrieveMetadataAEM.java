@@ -10,12 +10,14 @@ import java.net.*;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class RetrieveMetadataAEM {
 
-    public static JsonObject retrieveFromAEM() {
+    public static HashMap<String, JsonObject> retrieveFromAEM() {
 
-
+        HashMap<String, JsonObject> aemAllAssetsMetadata = new HashMap<>();
         JsonObject aemAssetMetadata = new JsonObject();
 
         try {
@@ -84,6 +86,7 @@ public class RetrieveMetadataAEM {
             JsonParser jsonParser = new JsonParser();
             aemAssetMetadata = (JsonObject) jsonParser.parse(result.toString());
             aemAssetMetadata.addProperty("outcome", "success");
+            aemAllAssetsMetadata.put("aem_path", aemAssetMetadata);
             System.out.println(aemAssetMetadata.toString());
 
 //            System.out.println("dam:sha1" + jo.get("dam:sha1"));
@@ -97,13 +100,15 @@ public class RetrieveMetadataAEM {
         } catch (MalformedURLException e) {
             e.printStackTrace();
             aemAssetMetadata.addProperty("outcome", "fail");
+            aemAllAssetsMetadata.put("aem_path", aemAssetMetadata);
         } catch (IOException e) {
             e.printStackTrace();
             aemAssetMetadata.addProperty("outcome", "fail");
+            aemAllAssetsMetadata.put("aem_path", aemAssetMetadata);
         }
 
 
-        return aemAssetMetadata;
+        return aemAllAssetsMetadata;
     }
 
 }
