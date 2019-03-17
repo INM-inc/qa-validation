@@ -168,7 +168,7 @@ public class Asset {
     }
 
     public String getUsageRightsOther() {
-        return usageRights;
+        return usageRightsOther;
     }
 
     public void setUsageRightsOther(String usageRightsOther) {

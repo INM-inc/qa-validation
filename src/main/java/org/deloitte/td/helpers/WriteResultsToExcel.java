@@ -14,7 +14,7 @@ public class WriteResultsToExcel {
 
         // Location and Column Names.
         String excelLocation = "/Users/averzea/Downloads/qa_results.xlsx";
-        String[] excelColumns = {"File Name", "Metadata Fields Different"};
+        String[] excelColumns = {"File Path in AEM", "Metadata Fields Different"};
 
         // Create a Workbook for generating a .xlsx file.
         Workbook workbook = new XSSFWorkbook();

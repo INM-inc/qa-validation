@@ -9,39 +9,6 @@ import java.util.Map;
 
 public class CompareMetadata {
 
-    public static ArrayList<String> getAEMMappings() {
-
-        ArrayList<String> aemMappings = new ArrayList<>();
-        aemMappings.add("td:apn");
-        aemMappings.add("td:projectname");
-        aemMappings.add("td:assettype");
-        aemMappings.add("td:keywords");
-        aemMappings.add("td:inmarket@date");
-        aemMappings.add("td:expiry@date");
-        aemMappings.add("td:channel");
-        aemMappings.add("td:branchid");
-        aemMappings.add("td:agency");
-        aemMappings.add("td:agencypid");
-        aemMappings.add("dc:description");
-        aemMappings.add("td:language");
-        aemMappings.add("td:lob");
-        aemMappings.add("td:photosource");
-        aemMappings.add("td:usageright");
-        aemMappings.add("td:approval");
-        aemMappings.add("tiff:ImageWidth");
-        aemMappings.add("tiff:ImageLength");
-        aemMappings.add("tiff:XResolution");
-        aemMappings.add("tiff:YResolution");
-        aemMappings.add("dc:creator");
-        aemMappings.add("td:datefilecaptured");
-        aemMappings.add("dam:FileFormat");
-        aemMappings.add("dam:size");
-        aemMappings.add("dc:modified@date");
-        aemMappings.add("td:catalogued@date");
-        return aemMappings;
-
-    }
-
     public static HashMap<String, String> getApprovalStatusMappings() {
 
         HashMap<String, String> approvalStatusMappings = new HashMap<>();
@@ -248,20 +215,6 @@ public class CompareMetadata {
 
     }
 
-    public static HashMap<String, String> getPhotoSourceMappings() {
-
-        HashMap<String, String> photoSourceMappings = new HashMap<>();
-        photoSourceMappings.put("Shutterstock", "Shutterstock");
-        photoSourceMappings.put("Shutterstock (Offset)", "Shutterstock");
-        photoSourceMappings.put("iStock", "iStock");
-        photoSourceMappings.put("Getty Images", "Getty Images");
-        photoSourceMappings.put("Pond5", "Pond5");
-        photoSourceMappings.put("Other", "Pond5");
-
-        return photoSourceMappings;
-
-    }
-
     public static HashMap<String, String> getLOBMappings() {
 
         HashMap<String, String> lobMappings = new HashMap<>();
@@ -273,24 +226,209 @@ public class CompareMetadata {
 
     public static HashMap<String, String> checkForDifferences(ArrayList<Asset> fromCSV, HashMap<String, JsonObject> fromAEM) {
 
-        HashMap<String, String> differences = new HashMap<>();
-        ArrayList<String> aemMappings = getAEMMappings();
+        HashMap<String, String> pathsAndDifferences = new HashMap<>();
         HashMap<String, String> approvalStatusMappings = getApprovalStatusMappings();
         HashMap<String, String> agencyNameMappings = getAgencyNameMappings();
         HashMap<String, String> languageMappings = getLanguageMappings();
         HashMap<String, String> channelMappings = getChannelMappings();
         HashMap<String, String> assetTypeMappings = getAssetTypeMappings();
         HashMap<String, String> usageRightsMappings = getUsageRightsMappings();
-        HashMap<String, String> photoSourceMappings = getPhotoSourceMappings();
         HashMap<String, String> lobMappings = getLOBMappings();
 
-        for (String aemMapping : aemMappings) {
-            String taxonomy2Field = aemMapping;
-            for (Asset asset : fromCSV) {
-                for (Map.Entry<String, JsonObject> aemAssetMetadata : fromAEM.entrySet()) {
-                    if (aemAssetMetadata.getValue().get("dam:sha1").equals(asset.getSha())) {
+        for (Asset assetFromCSV : fromCSV) {
+            for (Map.Entry<String, JsonObject> assetFromAEM : fromAEM.entrySet()) {
 
+                String assetFromAEMPath = assetFromAEM.getKey();
+                JsonObject assetFromAEMMetadata = assetFromAEM.getValue();
+
+                if (assetFromAEMMetadata.get("dam:sha1").toString().equals(assetFromCSV.getSha())) {
+
+                    ArrayList<String> metadataDifferences = new ArrayList<>();
+
+                    String aemAPN = assetFromAEMMetadata.get("td:apn").toString();
+                    String csvAPN = assetFromCSV.getActivityProposalNumber();
+                    if (!aemAPN.equals(csvAPN)) {
+                        metadataDifferences.add("AP (Activity Proposal) Number");
                     }
+
+                    String aemProjectName = assetFromAEMMetadata.get("td:projectname").toString();
+                    String csvProjectName = assetFromCSV.getProjectName();
+                    if (!aemProjectName.equals(csvProjectName)) {
+                        metadataDifferences.add("Project Name");
+                    }
+
+                    String aemAssetType = assetFromAEMMetadata.get("td:assettype").toString();
+                    String csvAssetType = assetTypeMappings.get(assetFromCSV.getAssetType());
+                    if (!aemAssetType.equals(csvAssetType)) {
+                        metadataDifferences.add("Asset Type");
+                    }
+
+                    String aemKeywords = assetFromAEMMetadata.get("td:keywords").toString();
+                    String csvKeywords = assetFromCSV.getKeywords().toString();
+                    if (!aemKeywords.equals(csvKeywords)) {
+                        metadataDifferences.add("Keywords");
+                    }
+
+                    String aemInMarket = assetFromAEMMetadata.get("td:inmarket@date").toString();
+                    String csvInMarket = assetFromCSV.getInMarketDate();
+                    if (!aemInMarket.equals(csvInMarket)) {
+                        metadataDifferences.add("In Market");
+                    }
+
+                    String aemExpiryDate = assetFromAEMMetadata.get("td:expiry@date").toString();
+                    String csvExpiryDate = assetFromCSV.getExpiryDate();
+                    if (!aemExpiryDate.equals(csvExpiryDate)) {
+                        metadataDifferences.add("Expiry Date");
+                    }
+
+                    String aemChannels = assetFromAEMMetadata.get("td:channel").toString();
+                    ArrayList<String> csvChannels = assetFromCSV.getChannels();
+                    ArrayList<String> mappedCSVChannels = new ArrayList<>();
+                    for (String channel : csvChannels) {
+                        mappedCSVChannels.add(channelMappings.get(channel));
+                    }
+                    if (!aemChannels.equals(mappedCSVChannels.toString())) {
+                        metadataDifferences.add("Channel");
+                    }
+
+                    String aemBranchID = assetFromAEMMetadata.get("td:branchid").toString();
+                    String csvBranchID = assetFromCSV.getBranchID();
+                    if (!aemBranchID.equals(csvBranchID)) {
+                        metadataDifferences.add("Branch ID");
+                    }
+
+                    String aemAgencyName = assetFromAEMMetadata.get("td:agency").toString();
+                    String csvAgencyName;
+                    if (assetFromCSV.getAgencyNameOther().isEmpty()) {
+                        csvAgencyName = agencyNameMappings.get(assetFromCSV.getAgencyName());
+                    } else {
+                        csvAgencyName = assetFromCSV.getAgencyNameOther();
+                    }
+                    if (!aemAgencyName.equals(csvAgencyName)) {
+                        metadataDifferences.add("Agency Name");
+                    }
+
+                    String aemAgencyPID = assetFromAEMMetadata.get("td:agencypid").toString();
+                    String csvAgencyPID = assetFromCSV.getAgencyProjectID();
+                    if (!aemAgencyPID.equals(csvAgencyPID)) {
+                        metadataDifferences.add("Agency Project ID");
+                    }
+
+                    String aemDescription = assetFromAEMMetadata.get("dc:description").toString();
+                    String csvDescription = assetFromCSV.getDescription();
+                    if (!aemDescription.equals(csvDescription)) {
+                        metadataDifferences.add("Description");
+                    }
+
+                    String aemLanguage = assetFromAEMMetadata.get("td:language").toString();
+                    String csvLanguage = languageMappings.get(assetFromCSV.getLanguage());
+                    if (!aemLanguage.equals(csvLanguage)) {
+                        metadataDifferences.add("Language");
+                    }
+
+                    String aemLOBs = assetFromAEMMetadata.get("td:lob").toString();
+                    ArrayList<String> csvLOBs = assetFromCSV.getLOBs();
+                    ArrayList<String> mappedLOBs = new ArrayList<>();
+                    for (String lob : csvLOBs) {
+                        mappedLOBs.add(lobMappings.get(lob));
+                    }
+                    if (!aemLOBs.equals(mappedLOBs.toString())) {
+                        metadataDifferences.add("Lines Of Business");
+                    }
+
+                    String aemPhotoSource = assetFromAEMMetadata.get("td:photosource").toString();
+                    String csvPhotoSource = assetFromCSV.getPhotoSource();
+                    if (!aemPhotoSource.equals(csvPhotoSource)) {
+                        metadataDifferences.add("Photo Source");
+                    }
+
+                    String aemUsageRights = assetFromAEMMetadata.get("td:usageright").toString();
+                    String csvUsageRights;
+                    if (assetFromCSV.getUsageRightsOther().isEmpty()) {
+                        csvUsageRights = usageRightsMappings.get(assetFromCSV.getUsageRights());
+                    } else {
+                        csvUsageRights = assetFromCSV.getUsageRightsOther();
+                    }
+                    if (!aemUsageRights.equals(csvUsageRights)) {
+                        metadataDifferences.add("Agency Name");
+                    }
+
+                    String aemApprovalStatus = assetFromAEMMetadata.get("td:approval").toString();
+                    String csvApprovalStatus = approvalStatusMappings.get(assetFromCSV.getApprovalStatus());
+                    if (!aemApprovalStatus.equals(csvApprovalStatus)) {
+                        metadataDifferences.add("Approval Status");
+                    }
+
+                    String aemImageWidth = assetFromAEMMetadata.get("tiff:ImageWidth").toString();
+                    String csvImageWidth = assetFromCSV.getImageWidth();
+                    if (!aemImageWidth.equals(csvImageWidth)) {
+                        metadataDifferences.add("Image Width");
+                    }
+
+                    String aemImageHeight = assetFromAEMMetadata.get("tiff:ImageLength").toString();
+                    String csvImageHeight = assetFromCSV.getImageHeight();
+                    if (!aemImageHeight.equals(csvImageHeight)) {
+                        metadataDifferences.add("Image Height");
+                    }
+
+                    String aemResolutionHorizontal = assetFromAEMMetadata.get("tiff:XResolution").toString();
+                    String csvResolutionHorizontal = assetFromCSV.getResolutionHorizontal();
+                    if (!aemResolutionHorizontal.equals(csvResolutionHorizontal)) {
+                        metadataDifferences.add("Resolution (Horizontal)");
+                    }
+
+                    String aemResolutionVertical = assetFromAEMMetadata.get("tiff:YResolution").toString();
+                    String csvResolutionVertical = assetFromCSV.getResolutionVertical();
+                    if (!aemResolutionVertical.equals(csvResolutionVertical)) {
+                        metadataDifferences.add("Resolution (Vertical)");
+                    }
+
+                    String aemPhotographerOrCreator = assetFromAEMMetadata.get("dc:creator").toString();
+                    String csvPhotographerOrCreator = assetFromCSV.getPhotographer();
+                    if (!aemPhotographerOrCreator.equals(csvPhotographerOrCreator)) {
+                        metadataDifferences.add("Photographer or Creator");
+                    }
+
+                    String aemDateFileCaptured = assetFromAEMMetadata.get("td:datefilecaptured").toString();
+                    String csvDateFileCaptured = assetFromCSV.getDateFileCaptured();
+                    if (!aemDateFileCaptured.equals(csvDateFileCaptured)) {
+                        metadataDifferences.add("Date File Captured");
+                    }
+
+                    String aemFileFormat = assetFromAEMMetadata.get("dam:FileFormat").toString();
+                    String csvFileFormat = assetFromCSV.getFileFormat();
+                    if (!aemFileFormat.equals(csvFileFormat)) {
+                        metadataDifferences.add("File Format");
+                    }
+
+                    String aemFileSize = assetFromAEMMetadata.get("dam:size").toString();
+                    String csvFileSize = assetFromCSV.getFileSize();
+                    if (!aemFileSize.equals(csvFileSize)) {
+                        metadataDifferences.add("File Size");
+                    }
+
+                    String aemDateRecordLastModified = assetFromAEMMetadata.get("dc:modified@date").toString();
+                    String csvDateRecordLastModified = assetFromCSV.getDateRecordLastModified();
+                    if (!aemDateRecordLastModified.equals(csvDateRecordLastModified)) {
+                        metadataDifferences.add("Date Record Last Modified");
+                    }
+
+                    String aemDateFileCataloged = assetFromAEMMetadata.get("td:catalogued@date").toString();
+                    String csvDateFileCataloged = assetFromCSV.getDateFileCataloged();
+                    if (!aemDateFileCataloged.equals(csvDateFileCataloged)) {
+                        metadataDifferences.add("Date File Cataloged");
+                    }
+
+                    String aemCatalogedBy = assetFromAEMMetadata.get("td:cataloguedBy").toString();
+                    String csvCatalogedBy = assetFromCSV.getCatalogedBy();
+                    if (!aemCatalogedBy.equals(csvCatalogedBy)) {
+                        metadataDifferences.add("Cataloged By");
+                    }
+
+                    if (metadataDifferences.size() > 0) {
+                        pathsAndDifferences.put(assetFromAEMPath, metadataDifferences.toString());
+                    }
+
                 }
             }
         }
@@ -298,7 +436,7 @@ public class CompareMetadata {
 
 
 
-        return differences;
+        return pathsAndDifferences;
 
     }
 }
