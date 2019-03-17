@@ -42,7 +42,7 @@ public class WriteResultsToExcel {
             cell.setCellStyle(headerCellStyle);
         }
 
-        // Create Other rows and cells with employees data.
+        // Create rows with AEM Path of Asset and Metadata Differences.
         int rowNum = 1;
         for (Map.Entry<String, String> fileAndDifferences : filesAndDifferences.entrySet()) {
             Row row = sheet.createRow(rowNum++);
