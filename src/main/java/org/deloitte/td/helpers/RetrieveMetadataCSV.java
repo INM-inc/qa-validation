@@ -18,22 +18,22 @@ public class RetrieveMetadataCSV {
         String line = "";
         int counter = 0;
         try {
-            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/source3.csv"));
+            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/source2.csv"));
             while ((line = br.readLine()) != null) {
 
                 String[] lines = line.split("\\t");
                 if (counter > 0 && !lines[64].equalsIgnoreCase("Archived") && !lines[5].equalsIgnoreCase("Rejected") && lines[19].contains("$Containers:")) {
+
                     Asset asset = new Asset();
 
                     // Initial Keywords, LOBs, Channels and Path.
-                    ArrayList<String> keywords = new ArrayList<>(Arrays.asList(lines[79].split(", ")));
+                    ArrayList<String> keywords = new ArrayList<>(Arrays.asList(lines[79].replace("\"", "").split(", ")));
                     ArrayList<String> lobs = new ArrayList<>(Arrays.asList(lines[1].split(", ")));
                     ArrayList<String> channels = new ArrayList<>(Arrays.asList(lines[34].split(", ")));
                     asset.setTaxonomy2NewPath("NO_NEW_PATH");
 
                     // Additions to Initial Keywords, LOBs, Channels and Path based on Taxonomy Tab 2.
                     String containerField = TaxonomyChanges.getCorrectContainer(lines[19]);
-//                    System.out.println(containerField);
                     String level4 = TaxonomyChanges.getContainerLevel4(containerField);
                     if (!level4.equals("NO_LEVEL_4")) {
 
@@ -82,6 +82,7 @@ public class RetrieveMetadataCSV {
                     asset.setDateRecordLastModified(lines[21]);
                     asset.setDateFileCataloged(lines[22]);
                     asset.setCatalogedBy(lines[16]);
+
                     records.add(asset);
                 }
                 counter++;

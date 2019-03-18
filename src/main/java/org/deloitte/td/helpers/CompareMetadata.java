@@ -4,9 +4,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.deloitte.td.model.Asset;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class CompareMetadata {
 
@@ -255,13 +254,11 @@ public class CompareMetadata {
 
                     if (assetFromAEMPath.equals(assetKeyCSV)) {
 
-                        System.out.println(assetFromAEMMetadata);
-
                         JsonElement aemAPN = assetFromAEMMetadata.get("td:apn");
                         if (aemAPN == null) {
                             metadataDifferences.add("AP (Activity Proposal) Number Missing");
                         } else {
-                            String csvAPN = assetFromCSV.getActivityProposalNumber();
+                            String csvAPN = "\"" + assetFromCSV.getActivityProposalNumber() + "\"";
                             if (!aemAPN.toString().equals(csvAPN)) {
                                 metadataDifferences.add("AP (Activity Proposal) Number");
                             }
@@ -271,7 +268,7 @@ public class CompareMetadata {
                         if (aemProjectName == null) {
                             metadataDifferences.add("Project Name Missing");
                         } else {
-                            String csvProjectName = assetFromCSV.getProjectName();
+                            String csvProjectName = "\"" + assetFromCSV.getProjectName() + "\"";
                             if (!aemProjectName.toString().equals(csvProjectName)) {
                                 metadataDifferences.add("Project Name");
                             }
@@ -281,7 +278,7 @@ public class CompareMetadata {
                         if (aemAssetType == null) {
                             metadataDifferences.add("Asset Type Missing");
                         } else {
-                            String csvAssetType = assetTypeMappings.get(assetFromCSV.getAssetType());
+                            String csvAssetType = "\"" + assetTypeMappings.get(assetFromCSV.getAssetType()) + "\"";
                             if (!aemAssetType.toString().equals(csvAssetType)) {
                                 metadataDifferences.add("Asset Type");
                             }
@@ -291,8 +288,9 @@ public class CompareMetadata {
                         if (aemKeywords == null) {
                             metadataDifferences.add("Keywords Missing");
                         } else {
-                            String csvKeywords = assetFromCSV.getKeywords().toString();
-                            if (!aemKeywords.toString().equals(csvKeywords)) {
+                            ArrayList<String> aemKeywordsAsArray = new ArrayList<>(Arrays.asList(aemKeywords.toString().replace("\"", "").split(", ")));
+                            ArrayList<String> csvKeywords = assetFromCSV.getKeywords();
+                            if (!aemKeywordsAsArray.equals(csvKeywords)) {
                                 metadataDifferences.add("Keywords");
                             }
                         }
@@ -301,8 +299,17 @@ public class CompareMetadata {
                         if (aemInMarket == null) {
                             metadataDifferences.add("In Market Missing");
                         } else {
-                            String csvInMarket = assetFromCSV.getInMarketDate();
-                            if (!aemInMarket.toString().equals(csvInMarket)) {
+                            String csvInMarket = "\"" + assetFromCSV.getInMarketDate() + "\"";
+                            try {
+                                SimpleDateFormat sd1 = new SimpleDateFormat("EEE MMM d yyyy hh:mm:ss 'GMT'Z");
+                                Date aemInMarketDate = sd1.parse(aemInMarket.toString().replaceAll("\"", ""));
+                                SimpleDateFormat sd2 = new SimpleDateFormat("d-MMM-yy");
+                                Date csvInMarketDate = sd2.parse(csvInMarket.replaceAll("\"", ""));
+                                if (!aemInMarketDate.equals(csvInMarketDate)) {
+                                    metadataDifferences.add("In Market");
+                                }
+                            } catch (Exception e) {
+                                System.out.println(e.toString());
                                 metadataDifferences.add("In Market");
                             }
                         }
@@ -311,7 +318,7 @@ public class CompareMetadata {
                         if (aemExpiryDate == null) {
                             metadataDifferences.add("Expiry Date Missing");
                         } else {
-                            String csvExpiryDate = assetFromCSV.getExpiryDate();
+                            String csvExpiryDate = "\"" + assetFromCSV.getExpiryDate() + "\"";
                             if (!aemExpiryDate.toString().equals(csvExpiryDate)) {
                                 metadataDifferences.add("Expiry Date");
                             }
@@ -326,7 +333,7 @@ public class CompareMetadata {
                             for (String channel : csvChannels) {
                                 mappedCSVChannels.add(channelMappings.get(channel));
                             }
-                            if (!aemChannels.toString().equals(mappedCSVChannels.toString())) {
+                            if (!aemChannels.toString().equals("\"" + mappedCSVChannels.toString() + "\"")) {
                                 metadataDifferences.add("Channel");
                             }
                         }
@@ -335,7 +342,7 @@ public class CompareMetadata {
                         if (aemBranchID == null) {
                             metadataDifferences.add("Branch ID Missing");
                         } else {
-                            String csvBranchID = assetFromCSV.getBranchID();
+                            String csvBranchID = "\"" + assetFromCSV.getBranchID() + "\"";
                             if (!aemBranchID.toString().equals(csvBranchID)) {
                                 metadataDifferences.add("Branch ID");
                             }
@@ -351,7 +358,7 @@ public class CompareMetadata {
                             } else {
                                 csvAgencyName = assetFromCSV.getAgencyNameOther();
                             }
-                            if (!aemAgencyName.toString().equals(csvAgencyName)) {
+                            if (!aemAgencyName.toString().equals("\"" + csvAgencyName + "\"")) {
                                 metadataDifferences.add("Agency Name");
                             }
                         }
@@ -360,7 +367,7 @@ public class CompareMetadata {
                         if (aemAgencyPID == null) {
                             metadataDifferences.add("Agency Project ID Missing");
                         } else {
-                            String csvAgencyPID = assetFromCSV.getAgencyProjectID();
+                            String csvAgencyPID = "\"" + assetFromCSV.getAgencyProjectID() + "\"";
                             if (!aemAgencyPID.toString().equals(csvAgencyPID)) {
                                 metadataDifferences.add("Agency Project ID");
                             }
@@ -370,7 +377,7 @@ public class CompareMetadata {
                         if (aemDescription == null) {
                             metadataDifferences.add("Description Missing");
                         } else {
-                            String csvDescription = assetFromCSV.getDescription();
+                            String csvDescription = "\"" + assetFromCSV.getDescription() + "\"";
                             if (!aemDescription.toString().equals(csvDescription)) {
                                 metadataDifferences.add("Description");
                             }
@@ -380,7 +387,7 @@ public class CompareMetadata {
                         if (aemLanguage == null) {
                             metadataDifferences.add("Language Missing");
                         } else {
-                            String csvLanguage = languageMappings.get(assetFromCSV.getLanguage());
+                            String csvLanguage = "\"" + languageMappings.get(assetFromCSV.getLanguage()) + "\"";
                             if (!aemLanguage.toString().equals(csvLanguage)) {
                                 metadataDifferences.add("Language");
                             }
@@ -388,15 +395,15 @@ public class CompareMetadata {
 
                         JsonElement aemLOBs = assetFromAEMMetadata.get("td:lob");
                         if (aemLOBs == null) {
-                            metadataDifferences.add("Lines Of Business Missing");
+                            metadataDifferences.add("Line Of Business Missing");
                         } else {
                             ArrayList<String> csvLOBs = assetFromCSV.getLOBs();
                             ArrayList<String> mappedLOBs = new ArrayList<>();
                             for (String lob : csvLOBs) {
                                 mappedLOBs.add(lobMappings.get(lob));
                             }
-                            if (!aemLOBs.toString().equals(mappedLOBs.toString())) {
-                                metadataDifferences.add("Lines Of Business");
+                            if (!aemLOBs.toString().equals("\"" + mappedLOBs.toString() + "\"")) {
+                                metadataDifferences.add("Line Of Business");
                             }
                         }
 
@@ -404,7 +411,7 @@ public class CompareMetadata {
                         if (aemPhotoSource == null) {
                             metadataDifferences.add("Photo Source Missing");
                         } else {
-                            String csvPhotoSource = assetFromCSV.getPhotoSource();
+                            String csvPhotoSource = "\"" + assetFromCSV.getPhotoSource() + "\"";
                             if (!aemPhotoSource.toString().equals(csvPhotoSource)) {
                                 metadataDifferences.add("Photo Source");
                             }
@@ -420,7 +427,7 @@ public class CompareMetadata {
                             } else {
                                 csvUsageRights = assetFromCSV.getUsageRightsOther();
                             }
-                            if (!aemUsageRights.toString().equals(csvUsageRights)) {
+                            if (!aemUsageRights.toString().equals("\"" + csvUsageRights + "\"")) {
                                 metadataDifferences.add("Usage Rights");
                             }
                         }
@@ -429,7 +436,7 @@ public class CompareMetadata {
                         if (aemApprovalStatus == null) {
                             metadataDifferences.add("Approval Status Missing");
                         } else {
-                            String csvApprovalStatus = approvalStatusMappings.get(assetFromCSV.getApprovalStatus());
+                            String csvApprovalStatus = "\"" + approvalStatusMappings.get(assetFromCSV.getApprovalStatus()) + "\"";
                             if (!aemApprovalStatus.toString().equals(csvApprovalStatus)) {
                                 metadataDifferences.add("Approval Status");
                             }
@@ -439,7 +446,7 @@ public class CompareMetadata {
                         if (aemImageWidth == null) {
                             metadataDifferences.add("Image Width Missing");
                         } else {
-                            String csvImageWidth = assetFromCSV.getImageWidth();
+                            String csvImageWidth = "\"" + assetFromCSV.getImageWidth() + "\"";
                             if (!aemImageWidth.toString().equals(csvImageWidth)) {
                                 metadataDifferences.add("Image Width");
                             }
@@ -449,7 +456,7 @@ public class CompareMetadata {
                         if (aemImageHeight == null) {
                             metadataDifferences.add("Image Height Missing");
                         } else {
-                            String csvImageHeight = assetFromCSV.getImageHeight();
+                            String csvImageHeight = "\"" + assetFromCSV.getImageHeight() + "\"";
                             if (!aemImageHeight.toString().equals(csvImageHeight)) {
                                 metadataDifferences.add("Image Height");
                             }
@@ -459,7 +466,7 @@ public class CompareMetadata {
                         if (aemResolutionHorizontal == null) {
                             metadataDifferences.add("Resolution (Horizontal) Missing");
                         } else {
-                            String csvResolutionHorizontal = assetFromCSV.getResolutionHorizontal();
+                            String csvResolutionHorizontal = "\"" + assetFromCSV.getResolutionHorizontal() + "\"";
                             if (!aemResolutionHorizontal.toString().equals(csvResolutionHorizontal)) {
                                 metadataDifferences.add("Resolution (Horizontal)");
                             }
@@ -469,7 +476,7 @@ public class CompareMetadata {
                         if (aemResolutionVertical == null) {
                             metadataDifferences.add("Resolution (Vertical) Missing");
                         } else {
-                            String csvResolutionVertical = assetFromCSV.getResolutionVertical();
+                            String csvResolutionVertical = "\"" + assetFromCSV.getResolutionVertical() + "\"";
                             if (!aemResolutionVertical.toString().equals(csvResolutionVertical)) {
                                 metadataDifferences.add("Resolution (Vertical)");
                             }
@@ -479,7 +486,7 @@ public class CompareMetadata {
                         if (aemPhotographerOrCreator == null) {
                             metadataDifferences.add("Photographer or Creator Missing");
                         } else {
-                            String csvPhotographerOrCreator = assetFromCSV.getPhotographer();
+                            String csvPhotographerOrCreator = "\"" + assetFromCSV.getPhotographer() + "\"";
                             if (!aemPhotographerOrCreator.toString().equals(csvPhotographerOrCreator)) {
                                 metadataDifferences.add("Photographer or Creator");
                             }
@@ -489,7 +496,7 @@ public class CompareMetadata {
                         if (aemDateFileCaptured == null) {
                             metadataDifferences.add("Date File Captured Missing");
                         } else {
-                            String csvDateFileCaptured = assetFromCSV.getDateFileCaptured();
+                            String csvDateFileCaptured = "\"" + assetFromCSV.getDateFileCaptured() + "\"";
                             if (!aemDateFileCaptured.toString().equals(csvDateFileCaptured)) {
                                 metadataDifferences.add("Date File Captured");
                             }
@@ -499,7 +506,7 @@ public class CompareMetadata {
                         if (aemFileFormat == null) {
                             metadataDifferences.add("File Format Missing");
                         } else {
-                            String csvFileFormat = assetFromCSV.getFileFormat();
+                            String csvFileFormat = "\"" + assetFromCSV.getFileFormat() + "\"";
                             if (!aemFileFormat.toString().equals(csvFileFormat)) {
                                 metadataDifferences.add("File Format");
                             }
@@ -509,7 +516,7 @@ public class CompareMetadata {
                         if (aemFileSize == null) {
                             metadataDifferences.add("File Size Missing");
                         } else {
-                            String csvFileSize = assetFromCSV.getFileSize();
+                            String csvFileSize = "\"" + assetFromCSV.getFileSize() + "\"";
                             if (!aemFileSize.toString().equals(csvFileSize)) {
                                 metadataDifferences.add("File Size");
                             }
@@ -519,7 +526,7 @@ public class CompareMetadata {
                         if (aemDateRecordLastModified == null) {
                             metadataDifferences.add("Date Record Last Modified Missing");
                         } else {
-                            String csvDateRecordLastModified = assetFromCSV.getDateRecordLastModified();
+                            String csvDateRecordLastModified = "\"" + assetFromCSV.getDateRecordLastModified() + "\"";
                             if (!aemDateRecordLastModified.toString().equals(csvDateRecordLastModified)) {
                                 metadataDifferences.add("Date Record Last Modified");
                             }
@@ -529,7 +536,7 @@ public class CompareMetadata {
                         if (aemDateFileCataloged == null) {
                             metadataDifferences.add("Date File Cataloged Missing");
                         } else {
-                            String csvDateFileCataloged = assetFromCSV.getDateFileCataloged();
+                            String csvDateFileCataloged = "\"" + assetFromCSV.getDateFileCataloged() + "\"";
                             if (!aemDateFileCataloged.toString().equals(csvDateFileCataloged)) {
                                 metadataDifferences.add("Date File Cataloged");
                             }
@@ -539,7 +546,7 @@ public class CompareMetadata {
                         if (aemCatalogedBy == null) {
                             metadataDifferences.add("Cataloged By Missing");
                         } else {
-                            String csvCatalogedBy = assetFromCSV.getCatalogedBy();
+                            String csvCatalogedBy = "\"" + assetFromCSV.getCatalogedBy() + "\"";
                             if (!aemCatalogedBy.toString().equals(csvCatalogedBy)) {
                                 metadataDifferences.add("Cataloged By");
                             }
@@ -555,9 +562,6 @@ public class CompareMetadata {
 
             }
         }
-
-
-
 
         return pathsAndDifferences;
 
