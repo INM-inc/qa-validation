@@ -26,7 +26,7 @@ public class WriteResultsToExcel {
         Font headerFont = workbook.createFont();
         headerFont.setBold(true);
         headerFont.setFontHeightInPoints((short) 14);
-        headerFont.setColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
 
         // Create a CellStyle with the font.
         CellStyle headerCellStyle = workbook.createCellStyle();

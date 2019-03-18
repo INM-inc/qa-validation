@@ -22,7 +22,7 @@ public class RetrieveMetadataCSV {
             while ((line = br.readLine()) != null) {
 
                 String[] lines = line.split("\\t");
-                if (counter > 0 && !lines[64].equalsIgnoreCase("Archive") && !lines[5].equalsIgnoreCase("Rejected") && lines[19].contains("$Containers:")) {
+                if (counter > 0 && !lines[64].equalsIgnoreCase("Archived") && !lines[5].equalsIgnoreCase("Rejected") && lines[19].contains("$Containers:")) {
                     Asset asset = new Asset();
 
                     // Initial Keywords, LOBs, Channels and Path.
@@ -33,6 +33,7 @@ public class RetrieveMetadataCSV {
 
                     // Additions to Initial Keywords, LOBs, Channels and Path based on Taxonomy Tab 2.
                     String containerField = TaxonomyChanges.getCorrectContainer(lines[19]);
+//                    System.out.println(containerField);
                     String level4 = TaxonomyChanges.getContainerLevel4(containerField);
                     if (!level4.equals("NO_LEVEL_4")) {
 

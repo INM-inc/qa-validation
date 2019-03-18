@@ -9,6 +9,7 @@ import org.deloitte.td.helpers.CompareMetadata;
 import org.deloitte.td.helpers.RetrieveMetadataAEM;
 import org.deloitte.td.helpers.RetrieveMetadataCSV;
 import org.deloitte.td.helpers.AddShaToMetadataCSV;
+import org.deloitte.td.helpers.WriteResultsToExcel;
 import org.deloitte.td.model.Asset;
 import org.deloitte.td.utils.AemTarget;
 
@@ -19,25 +20,13 @@ public class Main {
 
   public static void main(String[] args) {
 
+//    AemTarget aem = new AemTarget();
+//    HashMap<String, HashMap<String, String>> fromAssetsRenamed = aem.run();
+//    ArrayList<Asset> fromCSVWithSha = AddShaToMetadataCSV.addShaToMetadataCSV(fromCSV, fromAssetsRenamed);
     ArrayList<Asset> fromCSV = RetrieveMetadataCSV.retrieveFromCSV();
-    AemTarget aem = new AemTarget();
-    HashMap<String, HashMap<String, String>> fromAssetsRenamed = aem.run();
-    ArrayList<Asset> fromCSVWithSha = AddShaToMetadataCSV.addShaToMetadataCSV(fromCSV, fromAssetsRenamed);
-    HashMap<String, JsonObject> fromAEM = RetrieveMetadataAEM.retrieveFromAEM();
-    HashMap<String, String> filesAndDifferences = CompareMetadata.checkForDifferences(fromCSVWithSha, fromAEM);
-//    for (Map.Entry<String, JsonObject> aemAsset : fromAEM.entrySet()) {
-//      System.out.println(aemAsset.getKey());
-//      System.out.println(aemAsset.getValue());
-//      System.out.println("...................");
-//    }
-//    for (Map.Entry<String, HashMap<String, String>> shaAndFileMetadata : shaAndFilesMetadata.entrySet()) {
-//      System.out.println(shaAndFileMetadata.getKey());
-//      for (Map.Entry<String, String> fileMetadata : shaAndFileMetadata.getValue().entrySet()) {
-//        System.out.println(fileMetadata);
-//      }
-//      System.out.println("........");
-//    }
-//    WriteResultsToExcel.writeResultsToExcel(filesAndDifferences);
+    HashMap<String, JsonObject> fromAEM = RetrieveMetadataAEM.retrieveFromAEM(fromCSV);
+    HashMap<String, String> filesAndDifferences = CompareMetadata.checkForDifferences(fromCSV, fromAEM);
+    WriteResultsToExcel.writeResultsToExcel(filesAndDifferences);
 
   }
 }

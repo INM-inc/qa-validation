@@ -10,7 +10,7 @@ public class TaxonomyChanges {
 
         containerField = containerField.split("\\$Containers:")[1];
         if (containerField.contains("MBNA")) {
-            return "MBNA";
+            return "personal-banking/credit-cards/MBNA";
         }
         if (containerField.contains("|")) {
             String[] tokens = containerField.split("\\|");
