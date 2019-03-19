@@ -12,6 +12,8 @@ public class WriteResultsToExcel {
 
     public static void writeResultsToExcel (HashMap<String, String> filesAndDifferences) {
 
+        System.out.println("Start of writing results to Excel.");
+
         // Location and Column Names.
         String excelLocation = "/Users/averzea/Downloads/qa_results.xlsx";
         String[] excelColumns = {"File Path in AEM", "Metadata Fields Different"};
@@ -64,6 +66,8 @@ public class WriteResultsToExcel {
         } catch (IOException e) {
             System.out.println("Failed: " + e.toString());
         }
+
+        System.out.println("Start of writing results to Excel.");
 
     }
 

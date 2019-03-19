@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import org.deloitte.td.model.Asset;
 
@@ -17,24 +18,27 @@ public class RetrieveMetadataCSV {
         BufferedReader br = null;
         String line = "";
         int counter = 0;
+
+        System.out.println("Start of CSV metadata retrieval.");
+
         try {
-            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/source3.csv"));
+//            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/sources/source_MBNA_first_1000.csv"));
+            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/sources/source_TD_DAM_test.csv"));
             while ((line = br.readLine()) != null) {
 
                 String[] lines = line.split("\\t");
-                if (counter > 0 && !lines[64].equalsIgnoreCase("Archived") && !lines[5].equalsIgnoreCase("Rejected") && lines[19].contains("$Containers:")) {
+                Asset asset = new Asset();
+                if (counter > 0 && lines.length > 85 && !lines[64].equalsIgnoreCase("Archived") && !lines[5].equalsIgnoreCase("Rejected") && lines[19].contains("$Containers:")) {
 
-                    Asset asset = new Asset();
-
-                    // Initial Keywords, LOBs, Channels and Path.
+                    // Initial Keywords, LOBs and Channels.
                     ArrayList<String> keywords = new ArrayList<>(Arrays.asList(lines[79].replace("\"", "").split(", ")));
                     ArrayList<String> lobs = new ArrayList<>(Arrays.asList(lines[1].split(", ")));
                     ArrayList<String> channels = new ArrayList<>(Arrays.asList(lines[34].split(", ")));
-                    asset.setTaxonomy2NewPath("NO_NEW_PATH");
 
-                    // Additions to Initial Keywords, LOBs, Channels and Path based on Taxonomy Tab 2.
-                    String containerField = TaxonomyChanges.getCorrectContainer(lines[19]);
-                    String level4 = TaxonomyChanges.getContainerLevel4(containerField);
+                    // Additions to Initial Keywords, LOBs and Channels based on Taxonomy Tab 2.
+                    HashMap<String, String> level4AndCorrectPath = TaxonomyChanges.getLevel4AndCorrectPath(lines[19]);
+                    String level4 = level4AndCorrectPath.get("level4");
+                    String correctPath = level4AndCorrectPath.get("correctPath");
                     if (!level4.equals("NO_LEVEL_4")) {
 
                         ArrayList<String> keywordAdditions = TaxonomyChanges.addKeywords(level4);
@@ -45,9 +49,6 @@ public class RetrieveMetadataCSV {
 
                         ArrayList<String> channelAdditions = TaxonomyChanges.addChannels(level4);
                         channels.addAll(channelAdditions);
-
-                        String taxonomy2NewPath = TaxonomyChanges.changePath(level4);
-                        asset.setTaxonomy2NewPath(taxonomy2NewPath);
 
                     }
 
@@ -65,8 +66,8 @@ public class RetrieveMetadataCSV {
                     asset.setUsageRightsOther(lines[32]);
                     asset.setAgencyName(lines[30]);
                     asset.setAgencyNameOther(lines[76]);
-                    asset.setContainer(containerField);
-                    asset.setFileName(lines[8]);
+                    asset.setContainer(correctPath);
+                    asset.setFileName(lines[8].replace(" ", "%20"));
                     asset.setAgencyProjectID(lines[67]);
                     asset.setActivityProposalNumber(lines[9]);
                     asset.setProjectName(lines[56]);
@@ -89,11 +90,20 @@ public class RetrieveMetadataCSV {
                     asset.setDateRecordLastModified(lines[21]);
                     asset.setDateFileCataloged(lines[22]);
                     asset.setCatalogedBy(lines[16]);
-
+                    asset.setCorrupted(false);
+                    asset.setCSVLine(counter + 1);
+                    if (!correctPath.equals("IGNORE")) {
+                        records.add(asset);
+                    }
+                } else if (lines.length <= 85) {
+                    asset.setCorrupted(true);
+                    asset.setCSVLine(counter + 1);
                     records.add(asset);
                 }
+
                 counter++;
             }
+
             br.close();
 
         } catch (FileNotFoundException e) {
@@ -101,6 +111,9 @@ public class RetrieveMetadataCSV {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.out.println("End of CSV metadata retrieval.");
+
         return records;
     }
 

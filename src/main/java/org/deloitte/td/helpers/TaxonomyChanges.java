@@ -1,5 +1,6 @@
 package org.deloitte.td.helpers;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,7 +40,7 @@ public class TaxonomyChanges {
         if (containerField.contains("MBNA")) {
             pathStructure = "personal-banking/credit-cards/MBNA";
         } else if (containerField.contains("TD:TD (Can):")) {
-            containerField = containerField.split("TD:TD (Can):")[1];
+            containerField = containerField.split("TD:TD \\(Can\\):")[1];
             pathStructure = containerMappings.get(containerField) == null ? "IGNORE" : containerMappings.get(containerField);
         } else {
             pathStructure = "IGNORE";
@@ -48,8 +49,10 @@ public class TaxonomyChanges {
         return pathStructure;
     }
 
-    public static String getCorrectContainer(String containerField) {
+    public static HashMap<String, String> getLevel4AndCorrectPath(String containerField) {
 
+        String level4 = "";
+        HashMap<String, String> level4AndCorrectPath = new HashMap<>();
         if (containerField.contains("|")) {
             String[] fields = containerField.split("\\|");
             for (String field : fields) {
@@ -57,25 +60,22 @@ public class TaxonomyChanges {
                     containerField = field;
                 }
             }
-            return getPathFromContainer(containerField);
-        } else {
-            return getPathFromContainer(containerField);
         }
 
-    }
-
-    /*
-     * Structure of the Corrected Container: $Containers:TD:TD (Can):Credit Cards:EVEREST DIGITAL:...
-     * Level 4 is 5th element.
-     */
-    public static String getContainerLevel4(String containerField) {
-
+        /*
+         * Structure of the Corrected Container: $Containers:TD:TD (Can):Credit Cards:EVEREST DIGITAL:...
+         * Level 4 is 5th element.
+         */
         String[] containerLevels = containerField.split(":");
-        if (containerLevels.length < 3) {
-            return "NO_LEVEL_4";
+        if (containerLevels.length < 5) {
+            level4 = "NO_LEVEL_4";
         } else {
-            return containerLevels[3];
+            level4 = containerLevels[4];
         }
+        level4AndCorrectPath.put("level4", level4);
+        level4AndCorrectPath.put("correctPath", getPathFromContainer(containerField));
+
+        return level4AndCorrectPath;
 
     }
 
@@ -86,9 +86,13 @@ public class TaxonomyChanges {
         taxonomy2KeysAndKeywords.put("Everest Digital", "Everest Digital");
         taxonomy2KeysAndKeywords.put("PERSONAL/TDCT CARDS", "Personal/TDCT Cards");
         taxonomy2KeysAndKeywords.put("Brand Production", "Production");
+        taxonomy2KeysAndKeywords.put("Travel Insurance Snowbirds", "Snowbirds");
         taxonomy2KeysAndKeywords.put("Insurance Content", "Content");
         taxonomy2KeysAndKeywords.put("Insurance Production", "Production");
         taxonomy2KeysAndKeywords.put("CHEQUING & SAVING EDB", "Savings");
+        taxonomy2KeysAndKeywords.put("CROSS BORDER BANKING EDB", "Cross border banking EDB");
+        taxonomy2KeysAndKeywords.put("NEW TO CANADA EDB", "New to Canada");
+        taxonomy2KeysAndKeywords.put("NEW TO BANK EDB", "New to Bank");
         taxonomy2KeysAndKeywords.put("PERSONAL BANKING PRODUCTION", "Production");
         taxonomy2KeysAndKeywords.put("Rate Sale", "Rate Sale");
         taxonomy2KeysAndKeywords.put("Content Marketing", "Content Marketing");
@@ -96,7 +100,7 @@ public class TaxonomyChanges {
         taxonomy2KeysAndKeywords.put("Marketing Express", "Marketing Express");
         taxonomy2KeysAndKeywords.put("Optimization / Relocation", "Optimization / Reloccation");
         taxonomy2KeysAndKeywords.put("Real-time Marketing", "Real-time Marketing");
-        taxonomy2KeysAndKeywords.put("Retail", "Retail");
+        taxonomy2KeysAndKeywords.put("TD Securities Production", "TD Securities");
         taxonomy2KeysAndKeywords.put("Financial Planning", "Financial Planning");
         taxonomy2KeysAndKeywords.put("TD Wealth Templates", "TD Wealth Templates");
         taxonomy2KeysAndKeywords.put("All Windows 2", "Window");
@@ -104,6 +108,8 @@ public class TaxonomyChanges {
         taxonomy2KeysAndKeywords.put("Window 1 - DI", "Window");
         taxonomy2KeysAndKeywords.put("Window 1 - PS&I", "Window");
         taxonomy2KeysAndKeywords.put("Window 2 - RESL", "Window");
+        taxonomy2KeysAndKeywords.put("Digital Banking", "Digital Banking");
+        taxonomy2KeysAndKeywords.put("Digital Production", "Digital Banking");
         for (Map.Entry<String, String> taxonomy2KeyAndKeyword : taxonomy2KeysAndKeywords.entrySet()) {
             if (level4.equalsIgnoreCase(taxonomy2KeyAndKeyword.getKey())) {
                 taxonomy2KeywordsToAdd.add(taxonomy2KeyAndKeyword.getValue());
@@ -134,6 +140,9 @@ public class TaxonomyChanges {
         ArrayList<String> taxonomy2ChannelsToAdd = new ArrayList<>();
         HashMap<String, String> taxonomy2KeysAndChannels = new HashMap<>();
         taxonomy2KeysAndChannels.put("Direct Investing", "Direct Investment");
+        taxonomy2KeysAndChannels.put("Direct Channel Innovation & Functional", "Direct Mail");
+        taxonomy2KeysAndChannels.put("Digital Banking", "Digital");
+        taxonomy2KeysAndChannels.put("Digital Production", "Digital");
         for (Map.Entry<String, String> taxonomy2KeyAndChannel : taxonomy2KeysAndChannels.entrySet()) {
             if (level4.equalsIgnoreCase(taxonomy2KeyAndChannel.getKey())) {
                 taxonomy2ChannelsToAdd.add(taxonomy2KeyAndChannel.getValue());

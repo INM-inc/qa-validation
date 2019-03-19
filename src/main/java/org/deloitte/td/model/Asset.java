@@ -36,8 +36,9 @@ public class Asset {
     private String catalogedBy;
     private String fileName;
     private String container;
-    private String taxonomy2NewPath;
     private String sha;
+    private boolean corrupted;
+    private int csvLine;
 
     public String getActivityProposalNumber() {
         return activityProposalNumber;
@@ -271,14 +272,6 @@ public class Asset {
         this.catalogedBy = catalogedBy;
     }
 
-    public String getTaxonomy2NewPath() {
-        return taxonomy2NewPath;
-    }
-
-    public void setTaxonomy2NewPath(String taxonomy2NewPath) {
-        this.taxonomy2NewPath = taxonomy2NewPath;
-    }
-
     public String getContainer() {
         return container;
     }
@@ -301,6 +294,22 @@ public class Asset {
 
     public void setSha(String sha) {
         this.sha = sha;
+    }
+
+    public boolean getCorrupted() {
+        return corrupted;
+    }
+
+    public void setCorrupted(boolean corrupted) {
+        this.corrupted = corrupted;
+    }
+
+    public int getCSVLine() {
+        return csvLine;
+    }
+
+    public void setCSVLine(int csvLine) {
+        this.csvLine = csvLine;
     }
 
 }

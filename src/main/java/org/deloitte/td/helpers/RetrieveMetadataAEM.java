@@ -22,82 +22,89 @@ public class RetrieveMetadataAEM {
         HashMap<String, JsonObject> aemAllAssetsMetadata = new HashMap<>();
         JsonObject aemAssetMetadata = new JsonObject();
 
+        System.out.println("Start of metadata importing from AEM.");
+
         for (Asset assetFromCSV : fromCSV) {
 
-            try {
+            if (!assetFromCSV.getCorrupted()) {
 
-                Authenticator.setDefault(new Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication("jimmyhernandez", "P@ssw0rd123!".toCharArray());
-                    }
-                });
-
-                // Create a trust manager that does not validate certificate chains
-                TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
-                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                        return null;
-                    }
-
-                    public void checkClientTrusted(X509Certificate[] certs, String authType) {
-                    }
-
-                    public void checkServerTrusted(X509Certificate[] certs, String authType) {
-                    }
-                }};
-
-                // Install the all-trusting trust manager
-                SSLContext sc = null;
                 try {
-                    sc = SSLContext.getInstance("SSL");
-                    sc.init(null, trustAllCerts, new java.security.SecureRandom());
-                    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                } catch (KeyManagementException e) {
-                    e.printStackTrace();
-                }
 
-                // Create all-trusting host name verifier
-                HostnameVerifier allHostsValid = new HostnameVerifier() {
-                    public boolean verify(String hostname, SSLSession session) {
-                        return true;
+                    Authenticator.setDefault(new Authenticator() {
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication("jimmyhernandez", "P@ssw0rd123!".toCharArray());
+                        }
+                    });
+
+                    // Create a trust manager that does not validate certificate chains
+                    TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return null;
+                        }
+
+                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                        }
+
+                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                        }
+                    }};
+
+                    // Install the all-trusting trust manager
+                    SSLContext sc = null;
+                    try {
+                        sc = SSLContext.getInstance("SSL");
+                        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+                        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    } catch (KeyManagementException e) {
+                        e.printStackTrace();
                     }
-                };
 
-                // Install the all-trusting host verifier
-                HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+                    // Create all-trusting host name verifier
+                    HostnameVerifier allHostsValid = new HostnameVerifier() {
+                        public boolean verify(String hostname, SSLSession session) {
+                            return true;
+                        }
+                    };
 
-                URL url = new URL(
-                        "https://13.88.236.91/content/dam/Canada/" + assetFromCSV.getContainer() + "/" + assetFromCSV.getFileName() +"/jcr:content/metadata.json");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    // Install the all-trusting host verifier
+                    HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
 
-                conn.setRequestMethod("GET");
-                int code = conn.getResponseCode();
+                    URL url = new URL(
+                            "https://13.88.236.91/content/dam/Canada/" + assetFromCSV.getContainer() + "/" + assetFromCSV.getFileName() + "/jcr:content/metadata.json");
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-                System.out.println(code);
+                    conn.setRequestMethod("GET");
+                    int code = conn.getResponseCode();
 
-                StringBuilder result = new StringBuilder();
-                BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    System.out.println(code + " : " + assetFromCSV.getContainer() + "/" + assetFromCSV.getFileName());
 
-                String line;
+                    StringBuilder result = new StringBuilder();
+                    BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
-                while ((line = rd.readLine()) != null) {
-                    result.append(line);
+                    String line;
+
+                    while ((line = rd.readLine()) != null) {
+                        result.append(line);
+                    }
+
+                    rd.close();
+
+                    JsonParser jsonParser = new JsonParser();
+                    aemAssetMetadata = (JsonObject) jsonParser.parse(result.toString());
+                    aemAssetMetadata.addProperty("outcome", "success");
+                    aemAllAssetsMetadata.put(assetFromCSV.getContainer() + "/" + assetFromCSV.getFileName(), aemAssetMetadata);
+
+                } catch (Exception e) {
+                    System.out.println(e.getMessage() + " : " + assetFromCSV.getContainer() + "/" + assetFromCSV.getFileName());
+                    aemAssetMetadata.addProperty("outcome", "fail");
+                    aemAllAssetsMetadata.put(assetFromCSV.getContainer() + "/" + assetFromCSV.getFileName(), aemAssetMetadata);
                 }
-
-                rd.close();
-
-                JsonParser jsonParser = new JsonParser();
-                aemAssetMetadata = (JsonObject) jsonParser.parse(result.toString());
-                aemAssetMetadata.addProperty("outcome", "success");
-                aemAllAssetsMetadata.put(assetFromCSV.getContainer() + "/" + assetFromCSV.getFileName(), aemAssetMetadata);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                aemAssetMetadata.addProperty("outcome", "fail");
-                aemAllAssetsMetadata.put(assetFromCSV.getContainer() + "/" + assetFromCSV.getFileName(), aemAssetMetadata);
             }
         }
+
+        System.out.println("End of metadata importing from AEM.");
 
         return aemAllAssetsMetadata;
     }
