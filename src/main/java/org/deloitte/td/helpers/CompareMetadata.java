@@ -377,7 +377,7 @@ public class CompareMetadata {
                         if (aemDescription == null) {
                             metadataDifferences.add("Description Missing");
                         } else {
-                            String csvDescription = "\"" + assetFromCSV.getDescription() + "\"";
+                            String csvDescription = "\"" + assetFromCSV.getDescription() + " \"";
                             if (!aemDescription.toString().equals(csvDescription)) {
                                 metadataDifferences.add("Description");
                             }
@@ -388,7 +388,7 @@ public class CompareMetadata {
                             metadataDifferences.add("Language Missing");
                         } else {
                             String csvLanguage = "\"" + languageMappings.get(assetFromCSV.getLanguage()) + "\"";
-                            if (!aemLanguage.toString().equals(csvLanguage)) {
+                            if (!aemLanguage.toString().equalsIgnoreCase(csvLanguage)) {
                                 metadataDifferences.add("Language");
                             }
                         }
@@ -427,6 +427,9 @@ public class CompareMetadata {
                             } else {
                                 csvUsageRights = assetFromCSV.getUsageRightsOther();
                             }
+                            System.out.println(aemUsageRights);
+                            System.out.println(csvUsageRights);
+                            System.out.println(".........");
                             if (!aemUsageRights.toString().equals("\"" + csvUsageRights + "\"")) {
                                 metadataDifferences.add("Usage Rights");
                             }
@@ -496,8 +499,16 @@ public class CompareMetadata {
                         if (aemDateFileCaptured == null) {
                             metadataDifferences.add("Date File Captured Missing");
                         } else {
-                            String csvDateFileCaptured = "\"" + assetFromCSV.getDateFileCaptured() + "\"";
-                            if (!aemDateFileCaptured.toString().equals(csvDateFileCaptured)) {
+                            String csvDateFileCaptured = assetFromCSV.getDateFileCaptured();
+                            try {
+                                SimpleDateFormat sd7 = new SimpleDateFormat("EEE MMM d yyyy hh:mm:ss 'GMT'Z");
+                                Date aemDateFileCapturedDate = sd7.parse(aemDateFileCaptured.toString().replaceAll("\"", ""));
+                                SimpleDateFormat sd8 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+                                Date csvDateFileCapturedDate = sd8.parse(csvDateFileCaptured);
+                                if (!aemDateFileCapturedDate.equals(csvDateFileCapturedDate)) {
+                                    metadataDifferences.add("Date File Captured");
+                                }
+                            } catch (Exception e) {
                                 metadataDifferences.add("Date File Captured");
                             }
                         }
@@ -516,7 +527,7 @@ public class CompareMetadata {
                         if (aemFileSize == null) {
                             metadataDifferences.add("File Size Missing");
                         } else {
-                            String csvFileSize = "\"" + assetFromCSV.getFileSize() + "\"";
+                            String csvFileSize = assetFromCSV.getFileSize();
                             if (!aemFileSize.toString().equals(csvFileSize)) {
                                 metadataDifferences.add("File Size");
                             }
@@ -526,8 +537,16 @@ public class CompareMetadata {
                         if (aemDateRecordLastModified == null) {
                             metadataDifferences.add("Date Record Last Modified Missing");
                         } else {
-                            String csvDateRecordLastModified = "\"" + assetFromCSV.getDateRecordLastModified() + "\"";
-                            if (!aemDateRecordLastModified.toString().equals(csvDateRecordLastModified)) {
+                            String csvDateRecordLastModified = assetFromCSV.getDateRecordLastModified();
+                            try {
+                                SimpleDateFormat sd5 = new SimpleDateFormat("EEE MMM d yyyy hh:mm:ss 'GMT'Z");
+                                Date aemDateRecordLastModifiedDate = sd5.parse(aemDateRecordLastModified.toString().replaceAll("\"", ""));
+                                SimpleDateFormat sd6 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+                                Date csvDateRecordLastModifiedDate = sd6.parse(csvDateRecordLastModified);
+                                if (!aemDateRecordLastModifiedDate.equals(csvDateRecordLastModifiedDate)) {
+                                    metadataDifferences.add("Date Record Last Modified");
+                                }
+                            } catch (Exception e) {
                                 metadataDifferences.add("Date Record Last Modified");
                             }
                         }
@@ -536,8 +555,16 @@ public class CompareMetadata {
                         if (aemDateFileCataloged == null) {
                             metadataDifferences.add("Date File Cataloged Missing");
                         } else {
-                            String csvDateFileCataloged = "\"" + assetFromCSV.getDateFileCataloged() + "\"";
-                            if (!aemDateFileCataloged.toString().equals(csvDateFileCataloged)) {
+                            String csvDateFileCataloged = assetFromCSV.getDateFileCataloged();
+                            try {
+                                SimpleDateFormat sd3 = new SimpleDateFormat("EEE MMM d yyyy hh:mm:ss 'GMT'Z");
+                                Date aemDateFileCatalogedDate = sd3.parse(aemDateFileCataloged.toString().replaceAll("\"", ""));
+                                SimpleDateFormat sd4 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+                                Date csvDateFileCatalogedDate = sd4.parse(csvDateFileCataloged);
+                                if (!aemDateFileCatalogedDate.equals(csvDateFileCatalogedDate)) {
+                                    metadataDifferences.add("Date File Cataloged");
+                                }
+                            } catch (Exception e) {
                                 metadataDifferences.add("Date File Cataloged");
                             }
                         }
