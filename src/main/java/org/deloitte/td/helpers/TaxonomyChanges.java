@@ -1,30 +1,66 @@
 package org.deloitte.td.helpers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TaxonomyChanges {
 
-    public static String getCorrectContainer(String containerField) {
+    public static HashMap<String, String> getContainerMappings() {
+
+        HashMap<String, String> containerMappings = new HashMap<>();
+        containerMappings.put("Corporate", "Brand/Corporate");
+        containerMappings.put("Corporate:Corporate", "Brand/Corporate");
+        containerMappings.put("Credit Cards", "personal-banking/credit-cards");
+        containerMappings.put("Credit Cards:Affiliate MBNA", "personal-banking/credit-cards/MBNA");
+        containerMappings.put("Credit Cards:Affinity Sports MBNA", "personal-banking/credit-cards/MBNA");
+        containerMappings.put("Credit Cards:Credit Cards Production", "personal-banking/credit-cards");
+        containerMappings.put("Brand", "Brand");
+        containerMappings.put("Personal Banking", "personal-banking");
+        containerMappings.put("Personal Lending", "personal-banking/secured-loans/personal-loans");
+        containerMappings.put("RESL", "personal-banking/Mortgages");
+        containerMappings.put("Small Business", "small-business-banking");
+        containerMappings.put("TD-Auto-Finance", "personal-banking/secured-loans/auto-finance");
+        containerMappings.put("TD Securities", "wholesale-banking");
+        containerMappings.put("Wealth", "Wealth");
+        containerMappings.put("Digital Banking", "personal-banking/service-options");
+
+        return containerMappings;
+
+    }
+
+    public static String getPathFromContainer(String containerField) {
+
+        HashMap<String, String> containerMappings = getContainerMappings();
+        String pathStructure = "";
 
         containerField = containerField.split("\\$Containers:")[1];
         if (containerField.contains("MBNA")) {
-            return "personal-banking/credit-cards/MBNA";
+            pathStructure = "personal-banking/credit-cards/MBNA";
+        } else if (containerField.contains("TD:TD (Can):")) {
+            containerField = containerField.split("TD:TD (Can):")[1];
+            pathStructure = containerMappings.get(containerField) == null ? "IGNORE" : containerMappings.get(containerField);
+        } else {
+            pathStructure = "IGNORE";
         }
+
+        return pathStructure;
+    }
+
+    public static String getCorrectContainer(String containerField) {
+
         if (containerField.contains("|")) {
-            String[] tokens = containerField.split("\\|");
-            int index = 0;
-            int elementLength = tokens[0].length();
-            for (int i = 1; i < tokens.length; i++) {
-                if (tokens[i].length() > elementLength) {
-                    index = i;
-                    elementLength = tokens[i].length();
+            String[] fields = containerField.split("\\|");
+            for (String field : fields) {
+                if (field.contains("$Containers:")) {
+                    containerField = field;
                 }
             }
-            containerField = tokens[index];
+            return getPathFromContainer(containerField);
+        } else {
+            return getPathFromContainer(containerField);
         }
-        return containerField;
 
     }
 
@@ -35,10 +71,10 @@ public class TaxonomyChanges {
     public static String getContainerLevel4(String containerField) {
 
         String[] containerLevels = containerField.split(":");
-        if (containerLevels.length < 4) {
+        if (containerLevels.length < 3) {
             return "NO_LEVEL_4";
         } else {
-            return containerLevels[4];
+            return containerLevels[3];
         }
 
     }

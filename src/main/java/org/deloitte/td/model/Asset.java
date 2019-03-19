@@ -11,7 +11,7 @@ public class Asset {
     private ArrayList<String> keywords = new ArrayList<>();
     private String inMarketDate;
     private String expiryDate;
-    private ArrayList<String> channels;
+    private ArrayList<String> channels = new ArrayList<>();
     private String branchID;
     private String agencyName;
     private String agencyNameOther;

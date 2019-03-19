@@ -18,7 +18,7 @@ public class RetrieveMetadataCSV {
         String line = "";
         int counter = 0;
         try {
-            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/source2.csv"));
+            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/source3.csv"));
             while ((line = br.readLine()) != null) {
 
                 String[] lines = line.split("\\t");
@@ -50,6 +50,13 @@ public class RetrieveMetadataCSV {
                         asset.setTaxonomy2NewPath(taxonomy2NewPath);
 
                     }
+
+                    // Eliminate empty string values as they bias the result.
+                    keywords.removeAll(Arrays.asList("", null));
+                    lobs.removeAll(Arrays.asList("", null));
+                    channels.removeAll(Arrays.asList("", null));
+
+                    // Set the corrected ArrayLists
                     asset.setKeywords(keywords);
                     asset.setLOBs(lobs);
                     asset.setChannels(channels);
@@ -71,8 +78,8 @@ public class RetrieveMetadataCSV {
                     asset.setLanguage(lines[62]);
                     asset.setPhotoSource(lines[61]);
                     asset.setApprovalStatus(lines[5]);
-                    asset.setImageWidth(lines[29]);
-                    asset.setImageHeight(lines[28]);
+                    asset.setImageWidth(lines[3]);
+                    asset.setImageHeight(lines[54]);
                     asset.setResolutionVertical(lines[31]);
                     asset.setResolutionHorizontal(lines[17]);
                     asset.setPhotographer(lines[45]);
