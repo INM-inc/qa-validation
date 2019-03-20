@@ -67,7 +67,7 @@ public class WriteResultsToExcel {
             System.out.println("Failed: " + e.toString());
         }
 
-        System.out.println("Start of writing results to Excel.");
+        System.out.println("End of writing results to Excel.");
 
     }
 

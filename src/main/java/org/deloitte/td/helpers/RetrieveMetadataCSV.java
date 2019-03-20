@@ -23,7 +23,7 @@ public class RetrieveMetadataCSV {
 
         try {
 //            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/sources/source_MBNA_first_1000.csv"));
-            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/sources/source_TD_DAM_test.csv"));
+            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/sources/source_TD_DAM_test_2.csv"));
             while ((line = br.readLine()) != null) {
 
                 String[] lines = line.split("\\t");

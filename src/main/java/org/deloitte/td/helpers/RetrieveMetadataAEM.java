@@ -91,10 +91,15 @@ public class RetrieveMetadataAEM {
 
                     rd.close();
 
-                    JsonParser jsonParser = new JsonParser();
-                    aemAssetMetadata = (JsonObject) jsonParser.parse(result.toString());
-                    aemAssetMetadata.addProperty("outcome", "success");
-                    aemAllAssetsMetadata.put(assetFromCSV.getContainer() + "/" + assetFromCSV.getFileName(), aemAssetMetadata);
+                    if (code == 200) {
+                        JsonParser jsonParser = new JsonParser();
+                        aemAssetMetadata = (JsonObject) jsonParser.parse(result.toString());
+                        aemAssetMetadata.addProperty("outcome", "success");
+                        aemAllAssetsMetadata.put(assetFromCSV.getContainer() + "/" + assetFromCSV.getFileName(), aemAssetMetadata);
+                    } else {
+                        aemAssetMetadata.addProperty("outcome", "fail");
+                        aemAllAssetsMetadata.put(assetFromCSV.getContainer() + "/" + assetFromCSV.getFileName(), aemAssetMetadata);
+                    }
 
                 } catch (Exception e) {
                     System.out.println(e.getMessage() + " : " + assetFromCSV.getContainer() + "/" + assetFromCSV.getFileName());

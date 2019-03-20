@@ -1,8 +1,6 @@
 package org.deloitte.td.helpers;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,70 +10,211 @@ public class TaxonomyChanges {
 
         HashMap<String, String> containerMappings = new HashMap<>();
         containerMappings.put("Corporate", "Brand/Corporate");
+        containerMappings.put("Corporate:Human Resources", "Brand/Corporate/human-resources");
         containerMappings.put("Corporate:Corporate", "Brand/Corporate");
         containerMappings.put("Credit Cards", "personal-banking/credit-cards");
+        containerMappings.put("Credit Cards:Aeroplan", "personal-banking/credit-cards");
         containerMappings.put("Credit Cards:Affiliate MBNA", "personal-banking/credit-cards/MBNA");
         containerMappings.put("Credit Cards:Affinity Sports MBNA", "personal-banking/credit-cards/MBNA");
-        containerMappings.put("Credit Cards:Credit Cards Production", "personal-banking/credit-cards");
+        containerMappings.put("Credit Cards:Business Credit Cards", "small-business-banking/credit-cards");
+        containerMappings.put("Credit Cards:Credit Cards Production", "personal-banking");
+        containerMappings.put("Credit Cards:Everest Digital", "personal-banking");
+        containerMappings.put("Credit Cards:PERSONAL/TDCT CARDS", "personal-banking");
+        containerMappings.put("Credit Cards:Rewards MBNA", "personal-banking/credit-cards/MBNA");
         containerMappings.put("Brand", "Brand");
+        containerMappings.put("Brand:Masterbrand Customer", "Brand/Customer/Masterbrand");
+        containerMappings.put("Brand:Friends of the Environment Community", "Brand/Community/friends-of-the-environment");
+        containerMappings.put("Brand:Pride Community", "Brand/Event/Pride");
+        containerMappings.put("Brand:Financial Literacy Community", "Brand/Community/financial-literacy");
+        containerMappings.put("Brand:Children's Literacy Community", "brand/community/children-literacy");
+        containerMappings.put("Brand:Music Community", "Brand/Community/Music");
+        containerMappings.put("Brand:Arts & Culture Community", "Brand/Community/arts-culture");
+        containerMappings.put("Brand:Brand Community", "Brand/Community");
+        containerMappings.put("Brand:Ethnic  Community", "Brand/Community/Ethnic");
+        containerMappings.put("Brand:Local Area Marketing Regional", "Brand/Regional/local-area-marketing");
+        containerMappings.put("Brand:Branch Flagship Regional", "Brand/Regional/branch-flagship");
+        containerMappings.put("Brand:Music Sponsorship", "Brand/Community/Music");
+        containerMappings.put("Brand:Blue Jays Sponsorship", "Brand/Sponsorship/blue-jays");
+        containerMappings.put("Brand:Union Station Sponsorship", "Brand/Sponsorship/union-station");
+        containerMappings.put("Brand:Brand Innovation & Functional", "Brand/innovation-functional");
+        containerMappings.put("Brand:ATM Innovation & Functional", "Brand/innovation-functional");
+        containerMappings.put("Brand:Direct Channel Innovation & Functional", "Brand/innovation-functional");
+        containerMappings.put("Brand:Black History Month", "Brand/Event/black-history-month");
+        containerMappings.put("Brand:Lunar New Year", "Brand/Event/lunar-new-year");
+        containerMappings.put("Brand:Visual Art Community", "Brand/Community/arts-culture");
+        containerMappings.put("Brand:Corporate Social Responsibility", "Brand/corporate-social-responsibility");
+        containerMappings.put("Brand:Security Innovations", "Brand/innovation-and-functional/security-innovations");
+        containerMappings.put("Brand:Brand Production", "Brand");
+        containerMappings.put("Brand:Assets", "Brand");
+        containerMappings.put("Insurance", "Insurance");
+        containerMappings.put("Insurance:Home Insurance", "Insurance/general-insurance/Home");
+        containerMappings.put("Insurance:Auto Insurance", "Insurance/general-insurance/Auto");
+        containerMappings.put("Insurance:Home & Auto Insurance", "Insurance/general-insurance/home-auto");
+        containerMappings.put("Insurance:HOME & AUTO INSURANCE - FSA", "Insurance/general-insurance/home-auto");
+        containerMappings.put("Insurance:Term Insurance", "Insurance/life-health/term-life-insurance");
+        containerMappings.put("Insurance:Life Insurance", "Insurance/life-health/life-insurance");
+        containerMappings.put("Insurance:Term & Life Insurance", "Insurance/life-health/term-life-insurance");
+        containerMappings.put("Insurance:Accident Insurance", "Insurance/life-health/accidental-death");
+        containerMappings.put("Insurance:Travel Insurance", "Insurance/Travel");
+        containerMappings.put("Insurance:AMG Insurance", "Insurance/general-insurance/home-auto/AMG");
+        containerMappings.put("Insurance:Credit Protection", "Insurance/credit-protection");
+        containerMappings.put("Insurance:Travel Insurance Snowbirds", "Insurance/general-insurance/home-auto/AMG");
+        containerMappings.put("Insurance:Insurance Plug N Drive", "Insurance/general-insurance/Auto");
+        containerMappings.put("Insurance:Insurance Auto Centre", "Insurance/general-insurance/Auto");
+        containerMappings.put("Insurance:Insurance Content", "Insurance");
+        containerMappings.put("Insurance:Insurance Production", "Insurance");
+        containerMappings.put("Insurance:Life & Health Insurance ", "Insurance/life-health/life-insurance");
         containerMappings.put("Personal Banking", "personal-banking");
+        containerMappings.put("Personal Banking:CHEQUING & SAVING EDB", "personal-banking/Accounts");
+        containerMappings.put("Personal Banking:CHEQUING EDB", "personal-banking/Accounts");
+        containerMappings.put("Personal Banking:SAVING EDB", "personal-banking/Accounts");
+        containerMappings.put("Personal Banking:CROSS BORDER BANKING EDB", "personal-banking/Accounts");
+        containerMappings.put("Personal Banking:NEW TO CANADA EDB", "personal-banking/Accounts");
+        containerMappings.put("Personal Banking:NEW TO BANK EDB", "personal-banking/Accounts");
+        containerMappings.put("Personal Banking:STUDENT", "personal-banking/Accounts");
+        containerMappings.put("Personal Banking:PERSONAL BANKING PRODUCTION", "personal-banking");
+        containerMappings.put("Personal Banking:Personal Lending EDB", "personal-banking/secured-loans");
         containerMappings.put("Personal Lending", "personal-banking/secured-loans/personal-loans");
+        containerMappings.put("Personal Lending:SLOC", "personal-banking/secured-loans/SLOC");
+        containerMappings.put("Personal Lending:ULOC", "personal-banking/secured-loans/ULOC");
         containerMappings.put("RESL", "personal-banking/Mortgages");
+        containerMappings.put("RESL:Mortgage Mortgage", "personal-banking/Mortgages");
+        containerMappings.put("RESL:Rate Sale", "personal-banking/Mortgages");
+        containerMappings.put("RESL:RESL Preapproval", "personal-banking/Mortgages");
+        containerMappings.put("RESL:RESL Production", "personal-banking/Mortgages");
         containerMappings.put("Small Business", "small-business-banking");
+        containerMappings.put("Small Business:Accounts", "small-business-banking/Accounts");
+        containerMappings.put("Small Business:Agriculture - Core Segments", "small-business-banking/service-options/industry-sector");
+        containerMappings.put("Small Business:Business Credit Card", "small-business-banking/credit-cards");
+        containerMappings.put("Small Business:Merchant Solutions", "merchant-solutions");
+        containerMappings.put("Small Business:Investing", "small-business-banking/investment-plan");
+        containerMappings.put("Small Business:Small Business Banking", "small-business-banking");
         containerMappings.put("TD-Auto-Finance", "personal-banking/secured-loans/auto-finance");
+        containerMappings.put("TD-Auto-Finance:Customer", "personal-banking/secured-loans/auto-finance");
+        containerMappings.put("TD-Auto-Finance:TD Auto Finance", "personal-banking/secured-loans/auto-finance");
+        containerMappings.put("TD Internal Agency", "Insurance");
+        containerMappings.put("TD Internal Agency:Affinity Marketing Group", "Insurance/general-insurance/home-auto/AMG");
+        containerMappings.put("TD Internal Agency:Business Banking", "small-business-banking");
+        containerMappings.put("TD Internal Agency:Content Marketing", "personal-banking");
+        containerMappings.put("TD Internal Agency:Insurance", "Insurance/general-insurance");
+        containerMappings.put("TD Internal Agency:Integrated Marketing Planning", "personal-banking");
+        containerMappings.put("TD Internal Agency:Marketing Express", "personal-banking/service-options");
+        containerMappings.put("TD Internal Agency:Merchant Services", "merchant-solutions");
+        containerMappings.put("TD Internal Agency:Optimization / Relocation", "Brand/Regional");
+        containerMappings.put("TD Internal Agency:Real-time Marketing", "Brand/Event/Pride");
+        containerMappings.put("TD Internal Agency:Retail", "personal-banking");
+        containerMappings.put("TD Internal Agency:TD Asset Management", "Wealth");
         containerMappings.put("TD Securities", "wholesale-banking");
+        containerMappings.put("TD Securities:TD Securities Production", "wholesale-banking");
         containerMappings.put("Wealth", "Wealth");
+        containerMappings.put("Wealth:Asset Management", "Wealth");
+        containerMappings.put("Wealth:Brokerage / WebBroker / eServices", "Wealth/brokerage-account");
+        containerMappings.put("Wealth:Direct Investing", "Wealth");
+        containerMappings.put("Wealth:Financial Planning", "Wealth");
+        containerMappings.put("Wealth:High Net Worth", "Wealth/wealth-partners");
+        containerMappings.put("Wealth:Merit Club", "Wealth/wealth-partners");
+        containerMappings.put("Wealth:Mutual Funds", "Wealth/mutual-funds");
+        containerMappings.put("Wealth:Non Member Exceptions", "Wealth/wealth-partners");
+        containerMappings.put("Wealth:Other PS&I", "Wealth/registered-plans");
+        containerMappings.put("Wealth:President Club", "Wealth/wealth-partners");
+        containerMappings.put("Wealth:Private Client Group", "Wealth/wealth-partners");
+        containerMappings.put("Wealth:Private Investment Advice", "Wealth/wealth-partners");
+        containerMappings.put("Wealth:Retail Investment Specialists", "Wealth/service-options");
+        containerMappings.put("Wealth:TD Wealth Templates", "Wealth");
+        containerMappings.put("Wealth:TDAM", "Wealth");
+        containerMappings.put("Wealth:TFSA PS&I", "Wealth/registered-plans");
+        containerMappings.put("Wealth:Wealth Advise", "Wealth/service-options");
+        containerMappings.put("Windows", "personal-banking");
+        containerMappings.put("Windows:All Windows 2", "personal-banking");
+        containerMappings.put("Windows:Window 1 - All", "personal-banking");
+        containerMappings.put("Windows:Window 1 - DI", "Wealth");
+        containerMappings.put("Windows:Window 1 - PS&I", "Wealth/other-investments");
+        containerMappings.put("Windows:Window 2 - RESL", "personal-banking/Mortgages");
         containerMappings.put("Digital Banking", "personal-banking/service-options");
+        containerMappings.put("Digital Banking:Digital Banking", "personal-banking/service-options");
+        containerMappings.put("Digital Banking:Digital Production", "personal-banking/service-options");
 
         return containerMappings;
 
     }
 
-    public static String getPathFromContainer(String containerField) {
+    public static String getPathFromContainer(String correctContainer) {
 
         HashMap<String, String> containerMappings = getContainerMappings();
         String pathStructure = "";
 
-        containerField = containerField.split("\\$Containers:")[1];
-        if (containerField.contains("MBNA")) {
+        correctContainer = correctContainer.split("\\$Containers:")[1];
+        if (correctContainer.contains("MBNA") || correctContainer.contains("MBNA & CUETS")) {
             pathStructure = "personal-banking/credit-cards/MBNA";
-        } else if (containerField.contains("TD:TD (Can):")) {
-            containerField = containerField.split("TD:TD \\(Can\\):")[1];
-            pathStructure = containerMappings.get(containerField) == null ? "IGNORE" : containerMappings.get(containerField);
+        } else if (correctContainer.contains("TD:TD (Can)")) {
+            correctContainer = correctContainer.split("TD:TD \\(Can\\):")[1];
+            String[] correctContainerContents = correctContainer.split(":");
+            String relevantPiece = "";
+            if (correctContainerContents.length > 1) {
+                 relevantPiece =  correctContainerContents[0] + ":" + correctContainerContents[1];
+            } else {
+                relevantPiece =  correctContainerContents[0];
+            }
+            System.out.println(relevantPiece);
+            pathStructure = containerMappings.get(relevantPiece) == null ? "IGNORE" : containerMappings.get(relevantPiece);
+            System.out.println(containerMappings.get(relevantPiece));
         } else {
             pathStructure = "IGNORE";
         }
 
         return pathStructure;
+
     }
 
-    public static HashMap<String, String> getLevel4AndCorrectPath(String containerField) {
+    public static String getCorrectContainer(String containerField) {
 
-        String level4 = "";
-        HashMap<String, String> level4AndCorrectPath = new HashMap<>();
+        String currentContainer = "";
         if (containerField.contains("|")) {
             String[] fields = containerField.split("\\|");
             for (String field : fields) {
                 if (field.contains("$Containers:")) {
-                    containerField = field;
+                    if (currentContainer.equals("")) {
+                        currentContainer = field;
+                    } else {
+                        int currentContainerSize = currentContainer.split(":").length;
+                        int candidateContainerSize = field.split(":").length;
+                        if (candidateContainerSize > currentContainerSize) {
+                            currentContainer = field;
+                        }
+                    }
                 }
             }
+        } else {
+            currentContainer = containerField;
         }
+        return currentContainer;
 
-        /*
-         * Structure of the Corrected Container: $Containers:TD:TD (Can):Credit Cards:EVEREST DIGITAL:...
-         * Level 4 is 5th element.
-         */
-        String[] containerLevels = containerField.split(":");
+    }
+
+    public static HashMap<String, String> getLevel4AndCorrectPath(String containerField) {
+
+        HashMap<String, String> level4AndCorrectPath = new HashMap<>();
+        String correctContainer = getCorrectContainer(containerField);
+        level4AndCorrectPath.put("level4", findLevel4(correctContainer.split(":")));
+        level4AndCorrectPath.put("correctPath", getPathFromContainer(correctContainer));
+
+        return level4AndCorrectPath;
+
+    }
+
+    /*
+     * Structure of the Corrected Container: $Containers:TD:TD (Can):Credit Cards:EVEREST DIGITAL:...
+     * Level 4 is 5th element.
+     */
+    public static String findLevel4(String[] containerLevels) {
+
+        String level4 = "";
         if (containerLevels.length < 5) {
             level4 = "NO_LEVEL_4";
         } else {
             level4 = containerLevels[4];
         }
-        level4AndCorrectPath.put("level4", level4);
-        level4AndCorrectPath.put("correctPath", getPathFromContainer(containerField));
-
-        return level4AndCorrectPath;
+        return level4;
 
     }
 
