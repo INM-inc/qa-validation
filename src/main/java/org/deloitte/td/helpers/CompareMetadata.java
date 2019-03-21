@@ -244,6 +244,7 @@ public class CompareMetadata {
 
                 metadataDifferences.add("Asset metadata in CSV is corrupted! See the CSV Line in the first column!");
                 pathsAndDifferences.put(Integer.toString(assetFromCSV.getCSVLine()), metadataDifferences.toString());
+                metadataDifferences.clear();
 
             } else {
 
@@ -254,7 +255,7 @@ public class CompareMetadata {
                     String assetFromAEMPath = assetFromAEM.getKey();
                     JsonObject assetFromAEMMetadata = assetFromAEM.getValue();
 
-                    if (assetFromAEMMetadata.get("outcome").toString().equals("fail")) {
+                    if (assetFromAEMMetadata.get("outcome").toString().replaceAll("\"", "").equals("fail")) {
 
                         metadataDifferences.add("Failed to import metadata from AEM!");
                         pathsAndDifferences.put(assetFromAEMPath, metadataDifferences.toString());
@@ -388,6 +389,9 @@ public class CompareMetadata {
                                     csvAgencyName = assetFromCSV.getAgencyNameOther();
                                 }
                                 if (!aemAgencyName.toString().equals("\"" + csvAgencyName + "\"")) {
+//                                    System.out.println("CSV Agency Name: " + csvAgencyName);
+//                                    System.out.println("AEM Agency Name: " + aemAgencyName);
+//                                    System.out.println("....................................");
                                     metadataDifferences.add("Agency Name");
                                 }
                             }
@@ -412,9 +416,6 @@ public class CompareMetadata {
                             } else {
                                 String csvDescription = "\"" + assetFromCSV.getDescription() + "\"";
                                 if (!aemDescription.toString().replaceAll(" ", "").equals(csvDescription.replaceAll(" ", ""))) {
-                                    System.out.println("CSV Description: " + csvDescription);
-                                    System.out.println("AEM Description: " + aemDescription);
-                                    System.out.println("....................................");
                                     metadataDifferences.add("Description");
                                 }
                             }
@@ -674,9 +675,10 @@ public class CompareMetadata {
 
                     }
 
+                    metadataDifferences.clear();
+
                 }
 
-                metadataDifferences.clear();
 
             }
 

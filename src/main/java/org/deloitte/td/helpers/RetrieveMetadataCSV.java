@@ -22,15 +22,20 @@ public class RetrieveMetadataCSV {
         System.out.println("Start of CSV metadata retrieval.");
 
         try {
-            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/sources/source.csv"));
-//            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/sources/source_TD_DAM_test_2.csv"));
-//            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/sources/source_TD_DAM_test.csv"));
+//            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/sources/source.csv"));
+            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/sources/source_404.csv"));
 
-            while (((line = br.readLine()) != null) && counter <= 2000) {
+            while (((line = br.readLine()) != null) && counter <= 3000) {
 
                 String[] lines = line.split("\\t");
                 Asset asset = new Asset();
-                if (counter > 0 && lines.length > 85 && !lines[64].equalsIgnoreCase("Archived") && !lines[5].equalsIgnoreCase("Rejected") && lines[19].contains("$Containers:")) {
+                if (
+                    counter > 0 && lines.length > 85 &&
+                    !lines[64].equalsIgnoreCase("Archived") &&
+                    !lines[5].equalsIgnoreCase("Rejected") &&
+                    !lines[5].equalsIgnoreCase("Inactive/Expired") &&
+                    lines[19].contains("$Containers:")
+                ) {
 
                     // Initial Keywords, LOBs and Channels.
                     ArrayList<String> keywords = new ArrayList<>(Arrays.asList(lines[79].replace("\"", "").split(", ")));
