@@ -410,8 +410,11 @@ public class CompareMetadata {
                                     metadataDifferences.add("Description Missing");
                                 }
                             } else {
-                                String csvDescription = "\"" + assetFromCSV.getDescription() + " \"";
-                                if (!aemDescription.toString().equals(csvDescription)) {
+                                String csvDescription = "\"" + assetFromCSV.getDescription() + "\"";
+                                if (!aemDescription.toString().replaceAll(" ", "").equals(csvDescription.replaceAll(" ", ""))) {
+                                    System.out.println("CSV Description: " + csvDescription);
+                                    System.out.println("AEM Description: " + aemDescription);
+                                    System.out.println("....................................");
                                     metadataDifferences.add("Description");
                                 }
                             }

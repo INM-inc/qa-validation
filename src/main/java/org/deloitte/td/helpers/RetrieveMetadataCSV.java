@@ -22,9 +22,11 @@ public class RetrieveMetadataCSV {
         System.out.println("Start of CSV metadata retrieval.");
 
         try {
-//            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/sources/source_MBNA_first_1000.csv"));
-            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/sources/source_TD_DAM_test_2.csv"));
-            while ((line = br.readLine()) != null) {
+            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/sources/source.csv"));
+//            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/sources/source_TD_DAM_test_2.csv"));
+//            br = new BufferedReader(new FileReader("/Users/averzea/Documents/td-config-files/sources/source_TD_DAM_test.csv"));
+
+            while (((line = br.readLine()) != null) && counter <= 2000) {
 
                 String[] lines = line.split("\\t");
                 Asset asset = new Asset();

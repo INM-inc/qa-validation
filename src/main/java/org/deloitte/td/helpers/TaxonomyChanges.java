@@ -155,9 +155,7 @@ public class TaxonomyChanges {
             } else {
                 relevantPiece =  correctContainerContents[0];
             }
-            System.out.println(relevantPiece);
             pathStructure = containerMappings.get(relevantPiece) == null ? "IGNORE" : containerMappings.get(relevantPiece);
-            System.out.println(containerMappings.get(relevantPiece));
         } else {
             pathStructure = "IGNORE";
         }
