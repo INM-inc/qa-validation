@@ -46,8 +46,8 @@ public class QATester {
       /*
        * Mock parameters for testing.
        */
-//      batchSize = 100;
-//      numberOfBatches = 2;
+      batchSize = 100;
+      numberOfBatches = 2;
 
       for (int iteration = 0; iteration < numberOfBatches; iteration++) {
 
