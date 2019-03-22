@@ -258,7 +258,7 @@ public class CompareMetadata {
                     if (assetFromAEMMetadata.get("outcome").toString().replaceAll("\"", "").equals("fail")) {
 
                         metadataDifferences.add("Failed to import metadata from AEM!");
-                        pathsAndDifferences.put(assetFromAEMPath, metadataDifferences.toString());
+                        pathsAndDifferences.put(assetFromAEMPath + ":" + assetFromCSV.getID(), metadataDifferences.toString());
 
                     } else {
 
@@ -676,7 +676,7 @@ public class CompareMetadata {
                             }
 
                             if (metadataDifferences.size() > 0) {
-                                pathsAndDifferences.put(assetFromAEMPath, metadataDifferences.toString());
+                                pathsAndDifferences.put(assetFromAEMPath + ":" + assetFromCSV.getID(), metadataDifferences.toString());
                             }
 
                         }

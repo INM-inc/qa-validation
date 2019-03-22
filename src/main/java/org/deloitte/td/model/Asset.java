@@ -37,6 +37,7 @@ public class Asset {
     private String fileName;
     private String container;
     private String sha;
+    private String id;
     private boolean corrupted;
     private int csvLine;
 
@@ -310,6 +311,14 @@ public class Asset {
 
     public void setCSVLine(int csvLine) {
         this.csvLine = csvLine;
+    }
+
+    public String getID() {
+        return id;
+    }
+
+    public void setID(String id) {
+        this.id = id;
     }
 
 }

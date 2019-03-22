@@ -105,6 +105,7 @@ public class RetrieveMetadataCSV {
                         asset.setDateRecordLastModified(lines[21]);
                         asset.setDateFileCataloged(lines[22]);
                         asset.setCatalogedBy(lines[16]);
+                        asset.setID(lines[7]);
                         asset.setCorrupted(false);
                         asset.setCSVLine(counter);
                         if (!correctPath.equals("IGNORE")) {
