@@ -10,12 +10,11 @@ import java.util.Map;
 
 public class WriteResultsToExcel {
 
-    public static void writeResultsToExcel (HashMap<String, String> filesAndDifferences) {
+    public static void writeResultsToExcel (String excelLocation, HashMap<String, String> filesAndDifferences, int iteration) {
 
-        System.out.println("Start of writing results to Excel.");
+        System.out.println("Start of writing results to Excel for BATCH " + iteration);
 
-        // Location and Column Names.
-        String excelLocation = "/Users/averzea/Downloads/qa_results.xlsx";
+        // Column Names.
         String[] excelColumns = {"File Path in AEM", "Metadata Fields Different"};
 
         // Create a Workbook for generating a .xlsx file.
@@ -59,7 +58,7 @@ public class WriteResultsToExcel {
 
         // Write the output to a file and close the workbook. If fails, print out the exception.
         try {
-            FileOutputStream fileOut = new FileOutputStream(excelLocation);
+            FileOutputStream fileOut = new FileOutputStream(excelLocation + ".xlsx");
             workbook.write(fileOut);
             fileOut.close();
             workbook.close();
@@ -67,7 +66,7 @@ public class WriteResultsToExcel {
             System.out.println("Failed: " + e.toString());
         }
 
-        System.out.println("End of writing results to Excel.");
+        System.out.println("End of writing results to Excel for BATCH " + iteration);
 
     }
 

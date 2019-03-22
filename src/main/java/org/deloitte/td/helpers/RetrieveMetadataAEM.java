@@ -17,11 +17,11 @@ import java.util.HashMap;
 
 public class RetrieveMetadataAEM {
 
-    public static HashMap<String, JsonObject> retrieveFromAEM(ArrayList<Asset> fromCSV) {
+    public static HashMap<String, JsonObject> retrieveFromAEM(ArrayList<Asset> fromCSV, int iteration) {
 
         HashMap<String, JsonObject> aemAllAssetsMetadata = new HashMap<>();
 
-        System.out.println("Start of metadata importing from AEM.");
+        System.out.println("Start of metadata importing from AEM for BATCH " + iteration);
 
         for (Asset assetFromCSV : fromCSV) {
 
@@ -111,7 +111,7 @@ public class RetrieveMetadataAEM {
             }
         }
 
-        System.out.println("End of metadata importing from AEM.");
+        System.out.println("End of metadata importing from AEM for BATCH " + iteration);
 
         return aemAllAssetsMetadata;
     }

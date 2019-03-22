@@ -224,7 +224,7 @@ public class CompareMetadata {
 
     }
 
-    public static HashMap<String, String> checkForDifferences(ArrayList<Asset> fromCSV, HashMap<String, JsonObject> fromAEM) {
+    public static HashMap<String, String> checkForDifferences(ArrayList<Asset> fromCSV, HashMap<String, JsonObject> fromAEM, int iteration) {
 
         ArrayList<String> metadataDifferences = new ArrayList<>();
         HashMap<String, String> pathsAndDifferences = new HashMap<>();
@@ -236,7 +236,7 @@ public class CompareMetadata {
         HashMap<String, String> usageRightsMappings = getUsageRightsMappings();
         HashMap<String, String> lobMappings = getLOBMappings();
 
-        System.out.println("Start of metadata comparison.");
+        System.out.println("Start of metadata comparison for BATCH " + iteration);
 
         for (Asset assetFromCSV : fromCSV) {
 
@@ -684,7 +684,7 @@ public class CompareMetadata {
 
         }
 
-        System.out.println("End of metadata comparison.");
+        System.out.println("End of metadata comparison for BATCH " + iteration);
 
         return pathsAndDifferences;
 
