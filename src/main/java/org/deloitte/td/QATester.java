@@ -19,7 +19,7 @@ public class QATester {
 
     QATester qaTester = new QATester();
     qaTester.run(args);
-    // java -jar /Users/averzea/Projects/qa-validation/target/qa-validation-1.0-SNAPSHOT.jar -source /Users/averzea/Documents/td-config-files/sources/source.csv -target /Users/averzea/Downloads/TD_DAM_QA_BATCH_ -batchSize 5000
+    // java -jar /Users/averzea/Projects/qa-validation/target/qa-validation-1.0-SNAPSHOT.jar -source /Users/averzea/Documents/td-config-files/sources/source.csv -target /Users/averzea/Downloads/TD_DAM_QA_BATCH_ -batchSize 5000 -host https://13.88.236.91
 
   }
 
@@ -29,6 +29,7 @@ public class QATester {
     options.addRequiredOption("source", "",true, "Source CSV File");
     options.addRequiredOption("target", "",true, "Output file");
     options.addRequiredOption("batchSize", "",true, "Batch Size");
+    options.addRequiredOption("host", "",true, "Host");
 
     CommandLineParser parser = new DefaultParser();
 
@@ -46,13 +47,13 @@ public class QATester {
       /*
        * Mock parameters for testing.
        */
-      batchSize = 100;
-      numberOfBatches = 2;
+//      batchSize = 100;
+//      numberOfBatches = 2;
 
       for (int iteration = 0; iteration < numberOfBatches; iteration++) {
 
         ArrayList<Asset> fromCSV = RetrieveMetadataCSV.retrieveFromCSV(csvFile, batchSize, iteration);
-        HashMap<String, JsonObject> fromAEM = RetrieveMetadataAEM.retrieveFromAEM(fromCSV, iteration);
+        HashMap<String, JsonObject> fromAEM = RetrieveMetadataAEM.retrieveFromAEM(fromCSV, commandLine.getOptionValue("host"), iteration);
         HashMap<String, String> filesAndDifferences = CompareMetadata.checkForDifferences(fromCSV, fromAEM, iteration);
         WriteResultsToExcel.writeResultsToExcel(commandLine.getOptionValue("target") + iteration, filesAndDifferences, iteration);
 

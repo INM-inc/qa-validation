@@ -519,19 +519,23 @@ public class CompareMetadata {
                                     metadataDifferences.add("Resolution (Horizontal) Missing");
                                 }
                             } else {
-                                String csvResolutionHorizontal = assetFromCSV.getResolutionHorizontal();
-                                String[] aemResolutionHorizontalNumbers = aemResolutionHorizontal.toString().split("/");
-                                int aemResolutionHorizontalInt;
-                                if (aemResolutionHorizontalNumbers.length == 1) {
-                                    double aemResolutionHorizontalSoleInt = Double.parseDouble(aemResolutionHorizontalNumbers[0].replaceAll("\"",""));
-                                    aemResolutionHorizontalInt = (int) Math.round(aemResolutionHorizontalSoleInt);
-                                } else {
-                                    double aemResolutionHorizontalDividend = Double.parseDouble(aemResolutionHorizontalNumbers[0].replaceAll("\"",""));
-                                    double aemResolutionHorizontalDivisor = Double.parseDouble(aemResolutionHorizontalNumbers[1].replaceAll("\"",""));
-                                    aemResolutionHorizontalInt = (int) Math.round(aemResolutionHorizontalDividend / aemResolutionHorizontalDivisor);
-                                }
-                                int csvResolutionHorizontalInt = (int) Math.round(Double.parseDouble(csvResolutionHorizontal));
-                                if (aemResolutionHorizontalInt != csvResolutionHorizontalInt) {
+                                try {
+                                    String csvResolutionHorizontal = assetFromCSV.getResolutionHorizontal();
+                                    String[] aemResolutionHorizontalNumbers = aemResolutionHorizontal.toString().split("/");
+                                    int aemResolutionHorizontalInt;
+                                    if (aemResolutionHorizontalNumbers.length == 1) {
+                                        double aemResolutionHorizontalSoleInt = Double.parseDouble(aemResolutionHorizontalNumbers[0].replaceAll("\"", ""));
+                                        aemResolutionHorizontalInt = (int) Math.round(aemResolutionHorizontalSoleInt);
+                                    } else {
+                                        double aemResolutionHorizontalDividend = Double.parseDouble(aemResolutionHorizontalNumbers[0].replaceAll("\"", ""));
+                                        double aemResolutionHorizontalDivisor = Double.parseDouble(aemResolutionHorizontalNumbers[1].replaceAll("\"", ""));
+                                        aemResolutionHorizontalInt = (int) Math.round(aemResolutionHorizontalDividend / aemResolutionHorizontalDivisor);
+                                    }
+                                    int csvResolutionHorizontalInt = (int) Math.round(Double.parseDouble(csvResolutionHorizontal));
+                                    if (aemResolutionHorizontalInt != csvResolutionHorizontalInt) {
+                                        metadataDifferences.add("Resolution (Horizontal)");
+                                    }
+                                } catch (Exception e) {
                                     metadataDifferences.add("Resolution (Horizontal)");
                                 }
                             }
@@ -542,19 +546,23 @@ public class CompareMetadata {
                                     metadataDifferences.add("Resolution (Vertical) Missing");
                                 }
                             } else {
-                                String csvResolutionVertical = assetFromCSV.getResolutionVertical();
-                                String[] aemResolutionVerticalNumbers = aemResolutionVertical.toString().split("/");
-                                int aemResolutionVerticalInt;
-                                if (aemResolutionVerticalNumbers.length == 1) {
-                                    double aemResolutionVerticalSoleInt = Double.parseDouble(aemResolutionVerticalNumbers[0].replaceAll("\"",""));
-                                    aemResolutionVerticalInt = (int) Math.round(aemResolutionVerticalSoleInt);
-                                } else {
-                                    double aemResolutionVerticalDividend = Double.parseDouble(aemResolutionVerticalNumbers[0].replaceAll("\"",""));
-                                    double aemResolutionVerticalDivisor = Double.parseDouble(aemResolutionVerticalNumbers[1].replaceAll("\"",""));
-                                    aemResolutionVerticalInt = (int) Math.round(aemResolutionVerticalDividend / aemResolutionVerticalDivisor);
-                                }
-                                int csvResolutionVerticalInt = (int) Math.round(Double.parseDouble(csvResolutionVertical));
-                                if (aemResolutionVerticalInt != csvResolutionVerticalInt) {
+                                try {
+                                    String csvResolutionVertical = assetFromCSV.getResolutionVertical();
+                                    String[] aemResolutionVerticalNumbers = aemResolutionVertical.toString().split("/");
+                                    int aemResolutionVerticalInt;
+                                    if (aemResolutionVerticalNumbers.length == 1) {
+                                        double aemResolutionVerticalSoleInt = Double.parseDouble(aemResolutionVerticalNumbers[0].replaceAll("\"",""));
+                                        aemResolutionVerticalInt = (int) Math.round(aemResolutionVerticalSoleInt);
+                                    } else {
+                                        double aemResolutionVerticalDividend = Double.parseDouble(aemResolutionVerticalNumbers[0].replaceAll("\"",""));
+                                        double aemResolutionVerticalDivisor = Double.parseDouble(aemResolutionVerticalNumbers[1].replaceAll("\"",""));
+                                        aemResolutionVerticalInt = (int) Math.round(aemResolutionVerticalDividend / aemResolutionVerticalDivisor);
+                                    }
+                                    int csvResolutionVerticalInt = (int) Math.round(Double.parseDouble(csvResolutionVertical));
+                                    if (aemResolutionVerticalInt != csvResolutionVerticalInt) {
+                                        metadataDifferences.add("Resolution (Vertical)");
+                                    }
+                                } catch (Exception e) {
                                     metadataDifferences.add("Resolution (Vertical)");
                                 }
                             }

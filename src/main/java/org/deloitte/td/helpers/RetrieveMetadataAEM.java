@@ -17,7 +17,7 @@ import java.util.HashMap;
 
 public class RetrieveMetadataAEM {
 
-    public static HashMap<String, JsonObject> retrieveFromAEM(ArrayList<Asset> fromCSV, int iteration) {
+    public static HashMap<String, JsonObject> retrieveFromAEM(ArrayList<Asset> fromCSV, String host, int iteration) {
 
         HashMap<String, JsonObject> aemAllAssetsMetadata = new HashMap<>();
 
@@ -73,7 +73,7 @@ public class RetrieveMetadataAEM {
                     HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
 
                     URL url = new URL(
-                            "https://13.88.236.91/content/dam/Canada/" + assetFromCSV.getContainer() + "/" + assetFromCSV.getFileName() + "/jcr:content/metadata.json");
+                            host + "/content/dam/Canada/" + assetFromCSV.getContainer() + "/" + assetFromCSV.getFileName() + "/jcr:content/metadata.json");
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("GET");
                     int code = conn.getResponseCode();
