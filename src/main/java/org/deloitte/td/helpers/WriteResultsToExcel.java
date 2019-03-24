@@ -3,12 +3,151 @@ package org.deloitte.td.helpers;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class WriteResultsToExcel {
+
+    private static Map<String, String> headerMap;
+
+    static {
+        headerMap = new LinkedHashMap<>();
+        headerMap.put("td:apn", "APN");
+        headerMap.put("td:projectname", "Project Name");
+        headerMap.put("td:assettype", "Asset Type");
+        headerMap.put("td:keywords", "Keywords");
+        headerMap.put("td:inmarket", "In Market");
+        headerMap.put("td:expiry", "Expiry");
+        headerMap.put("td:channel", "Channel");
+        headerMap.put("td:branchid", "Branch ID");
+        headerMap.put("td:agency", "Agency Name");
+        headerMap.put("td:agencypid", "Agency ID");
+        headerMap.put("dc:description", "Description");
+        headerMap.put("td:language", "Language");
+        headerMap.put("td:lob", "LOB");
+        headerMap.put("td:photosource", "Photo Source");
+        headerMap.put("td:usageright", "Usage Right");
+        headerMap.put("td:approval", "Approval");
+        headerMap.put("tiff:ImageWidth", "Image Width");
+        headerMap.put("tiff:ImageLength", "Image Height");
+        headerMap.put("tiff:XResolution", "Resolution X");
+        headerMap.put("tiff:YResolution", "Resolution Y");
+        headerMap.put("dc:creator", "Photographer");
+        headerMap.put("td:datefilecaptured", "Date File Captured");
+        headerMap.put("dam:FileFormat", "File Format");
+        headerMap.put("dam:size", "File Size");
+        headerMap.put("dc:modified", "Last Modified");
+        headerMap.put("td:catalogued", "Last Catalogued");
+        headerMap.put("td:cataloguedby", "Last Catalogued By");
+    }
+
+    public static void writeHeader(String fileLocation, boolean detailed) {
+        BufferedWriter bufferedWriter = null;
+        FileOutputStream fileOutputStream = null;
+        OutputStreamWriter outputStreamWriter = null;
+
+        try {
+            File file = new File(fileLocation);
+            fileOutputStream = new FileOutputStream(file);
+            outputStreamWriter = new OutputStreamWriter(fileOutputStream);
+            bufferedWriter = new BufferedWriter(outputStreamWriter);
+
+            bufferedWriter.write("Canto ID\tAEM Path");
+            for (String key : headerMap.keySet()) {
+                if (!detailed) {
+                    bufferedWriter.write("\t" + headerMap.get(key));
+                } else {
+                    bufferedWriter.write("\t" + headerMap.get(key) + "-Canto\t" + headerMap.get(key) + "-AEM");
+                }
+            }
+            bufferedWriter.newLine();
+
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+        } finally {
+            if (bufferedWriter != null) {
+                try {
+                    bufferedWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (outputStreamWriter != null) {
+                try {
+                    outputStreamWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static void writeResult(ComparisonResult result, String fileLocation, boolean detailed) {
+        BufferedWriter bufferedWriter = null;
+        FileOutputStream fileOutputStream = null;
+        OutputStreamWriter outputStreamWriter = null;
+
+        try {
+            File file = new File(fileLocation);
+            fileOutputStream = new FileOutputStream(file, true);
+            outputStreamWriter = new OutputStreamWriter(fileOutputStream);
+            bufferedWriter = new BufferedWriter(outputStreamWriter);
+
+            bufferedWriter.write(result.getCantoId() + "\t" + result.getAssetPath());
+            for (String key : headerMap.keySet()) {
+                if (result.getDifferences().containsKey(key)) {
+                    ComparisonResult.Difference difference = result.getDifferences().get(key);
+                    if (!detailed) {
+                        bufferedWriter.write("\tDifferent");
+                    } else {
+                        bufferedWriter.write("\t" + difference.getCantoValue() + "\t" + difference.getAemValue());
+                    }
+                } else {
+                    if (!detailed) {
+                        bufferedWriter.write("\t");
+                    } else {
+                        bufferedWriter.write("\t\t");
+                    }
+                }
+            }
+            bufferedWriter.newLine();
+
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+        } finally {
+            if (bufferedWriter != null) {
+                try {
+                    bufferedWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (outputStreamWriter != null) {
+                try {
+                    outputStreamWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
     public static void writeResultsToExcel (String excelLocation, HashMap<String, String> filesAndDifferences, int iteration) {
 

@@ -6,9 +6,14 @@ import java.util.Map;
 
 public class TaxonomyChanges {
 
-    public static HashMap<String, String> getContainerMappings() {
+    private static Map<String, String> containerMappings;
+    private static Map<String, String> taxonomy2KeysAndKeywords;
+    private static Map<String, String> taxonomy2KeysAndLOBs;
+    private static Map<String, String> taxonomy2KeysAndChannels;
+    private static Map<String, String> taxonomy2KeysAndPaths;
 
-        HashMap<String, String> containerMappings = new HashMap<>();
+    static {
+        containerMappings = new HashMap<>();
         containerMappings.put("Corporate", "Brand/Corporate");
         containerMappings.put("Corporate:Human Resources", "Brand/Corporate/human-resources");
         containerMappings.put("Corporate:Corporate", "Brand/Corporate");
@@ -134,30 +139,104 @@ public class TaxonomyChanges {
         containerMappings.put("Digital Banking:Digital Banking", "personal-banking/service-options");
         containerMappings.put("Digital Banking:Digital Production", "personal-banking/service-options");
 
-        return containerMappings;
+        taxonomy2KeysAndKeywords = new HashMap<>();
+        taxonomy2KeysAndKeywords.put("Everest Digital", "Everest Digital");
+        taxonomy2KeysAndKeywords.put("PERSONAL/TDCT CARDS", "Personal/TDCT Cards");
+        taxonomy2KeysAndKeywords.put("Brand Production", "Production");
+        taxonomy2KeysAndKeywords.put("Travel Insurance Snowbirds", "Snowbirds");
+        taxonomy2KeysAndKeywords.put("Insurance Content", "Content");
+        taxonomy2KeysAndKeywords.put("Insurance Production", "Production");
+        taxonomy2KeysAndKeywords.put("CHEQUING & SAVING EDB", "Savings");
+        taxonomy2KeysAndKeywords.put("CROSS BORDER BANKING EDB", "Cross border banking EDB");
+        taxonomy2KeysAndKeywords.put("NEW TO CANADA EDB", "New to Canada");
+        taxonomy2KeysAndKeywords.put("NEW TO BANK EDB", "New to Bank");
+        taxonomy2KeysAndKeywords.put("PERSONAL BANKING PRODUCTION", "Production");
+        taxonomy2KeysAndKeywords.put("Rate Sale", "Rate Sale");
+        taxonomy2KeysAndKeywords.put("Content Marketing", "Content Marketing");
+        taxonomy2KeysAndKeywords.put("Integrated Marketing Planning", " Integrated Marketing Planning");
+        taxonomy2KeysAndKeywords.put("Marketing Express", "Marketing Express");
+        taxonomy2KeysAndKeywords.put("Optimization / Relocation", "Optimization / Reloccation");
+        taxonomy2KeysAndKeywords.put("Real-time Marketing", "Real-time Marketing");
+        taxonomy2KeysAndKeywords.put("TD Securities Production", "TD Securities");
+        taxonomy2KeysAndKeywords.put("Financial Planning", "Financial Planning");
+        taxonomy2KeysAndKeywords.put("TD Wealth Templates", "TD Wealth Templates");
+        taxonomy2KeysAndKeywords.put("All Windows 2", "Window");
+        taxonomy2KeysAndKeywords.put("Window 1 - All", "Window");
+        taxonomy2KeysAndKeywords.put("Window 1 - DI", "Window");
+        taxonomy2KeysAndKeywords.put("Window 1 - PS&I", "Window");
+        taxonomy2KeysAndKeywords.put("Window 2 - RESL", "Window");
+        taxonomy2KeysAndKeywords.put("Digital Banking", "Digital Banking");
+        taxonomy2KeysAndKeywords.put("Digital Production", "Digital Banking");
 
+        taxonomy2KeysAndLOBs = new HashMap<>();
+        taxonomy2KeysAndLOBs.put("TD Asset Management", "TD Asset Management");
+        taxonomy2KeysAndLOBs.put("Asset Management", "TD Asset Management");
+        taxonomy2KeysAndLOBs.put("TDAM", "TDAM");
+
+        taxonomy2KeysAndChannels = new HashMap<>();
+        taxonomy2KeysAndChannels.put("Direct Investing", "Direct Investment");
+        taxonomy2KeysAndChannels.put("Direct Channel Innovation & Functional", "Direct Mail");
+        taxonomy2KeysAndChannels.put("Digital Banking", "Digital");
+        taxonomy2KeysAndChannels.put("Digital Production", "Digital");
+
+        taxonomy2KeysAndPaths = new HashMap<>();
+        taxonomy2KeysAndPaths.put("Everest Digital", "Personal Banking");
+        taxonomy2KeysAndPaths.put("PERSONAL/TDCT CARDS", "Personal Banking");
+        taxonomy2KeysAndPaths.put("Brand Production", "Brand");
+        taxonomy2KeysAndPaths.put("Insurance Content", "Insurance");
+        taxonomy2KeysAndPaths.put("Insurance Production", "Insurance");
+        taxonomy2KeysAndPaths.put("CHEQUING & SAVING EDB", "Personal Banking/Accounts/CHEQUING");
+        taxonomy2KeysAndPaths.put("PERSONAL BANKING PRODUCTION", "Personal Banking");
+        taxonomy2KeysAndPaths.put("Rate Sale", "Personal Banking/Mortgages");
+        taxonomy2KeysAndPaths.put("Content Marketing", "Personal Banking");
+        taxonomy2KeysAndPaths.put("Integrated Marketing Planning", "Personal Banking/Service & Options");
+        taxonomy2KeysAndPaths.put("Marketing Express", "Personal Banking");
+        taxonomy2KeysAndPaths.put("Optimization / Relocation", "Brand/Regional");
+        taxonomy2KeysAndPaths.put("Real-time Marketing", "Brand/Event/Pride");
+        taxonomy2KeysAndPaths.put("Retail", "Personal Banking");
+        taxonomy2KeysAndPaths.put("TD Asset Management", "Wealth");
+        taxonomy2KeysAndPaths.put("Asset Management", "Wealth");
+        taxonomy2KeysAndPaths.put("Direct Investing", "Wealth");
+        taxonomy2KeysAndPaths.put("Financial Planning", "Wealth");
+        taxonomy2KeysAndPaths.put("TD Wealth Templates", "Wealth");
+        taxonomy2KeysAndPaths.put("TDAM", "Wealth");
+        taxonomy2KeysAndPaths.put("All Windows 2", "Personal Banking");
+        taxonomy2KeysAndPaths.put("Window 1 - All", "Personal Banking");
+        taxonomy2KeysAndPaths.put("Window 1 - DI", "Wealth");
+        taxonomy2KeysAndPaths.put("Window 1 - PS&I", "Wealth");
+        taxonomy2KeysAndPaths.put("Window 2 - RESL", "Personal Banking/Mortgages");
+    }
+
+    public static Map<String, String> getContainerMappings() {
+        return containerMappings;
     }
 
     public static String getPathFromContainer(String correctContainer) {
 
-        HashMap<String, String> containerMappings = getContainerMappings();
+        Map<String, String> containerMappings = getContainerMappings();
         String pathStructure = "";
 
-        correctContainer = correctContainer.split("\\$Containers:")[1];
-        if (correctContainer.contains("MBNA") || correctContainer.contains("MBNA & CUETS")) {
-            pathStructure = "personal-banking/credit-cards/MBNA";
-        } else if (correctContainer.contains("TD:TD (Can)")) {
-            correctContainer = correctContainer.split("TD:TD \\(Can\\):")[1];
-            String[] correctContainerContents = correctContainer.split(":");
-            String relevantPiece = "";
-            if (correctContainerContents.length > 1) {
-                 relevantPiece =  correctContainerContents[0] + ":" + correctContainerContents[1];
+        if (!correctContainer.equals("")) {
+            correctContainer = correctContainer.split("\\$Containers:")[1];
+            if (correctContainer.contains("MBNA") || correctContainer.contains("MBNA & CUETS")) {
+                pathStructure = "personal-banking/credit-cards/MBNA";
+            } else if (correctContainer.contains("TD:TD (Can):")) {
+                correctContainer = correctContainer.split("TD:TD \\(Can\\):")[1];
+                String[] correctContainerContents = correctContainer.split(":");
+                String relevantPiece = "";
+                if (correctContainerContents.length > 1) {
+                    relevantPiece = correctContainerContents[0] + ":" + correctContainerContents[1];
+                } else {
+                    relevantPiece = correctContainerContents[0];
+                }
+                pathStructure = containerMappings.get(relevantPiece) == null ? "IGNORE" : containerMappings.get(relevantPiece);
+            } else if (correctContainer.contains("TD:TD (Can)")) {
+                pathStructure = "";
             } else {
-                relevantPiece =  correctContainerContents[0];
+                pathStructure = "IGNORE";
             }
-            pathStructure = containerMappings.get(relevantPiece) == null ? "IGNORE" : containerMappings.get(relevantPiece);
         } else {
-            pathStructure = "IGNORE";
+            pathStructure = "EMPTY";
         }
 
         return pathStructure;
@@ -219,34 +298,6 @@ public class TaxonomyChanges {
     public static ArrayList<String> addKeywords(String level4) {
 
         ArrayList<String> taxonomy2KeywordsToAdd = new ArrayList<>();
-        HashMap<String, String> taxonomy2KeysAndKeywords = new HashMap<>();
-        taxonomy2KeysAndKeywords.put("Everest Digital", "Everest Digital");
-        taxonomy2KeysAndKeywords.put("PERSONAL/TDCT CARDS", "Personal/TDCT Cards");
-        taxonomy2KeysAndKeywords.put("Brand Production", "Production");
-        taxonomy2KeysAndKeywords.put("Travel Insurance Snowbirds", "Snowbirds");
-        taxonomy2KeysAndKeywords.put("Insurance Content", "Content");
-        taxonomy2KeysAndKeywords.put("Insurance Production", "Production");
-        taxonomy2KeysAndKeywords.put("CHEQUING & SAVING EDB", "Savings");
-        taxonomy2KeysAndKeywords.put("CROSS BORDER BANKING EDB", "Cross border banking EDB");
-        taxonomy2KeysAndKeywords.put("NEW TO CANADA EDB", "New to Canada");
-        taxonomy2KeysAndKeywords.put("NEW TO BANK EDB", "New to Bank");
-        taxonomy2KeysAndKeywords.put("PERSONAL BANKING PRODUCTION", "Production");
-        taxonomy2KeysAndKeywords.put("Rate Sale", "Rate Sale");
-        taxonomy2KeysAndKeywords.put("Content Marketing", "Content Marketing");
-        taxonomy2KeysAndKeywords.put("Integrated Marketing Planning", " Integrated Marketing Planning");
-        taxonomy2KeysAndKeywords.put("Marketing Express", "Marketing Express");
-        taxonomy2KeysAndKeywords.put("Optimization / Relocation", "Optimization / Reloccation");
-        taxonomy2KeysAndKeywords.put("Real-time Marketing", "Real-time Marketing");
-        taxonomy2KeysAndKeywords.put("TD Securities Production", "TD Securities");
-        taxonomy2KeysAndKeywords.put("Financial Planning", "Financial Planning");
-        taxonomy2KeysAndKeywords.put("TD Wealth Templates", "TD Wealth Templates");
-        taxonomy2KeysAndKeywords.put("All Windows 2", "Window");
-        taxonomy2KeysAndKeywords.put("Window 1 - All", "Window");
-        taxonomy2KeysAndKeywords.put("Window 1 - DI", "Window");
-        taxonomy2KeysAndKeywords.put("Window 1 - PS&I", "Window");
-        taxonomy2KeysAndKeywords.put("Window 2 - RESL", "Window");
-        taxonomy2KeysAndKeywords.put("Digital Banking", "Digital Banking");
-        taxonomy2KeysAndKeywords.put("Digital Production", "Digital Banking");
         for (Map.Entry<String, String> taxonomy2KeyAndKeyword : taxonomy2KeysAndKeywords.entrySet()) {
             if (level4.equalsIgnoreCase(taxonomy2KeyAndKeyword.getKey())) {
                 taxonomy2KeywordsToAdd.add(taxonomy2KeyAndKeyword.getValue());
@@ -259,10 +310,6 @@ public class TaxonomyChanges {
     public static ArrayList<String> addLOBs(String level4) {
 
         ArrayList<String> taxonomy2LOBsToAdd = new ArrayList<>();
-        HashMap<String, String> taxonomy2KeysAndLOBs = new HashMap<>();
-        taxonomy2KeysAndLOBs.put("TD Asset Management", "TD Asset Management");
-        taxonomy2KeysAndLOBs.put("Asset Management", "TD Asset Management");
-        taxonomy2KeysAndLOBs.put("TDAM", "TDAM");
         for (Map.Entry<String, String> taxonomy2KeyAndLOB : taxonomy2KeysAndLOBs.entrySet()) {
             if (level4.equalsIgnoreCase(taxonomy2KeyAndLOB.getKey())) {
                 taxonomy2LOBsToAdd.add(taxonomy2KeyAndLOB.getValue());
@@ -275,11 +322,6 @@ public class TaxonomyChanges {
     public static ArrayList<String> addChannels(String level4) {
 
         ArrayList<String> taxonomy2ChannelsToAdd = new ArrayList<>();
-        HashMap<String, String> taxonomy2KeysAndChannels = new HashMap<>();
-        taxonomy2KeysAndChannels.put("Direct Investing", "Direct Investment");
-        taxonomy2KeysAndChannels.put("Direct Channel Innovation & Functional", "Direct Mail");
-        taxonomy2KeysAndChannels.put("Digital Banking", "Digital");
-        taxonomy2KeysAndChannels.put("Digital Production", "Digital");
         for (Map.Entry<String, String> taxonomy2KeyAndChannel : taxonomy2KeysAndChannels.entrySet()) {
             if (level4.equalsIgnoreCase(taxonomy2KeyAndChannel.getKey())) {
                 taxonomy2ChannelsToAdd.add(taxonomy2KeyAndChannel.getValue());
@@ -292,32 +334,6 @@ public class TaxonomyChanges {
     public static String changePath(String level4) {
 
         String newPath = "";
-        HashMap<String, String> taxonomy2KeysAndPaths = new HashMap<>();
-        taxonomy2KeysAndPaths.put("Everest Digital", "Personal Banking");
-        taxonomy2KeysAndPaths.put("PERSONAL/TDCT CARDS", "Personal Banking");
-        taxonomy2KeysAndPaths.put("Brand Production", "Brand");
-        taxonomy2KeysAndPaths.put("Insurance Content", "Insurance");
-        taxonomy2KeysAndPaths.put("Insurance Production", "Insurance");
-        taxonomy2KeysAndPaths.put("CHEQUING & SAVING EDB", "Personal Banking/Accounts/CHEQUING");
-        taxonomy2KeysAndPaths.put("PERSONAL BANKING PRODUCTION", "Personal Banking");
-        taxonomy2KeysAndPaths.put("Rate Sale", "Personal Banking/Mortgages");
-        taxonomy2KeysAndPaths.put("Content Marketing", "Personal Banking");
-        taxonomy2KeysAndPaths.put("Integrated Marketing Planning", "Personal Banking/Service & Options");
-        taxonomy2KeysAndPaths.put("Marketing Express", "Personal Banking");
-        taxonomy2KeysAndPaths.put("Optimization / Relocation", "Brand/Regional");
-        taxonomy2KeysAndPaths.put("Real-time Marketing", "Brand/Event/Pride");
-        taxonomy2KeysAndPaths.put("Retail", "Personal Banking");
-        taxonomy2KeysAndPaths.put("TD Asset Management", "Wealth");
-        taxonomy2KeysAndPaths.put("Asset Management", "Wealth");
-        taxonomy2KeysAndPaths.put("Direct Investing", "Wealth");
-        taxonomy2KeysAndPaths.put("Financial Planning", "Wealth");
-        taxonomy2KeysAndPaths.put("TD Wealth Templates", "Wealth");
-        taxonomy2KeysAndPaths.put("TDAM", "Wealth");
-        taxonomy2KeysAndPaths.put("All Windows 2", "Personal Banking");
-        taxonomy2KeysAndPaths.put("Window 1 - All", "Personal Banking");
-        taxonomy2KeysAndPaths.put("Window 1 - DI", "Wealth");
-        taxonomy2KeysAndPaths.put("Window 1 - PS&I", "Wealth");
-        taxonomy2KeysAndPaths.put("Window 2 - RESL", "Personal Banking/Mortgages");
         for (Map.Entry<String, String> taxonomy2KeyAndPath : taxonomy2KeysAndPaths.entrySet()) {
             if (level4.equalsIgnoreCase(taxonomy2KeyAndPath.getKey())) {
                 newPath = taxonomy2KeyAndPath.getValue();

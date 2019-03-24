@@ -3,13 +3,12 @@ package org.deloitte.td;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import com.google.gson.JsonObject;
-import org.deloitte.td.helpers.CompareMetadata;
-import org.deloitte.td.helpers.RetrieveMetadataAEM;
-import org.deloitte.td.helpers.RetrieveMetadataCSV;
-import org.deloitte.td.helpers.WriteResultsToExcel;
+import org.deloitte.td.helpers.*;
 import org.deloitte.td.model.Asset;
 import org.apache.commons.cli.*;
 
@@ -39,31 +38,40 @@ public class QATester {
       String csvFile = commandLine.getOptionValue("source");
       int batchSize = Integer.parseInt(commandLine.getOptionValue("batchSize"));
 
-      int numberOfLines = 0;
-      BufferedReader bufferedReader = new BufferedReader(new FileReader(csvFile));
-      while (bufferedReader.readLine() != null) numberOfLines++;
-      int numberOfBatches = (int) Math.ceil((double) numberOfLines/batchSize);
+      String outputFile = commandLine.getOptionValue("target") + "/report.csv";
+      String outputFileDetailed = commandLine.getOptionValue("target") + "/report-detailed.csv";
 
-      /*
-       * Mock parameters for testing.
-       */
-//      batchSize = 100;
-//      numberOfBatches = 2;
+      System.out.println(new Date() + " - Start of CSV metadata retrieval");
+      List<Asset> assets = RetrieveMetadataCSV.loadAllAssetsFromCsv(csvFile);
+      System.out.println(new Date() + " - End of CSV metadata retrieval");
+      System.out.println(new Date() + " - " + assets.size() + " assets loaded");
 
-      for (int iteration = 0; iteration < numberOfBatches; iteration++) {
+      WriteResultsToExcel.writeHeader(outputFile, false);
+      WriteResultsToExcel.writeHeader(outputFileDetailed, true);
 
-        ArrayList<Asset> fromCSV = RetrieveMetadataCSV.retrieveFromCSV(csvFile, batchSize, iteration);
-        HashMap<String, JsonObject> fromAEM = RetrieveMetadataAEM.retrieveFromAEM(fromCSV, commandLine.getOptionValue("host"), iteration);
-        HashMap<String, String> filesAndDifferences = CompareMetadata.checkForDifferences(fromCSV, fromAEM, iteration);
-        WriteResultsToExcel.writeResultsToExcel(commandLine.getOptionValue("target") + iteration, filesAndDifferences, iteration);
-
+      int count = 0;
+      System.out.println(new Date() + " - Start of metadata comparison");
+      for (Asset asset : assets) {
+        if (count % batchSize == 0) {
+          System.out.println(new Date() + " - " + count + " assets compared");
+        }
+        String aemAssetPath = "/content/dam/Canada/" + asset.getContainer() + "/" + asset.getFileName();
+        JsonObject aemAssetJson = RetrieveMetadataAEM.retrieveAssetJsonFromAem(aemAssetPath, commandLine.getOptionValue("host"));
+        ComparisonResult comparisonResult = null;
+        if (aemAssetJson == null) {
+          comparisonResult = CompareMetadata.returnAemAssetNotFound(asset);
+        } else {
+          comparisonResult = CompareMetadata.compareCantoAemMetadata(asset, aemAssetJson, aemAssetPath);
+        }
+        WriteResultsToExcel.writeResult(comparisonResult, outputFile, false);
+        WriteResultsToExcel.writeResult(comparisonResult, outputFileDetailed, true);
+        count++;
       }
-
-      bufferedReader.close();
+      System.out.println(new Date() + " - End of metadata comparison");
 
     } catch (Exception e) {
 
-      System.out.println(e.getMessage());
+      e.printStackTrace(System.out);
 
     }
 

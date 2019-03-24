@@ -4,12 +4,185 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
+
 import org.deloitte.td.model.Asset;
 
 public class RetrieveMetadataCSV {
+
+    private static int indexRecordStatus = 64;
+    private static int indexApprovalStatus = 5;
+    private static int indexContainers = 19;
+    private static int indexKeywords = 79;
+    private static int indexGroupName = 1;
+    private static int indexChannels = 34;
+    private static int indexUsageRights = 69;
+    private static int indexUsageRightsOther = 32;
+    private static int indexAgencyName = 30;
+    private static int indexAgencyNameOther = 76;
+    private static int indexFileName = 8;
+    private static int indexAgencyProjectId = 67;
+    private static int indexActivityProposalNumber = 9;
+    private static int indexProjectName = 56;
+    private static int indexAssetType = 82;
+    private static int indexInMarketDate = 12;
+    private static int indexExpiry = 84;
+    private static int indexBranchId = 44;
+    private static int indexDescription = 53;
+    private static int indexLanguage = 62;
+    private static int indexPhotoSource = 61;
+    private static int indexImageWidth = 3;
+    private static int indexImageHeight = 54;
+    private static int indexResolutionVertical = 31;
+    private static int indexResolutionHorizontal = 17;
+    private static int indexPhotographer = 45;
+    private static int indexDateFileCaptured = 70;
+    private static int indexFileFormat = 18;
+    private static int indexFileSize = 11;
+    private static int indexDateRecordLastModified = 21;
+    private static int indexDateFileCatalogued = 22;
+    private static int indexCataloguedBy = 16;
+    private static int indexId = 7;
+
+    public static List<Asset> loadAllAssetsFromCsv(String csvFile) {
+        List<Asset> assets = new ArrayList<>();
+        BufferedReader bufferedReader = null;
+        FileReader fileReader = null;
+        String line = null;
+
+        try {
+            fileReader = new FileReader(csvFile);
+            bufferedReader = new BufferedReader(fileReader);
+
+            while ((line = bufferedReader.readLine()) != null) {
+//                System.out.println("counter " + counter);
+                if (!line.contains("Number of Words")) {
+
+                    String[] lines = line.split("\\t");
+//                    System.out.println(lines.length);
+                    Asset asset = new Asset();
+                    if (
+                            lines.length >= (Math.max(Math.max(indexRecordStatus, indexApprovalStatus), indexContainers) + 1) &&
+                            !lines[indexRecordStatus].equalsIgnoreCase("Archived") &&
+                                    !lines[indexApprovalStatus].equalsIgnoreCase("Rejected") &&
+                                    !lines[indexApprovalStatus].equalsIgnoreCase("Inactive/Expired") &&
+                                    lines[indexContainers].contains("$Containers:")
+                    ) {
+
+                        // Initial Keywords, LOBs and Channels.
+                        ArrayList<String> keywords = new ArrayList<>();
+                        if (lines.length >= (indexKeywords + 1)) {
+                            keywords = new ArrayList<>(Arrays.asList(lines[indexKeywords].replace("\"", "").split(", ")));
+                        }
+                        ArrayList<String> lobs = new ArrayList<>(Arrays.asList(lines[indexGroupName].split(", ")));
+                        ArrayList<String> channels = new ArrayList<>(Arrays.asList(lines[indexChannels].split(", ")));
+
+                        // Additions to Initial Keywords, LOBs and Channels based on Taxonomy Tab 2.
+                        HashMap<String, String> level4AndCorrectPath = TaxonomyChanges.getLevel4AndCorrectPath(lines[indexContainers]);
+                        String level4 = level4AndCorrectPath.get("level4");
+                        String correctPath = level4AndCorrectPath.get("correctPath");
+                        if (!level4.equals("NO_LEVEL_4")) {
+
+                            ArrayList<String> keywordAdditions = TaxonomyChanges.addKeywords(level4);
+                            keywords.addAll(keywordAdditions);
+
+                            ArrayList<String> lobAdditions = TaxonomyChanges.addLOBs(level4);
+                            lobs.addAll(lobAdditions);
+
+                            ArrayList<String> channelAdditions = TaxonomyChanges.addChannels(level4);
+                            channels.addAll(channelAdditions);
+
+                        }
+
+                        // Eliminate empty string values as they bias the result.
+                        keywords.removeAll(Arrays.asList("", null));
+                        lobs.removeAll(Arrays.asList("", null));
+                        channels.removeAll(Arrays.asList("", null));
+
+                        // Set the corrected ArrayLists
+                        asset.setKeywords(keywords);
+                        asset.setLOBs(lobs);
+                        asset.setChannels(channels);
+
+                        if (lines.length >= (indexUsageRights + 1)) {
+                            asset.setUsageRights(lines[indexUsageRights]);
+                        }
+                        asset.setUsageRightsOther(lines[indexUsageRightsOther]);
+                        asset.setAgencyName(lines[indexAgencyName]);
+                        if (lines.length >= (indexAgencyNameOther + 1)) {
+                            asset.setAgencyNameOther(lines[indexAgencyNameOther]);
+                        }
+                        asset.setContainer(correctPath);
+                        asset.setFileName(lines[indexFileName].replace(" ", "%20"));
+                        if (lines.length >= (indexAgencyProjectId + 1)) {
+                            asset.setAgencyProjectID(lines[indexAgencyProjectId]);
+                        }
+                        asset.setActivityProposalNumber(lines[indexActivityProposalNumber]);
+                        if (lines.length >= (indexProjectName + 1)) {
+                            asset.setProjectName(lines[indexProjectName]);
+                        }
+                        if (lines.length >= (indexAssetType + 1)) {
+                            asset.setAssetType(lines[indexAssetType]);
+                        }
+                        asset.setInMarketDate(lines[indexInMarketDate]);
+                        if (lines.length >= (indexExpiry + 1)) {
+                            asset.setExpiryDate(lines[indexExpiry]);
+                        }
+                        asset.setBranchID(lines[indexBranchId]);
+                        asset.setDescription(lines[indexDescription]);
+                        if (lines.length >= (indexLanguage + 1)) {
+                            asset.setLanguage(lines[indexLanguage]);
+                        }
+                        if (lines.length >= (indexPhotoSource + 1)) {
+                            asset.setPhotoSource(lines[indexPhotoSource]);
+                        }
+                        asset.setApprovalStatus(lines[indexApprovalStatus]);
+                        asset.setImageWidth(lines[indexImageWidth]);
+                        asset.setImageHeight(lines[indexImageHeight]);
+                        asset.setResolutionVertical(lines[indexResolutionVertical]);
+                        asset.setResolutionHorizontal(lines[indexResolutionHorizontal]);
+                        asset.setPhotographer(lines[indexPhotographer]);
+                        if (lines.length >= (indexDateFileCaptured + 1)) {
+                            asset.setDateFileCaptured(lines[indexDateFileCaptured]);
+                        }
+                        asset.setFileFormat(lines[indexFileFormat]);
+                        asset.setFileSize(lines[indexFileSize]);
+                        asset.setDateRecordLastModified(lines[indexDateRecordLastModified]);
+                        asset.setDateFileCataloged(lines[indexDateFileCatalogued]);
+                        asset.setCatalogedBy(lines[indexCataloguedBy]);
+                        asset.setID(lines[indexId]);
+                        asset.setCorrupted(false);
+                        //if (!correctPath.equals("IGNORE")) {
+                            assets.add(asset);
+                        //}
+                    }
+                }
+            }
+
+            bufferedReader.close();
+            fileReader.close();
+
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+        } finally {
+            if (bufferedReader != null) {
+                try {
+                    bufferedReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace(System.out);
+                }
+            }
+            if (fileReader != null) {
+                try {
+                    fileReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace(System.out);
+                }
+            }
+        }
+
+        return assets;
+    }
 
     public static ArrayList<Asset> retrieveFromCSV(String csvFile, int batchSize, int iteration) {
 
