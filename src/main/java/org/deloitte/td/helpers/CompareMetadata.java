@@ -377,7 +377,7 @@ public class CompareMetadata {
         comparisonResult = compareStringWithOtherAndMappingValue("td:agency", asset.getAgencyName(), asset.getAgencyNameOther(), assetJson, comparisonResult, agencyNameMappings);
         comparisonResult = compareStringValue("td:agencypid", asset.getAgencyProjectID(), assetJson, comparisonResult);
         comparisonResult = compareStringValue("dc:description", asset.getDescription(), assetJson, comparisonResult);
-        comparisonResult = compareStringWithMappingValue("td:language", asset.getDescription(), assetJson, comparisonResult, languageMappings);
+        comparisonResult = compareStringWithMappingValue("td:language", asset.getLanguage(), assetJson, comparisonResult, languageMappings);
 
         JsonElement aemLOBs = assetJson.get("td:lob");
         if (aemLOBs == null) {
