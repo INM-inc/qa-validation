@@ -332,6 +332,8 @@ public class CompareMetadata {
 
     public static ComparisonResult compareCantoAemMetadata(Asset asset, JsonObject assetJson, String aemAssetPath) {
         ComparisonResult comparisonResult = new ComparisonResult();
+
+        comparisonResult.setMissingInAEM(aemAssetPath == null);
         comparisonResult.setAssetPath(aemAssetPath);
         comparisonResult.setCantoId(asset.getID());
 

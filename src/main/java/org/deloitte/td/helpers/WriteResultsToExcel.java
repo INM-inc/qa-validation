@@ -55,7 +55,7 @@ public class WriteResultsToExcel {
             outputStreamWriter = new OutputStreamWriter(fileOutputStream);
             bufferedWriter = new BufferedWriter(outputStreamWriter);
 
-            bufferedWriter.write("Canto ID\tAEM Path");
+            bufferedWriter.write("Canto ID\tMissing in AEM?\tAEM Path");
             for (String key : headerMap.keySet()) {
                 if (!detailed) {
                     bufferedWriter.write("\t" + headerMap.get(key));
@@ -103,7 +103,7 @@ public class WriteResultsToExcel {
             outputStreamWriter = new OutputStreamWriter(fileOutputStream);
             bufferedWriter = new BufferedWriter(outputStreamWriter);
 
-            bufferedWriter.write(result.getCantoId() + "\t" + result.getAssetPath());
+            bufferedWriter.write(result.getCantoId() + "\t" + result.getMissingInAEM() + "\t" + result.getAssetPath());
             for (String key : headerMap.keySet()) {
                 if (result.getDifferences().containsKey(key)) {
                     ComparisonResult.Difference difference = result.getDifferences().get(key);

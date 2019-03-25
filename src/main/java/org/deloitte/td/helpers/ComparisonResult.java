@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class ComparisonResult {
 
+    private boolean missingInAEM;
     private String cantoId;
     private String assetPath;
     private Map<String, Difference> differences;
@@ -45,6 +46,14 @@ public class ComparisonResult {
 
     public void setAssetPath(String assetPath) {
         this.assetPath = assetPath;
+    }
+
+    public boolean getMissingInAEM() {
+        return missingInAEM;
+    }
+
+    public void setMissingInAEM(boolean missingInAEM) {
+        this.missingInAEM = missingInAEM;
     }
 
     public Map<String, Difference> getDifferences() {
