@@ -15,33 +15,33 @@ public class WriteResultsToExcel {
 
     static {
         headerMap = new LinkedHashMap<>();
-        headerMap.put("td:apn", "APN");
+        headerMap.put("td:apn", "AP (Activity Proposal) Number");
         headerMap.put("td:projectname", "Project Name");
         headerMap.put("td:assettype", "Asset Type");
         headerMap.put("td:keywords", "Keywords");
         headerMap.put("td:inmarket", "In Market");
-        headerMap.put("td:expiry", "Expiry");
+        headerMap.put("td:expiry", "Expiry Date");
         headerMap.put("td:channel", "Channel");
         headerMap.put("td:branchid", "Branch ID");
         headerMap.put("td:agency", "Agency Name");
-        headerMap.put("td:agencypid", "Agency ID");
+        headerMap.put("td:agencypid", "Agency Project ID");
         headerMap.put("dc:description", "Description");
         headerMap.put("td:language", "Language");
-        headerMap.put("td:lob", "LOB");
+        headerMap.put("td:lob", "Line Of Business");
         headerMap.put("td:photosource", "Photo Source");
-        headerMap.put("td:usageright", "Usage Right");
-        headerMap.put("td:approval", "Approval");
+        headerMap.put("td:usageright", "Usage Rights");
+        headerMap.put("td:approval", "Approval Status");
         headerMap.put("tiff:ImageWidth", "Image Width");
         headerMap.put("tiff:ImageLength", "Image Height");
-        headerMap.put("tiff:XResolution", "Resolution X");
-        headerMap.put("tiff:YResolution", "Resolution Y");
-        headerMap.put("dc:creator", "Photographer");
+        headerMap.put("tiff:XResolution", "Resolution (Horizontal)");
+        headerMap.put("tiff:YResolution", "Resolution (Vertical)");
+        headerMap.put("dc:creator", "Photographer or Creator");
         headerMap.put("td:datefilecaptured", "Date File Captured");
         headerMap.put("dam:FileFormat", "File Format");
         headerMap.put("dam:size", "File Size");
-        headerMap.put("dc:modified", "Last Modified");
-        headerMap.put("td:catalogued", "Last Catalogued");
-        headerMap.put("td:cataloguedby", "Last Catalogued By");
+        headerMap.put("dc:modified", "Date Record Last Modified");
+        headerMap.put("td:catalogued", "Date File Cataloged");
+        headerMap.put("td:cataloguedby", "Cataloged By");
     }
 
     public static void writeHeader(String fileLocation, boolean detailed) {
