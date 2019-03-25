@@ -110,7 +110,7 @@ public class WriteResultsToExcel {
                     if (!detailed) {
                         bufferedWriter.write("\tDifferent");
                     } else {
-                        bufferedWriter.write("\t" + difference.getCantoValue() + "\t" + difference.getAemValue());
+                        bufferedWriter.write("\t" + difference.getCantoValue().replaceAll("\n", "") + "\t" + difference.getAemValue().replaceAll("\n", ""));
                     }
                 } else {
                     if (!detailed) {
