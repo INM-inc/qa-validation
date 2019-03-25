@@ -21,7 +21,7 @@ public class CompareMetadata {
         approvalStatusMappings = new HashMap<>();
         approvalStatusMappings.put("#Not Applicable", "Draft");
         approvalStatusMappings.put("#Unknown", "Draft");
-        approvalStatusMappings.put("Approved ", "Approved");
+        approvalStatusMappings.put("Approved", "Approved");
         approvalStatusMappings.put("On Hold", "Draft");
         approvalStatusMappings.put("Pending", "Draft");
         approvalStatusMappings.put("Rejected", "Draft");
