@@ -253,7 +253,7 @@ public class CompareMetadata {
         return comparisonResult;
     }
 
-    private static ComparisonResult compareStringWithMappingValue(String fieldName, String csvValue, JsonObject assetJson, ComparisonResult comparisonResult, Map<String, String> mapping) {
+    private static ComparisonResult compareStringWithMappingValue(String fieldName, String csvValue, JsonObject assetJson, ComparisonResult comparisonResult, Map<String, String> mapping, boolean ignoreCase) {
         JsonElement aemValue = assetJson.get(fieldName);
         if (aemValue == null) {
             if (csvValue != null && !csvValue.isEmpty()) {
@@ -264,8 +264,14 @@ public class CompareMetadata {
                 comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference("", aemValue.getAsString()));
             }
         } else {
-            if (!aemValue.getAsString().equals(mapping.get(csvValue))) {
-                comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(mapping.get(csvValue), aemValue.getAsString()));
+            if (ignoreCase) {
+                if (!aemValue.getAsString().equalsIgnoreCase(mapping.get(csvValue))) {
+                    comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(mapping.get(csvValue), aemValue.getAsString()));
+                }
+            } else {
+                if (!aemValue.getAsString().equals(mapping.get(csvValue))) {
+                    comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(mapping.get(csvValue), aemValue.getAsString()));
+                }
             }
         }
 
@@ -339,7 +345,7 @@ public class CompareMetadata {
 
         comparisonResult = compareStringValue("td:apn", asset.getActivityProposalNumber(), assetJson, comparisonResult);
         comparisonResult = compareStringValue("td:projectname", asset.getProjectName(), assetJson, comparisonResult);
-        comparisonResult = compareStringWithMappingValue("td:assettype", asset.getAssetType(), assetJson, comparisonResult, assetTypeMappings);
+        comparisonResult = compareStringWithMappingValue("td:assettype", asset.getAssetType(), assetJson, comparisonResult, assetTypeMappings, false);
 
         JsonElement aemKeywords = assetJson.get("td:keywords");
         if (aemKeywords == null) {
@@ -377,7 +383,7 @@ public class CompareMetadata {
         comparisonResult = compareStringWithOtherAndMappingValue("td:agency", asset.getAgencyName(), asset.getAgencyNameOther(), assetJson, comparisonResult, agencyNameMappings);
         comparisonResult = compareStringValue("td:agencypid", asset.getAgencyProjectID(), assetJson, comparisonResult);
         comparisonResult = compareStringValue("dc:description", asset.getDescription(), assetJson, comparisonResult);
-        comparisonResult = compareStringWithMappingValue("td:language", asset.getLanguage(), assetJson, comparisonResult, languageMappings);
+        comparisonResult = compareStringWithMappingValue("td:language", asset.getLanguage(), assetJson, comparisonResult, languageMappings, true);
 
         JsonElement aemLOBs = assetJson.get("td:lob");
         if (aemLOBs == null) {
@@ -397,7 +403,7 @@ public class CompareMetadata {
 
         comparisonResult = compareStringValue("td:photosource", asset.getPhotoSource(), assetJson, comparisonResult);
         comparisonResult = compareStringWithOtherAndMappingValue("td:usageright", asset.getUsageRights(), asset.getUsageRightsOther(), assetJson, comparisonResult, usageRightsMappings);
-        comparisonResult = compareStringWithMappingValue("td:approval", asset.getApprovalStatus(), assetJson, comparisonResult, approvalStatusMappings);
+        comparisonResult = compareStringWithMappingValue("td:approval", asset.getApprovalStatus(), assetJson, comparisonResult, approvalStatusMappings, false);
         comparisonResult = compareStringValue("tiff:ImageWidth", asset.getImageWidth(), assetJson, comparisonResult);
         comparisonResult = compareStringValue("tiff:ImageLength", asset.getImageHeight(), assetJson, comparisonResult);
 
