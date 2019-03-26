@@ -81,6 +81,12 @@ public class RetrieveMetadataCSV {
                         HashMap<String, String> level4AndCorrectPath = TaxonomyChanges.getLevel4AndCorrectPath(lines[indexContainers]);
                         String level4 = level4AndCorrectPath.get("level4");
                         String correctPath = level4AndCorrectPath.get("correctPath");
+
+//                        if (lines[indexId].equals("29760")) {
+//                            System.out.println("Container = '" + lines[indexContainers] + "'");
+//                            System.out.println("correctPath = '" + correctPath + "'");
+//                        }
+
                         if (!level4.equals("NO_LEVEL_4")) {
 
                             ArrayList<String> keywordAdditions = TaxonomyChanges.addKeywords(level4);

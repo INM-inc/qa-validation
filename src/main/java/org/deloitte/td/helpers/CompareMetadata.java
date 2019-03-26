@@ -329,9 +329,11 @@ public class CompareMetadata {
         return comparisonResult;
     }
 
-    public static ComparisonResult returnAemAssetNotFound(Asset asset) {
+    public static ComparisonResult returnAemAssetNotFound(Asset asset, String aemAssetPath) {
         ComparisonResult comparisonResult = new ComparisonResult();
         comparisonResult.setCantoId(asset.getID());
+        comparisonResult.setAssetPath(aemAssetPath);
+        comparisonResult.setMissingInAEM(true);
 
         return comparisonResult;
     }
@@ -339,7 +341,7 @@ public class CompareMetadata {
     public static ComparisonResult compareCantoAemMetadata(Asset asset, JsonObject assetJson, String aemAssetPath) {
         ComparisonResult comparisonResult = new ComparisonResult();
 
-        comparisonResult.setMissingInAEM(aemAssetPath == null);
+        comparisonResult.setMissingInAEM(false);
         comparisonResult.setAssetPath(aemAssetPath);
         comparisonResult.setCantoId(asset.getID());
 

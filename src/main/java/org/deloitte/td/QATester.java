@@ -2,6 +2,8 @@ package org.deloitte.td;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,16 +32,20 @@ public class QATester {
     options.addRequiredOption("batchSize", "",true, "Batch Size");
     options.addRequiredOption("host", "",true, "Host");
 
+    DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss");
+
     CommandLineParser parser = new DefaultParser();
 
     try {
+
+      Date currentTime = new Date();
 
       CommandLine commandLine = parser.parse(options, args);
       String csvFile = commandLine.getOptionValue("source");
       int batchSize = Integer.parseInt(commandLine.getOptionValue("batchSize"));
 
-      String outputFile = commandLine.getOptionValue("target") + "/report.csv";
-      String outputFileDetailed = commandLine.getOptionValue("target") + "/report-detailed.csv";
+      String outputFile = commandLine.getOptionValue("target") + "/report-" + dateFormat.format(currentTime) + ".csv";
+      String outputFileDetailed = commandLine.getOptionValue("target") + "/report-detailed-" + dateFormat.format(currentTime) + ".csv";
 
       System.out.println(new Date() + " - Start of CSV metadata retrieval");
       List<Asset> assets = RetrieveMetadataCSV.loadAllAssetsFromCsv(csvFile);
@@ -59,7 +65,7 @@ public class QATester {
         JsonObject aemAssetJson = RetrieveMetadataAEM.retrieveAssetJsonFromAem(aemAssetPath, commandLine.getOptionValue("host"));
         ComparisonResult comparisonResult = null;
         if (aemAssetJson == null) {
-          comparisonResult = CompareMetadata.returnAemAssetNotFound(asset);
+          comparisonResult = CompareMetadata.returnAemAssetNotFound(asset, aemAssetPath);
         } else {
           comparisonResult = CompareMetadata.compareCantoAemMetadata(asset, aemAssetJson, aemAssetPath);
         }

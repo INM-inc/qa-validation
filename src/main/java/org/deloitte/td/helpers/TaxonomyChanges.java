@@ -31,7 +31,7 @@ public class TaxonomyChanges {
         containerMappings.put("Brand:Friends of the Environment Community", "Brand/Community/friends-of-the-environment");
         containerMappings.put("Brand:Pride Community", "Brand/Event/Pride");
         containerMappings.put("Brand:Financial Literacy Community", "Brand/Community/financial-literacy");
-        containerMappings.put("Brand:Children's Literacy Community", "brand/community/children-literacy");
+        containerMappings.put("Brand:Children's Literacy Community", "Brand/Community/childrens-literacy");
         containerMappings.put("Brand:Music Community", "Brand/Community/Music");
         containerMappings.put("Brand:ARTS & CULTURE - COMMUNITY", "Brand/Community/arts-culture");
         containerMappings.put("Brand:Brand Community", "Brand/Community");
@@ -47,8 +47,8 @@ public class TaxonomyChanges {
         containerMappings.put("Brand:Black History Month", "Brand/Event/black-history-month");
         containerMappings.put("Brand:Lunar New Year", "Brand/Event/lunar-new-year");
         containerMappings.put("Brand:Visual Art Community", "Brand/Community/arts-culture");
-        containerMappings.put("Brand:Corporate Social Responsibility", "Brand/corporate-social-responsibility");
-        containerMappings.put("Brand:SECURITY INNOVATIONS", "Brand/innovation-and-functional/security-innovations");
+        containerMappings.put("Brand:Corporate Social Responsibility", "Brand/corporate-socialresponsibility");
+        containerMappings.put("Brand:SECURITY INNOVATIONS", "Brand/innovation-functional/security-innovations");
         containerMappings.put("Brand:Brand Production", "Brand");
         containerMappings.put("Brand:Assets", "Brand");
         containerMappings.put("Insurance", "Insurance");
@@ -63,22 +63,22 @@ public class TaxonomyChanges {
         containerMappings.put("Insurance:Travel Insurance", "Insurance/Travel");
         containerMappings.put("Insurance:AMG Insurance", "Insurance/general-insurance/home-auto/AMG");
         containerMappings.put("Insurance:Credit Protection", "Insurance/credit-protection");
-        containerMappings.put("Insurance:Travel Insurance Snowbirds", "Insurance/general-insurance/home-auto/AMG");
+        containerMappings.put("Insurance:Travel Insurance Snowbirds", "Insurance/Travel/travel-medical-insurance");
         containerMappings.put("Insurance:INSURANCE PLUG N DRIVE", "Insurance/general-insurance/Auto");
         containerMappings.put("Insurance:INSURANCE AUTO CENTRE", "Insurance/general-insurance/Auto");
         containerMappings.put("Insurance:INSURANCE CONTENT", "Insurance");
         containerMappings.put("Insurance:Insurance Production", "Insurance");
         containerMappings.put("Insurance:LIFE & HEALTH INSURANCE", "Insurance/life-health/life-insurance");
         containerMappings.put("Personal Banking", "personal-banking");
-        containerMappings.put("Personal Banking:Chequing & Saving EDB", "personal-banking/Accounts");
-        containerMappings.put("Personal Banking:Chequing EDB", "personal-banking/Accounts");
-        containerMappings.put("Personal Banking:Saving EDB", "personal-banking/Accounts");
+        containerMappings.put("Personal Banking:Chequing & Saving EDB", "personal-banking/Accounts/chequing");
+        containerMappings.put("Personal Banking:Chequing EDB", "personal-banking/Accounts/chequing");
+        containerMappings.put("Personal Banking:Saving EDB", "personal-banking/Accounts/chequing/savings");
         containerMappings.put("Personal Banking:Cross border banking EDB", "personal-banking/Accounts");
         containerMappings.put("Personal Banking:New to Canada EDB", "personal-banking/Accounts");
         containerMappings.put("Personal Banking:New to Bank EDB", "personal-banking/Accounts");
-        containerMappings.put("Personal Banking:Student", "personal-banking/Accounts");
+        containerMappings.put("Personal Banking:Student", "personal-banking/Accounts/student");
         containerMappings.put("Personal Banking:PERSONAL BANKING PRODUCTION", "personal-banking");
-        containerMappings.put("Personal Banking:Personal Lending EDB", "personal-banking/secured-loans");
+        containerMappings.put("Personal Banking:Personal Lending EDB", "personal-banking/secured-loans/personal-loans");
         containerMappings.put("Personal Lending", "personal-banking/secured-loans/personal-loans");
         containerMappings.put("Personal Lending:SLOC", "personal-banking/secured-loans/SLOC");
         containerMappings.put("Personal Lending:ULOC", "personal-banking/secured-loans/ULOC");
@@ -89,7 +89,7 @@ public class TaxonomyChanges {
         containerMappings.put("RESL:RESL PRODUCTION", "personal-banking/Mortgages");
         containerMappings.put("Small Business", "small-business-banking");
         containerMappings.put("Small Business:Accounts", "small-business-banking/Accounts");
-        containerMappings.put("Small Business:Agriculture Core Segments", "small-business-banking/service-options/industry-sector");
+        containerMappings.put("Small Business:Agriculture Core Segments", "small-business-banking/service-options/industry-sector/agriculture");
         containerMappings.put("Small Business:Business Credit Card", "small-business-banking/credit-cards");
         containerMappings.put("Small Business:Merchant Solutions", "merchant-solutions");
         containerMappings.put("Small Business:Investing", "small-business-banking/investment-plan");
@@ -116,18 +116,18 @@ public class TaxonomyChanges {
         containerMappings.put("Wealth:Brokerage / WebBroker / eServices", "Wealth/brokerage-account");
         containerMappings.put("Wealth:Direct Investing", "Wealth");
         containerMappings.put("Wealth:Financial Planning", "Wealth");
-        containerMappings.put("Wealth:High net worth", "Wealth/wealth-partners");
-        containerMappings.put("Wealth:Merit Club", "Wealth/wealth-partners");
+        containerMappings.put("Wealth:High net worth", "Wealth/wealth-partners/high-net-worth");
+        containerMappings.put("Wealth:Merit Club", "Wealth/wealth-partners/merit-club");
         containerMappings.put("Wealth:Mutual Funds", "Wealth/mutual-funds");
-        containerMappings.put("Wealth:Non Member Exceptions", "Wealth/wealth-partners");
-        containerMappings.put("Wealth:Other PS & I", "Wealth/registered-plans");
-        containerMappings.put("Wealth:President Club", "Wealth/wealth-partners");
+        containerMappings.put("Wealth:Non Member Exceptions", "Wealth/wealth-partners/non-member-exceptions");
+        containerMappings.put("Wealth:Other PS & I", "Wealth/registered-plans/pension-plans");
+        containerMappings.put("Wealth:President Club", "Wealth/wealth-partners/president-club");
         containerMappings.put("Wealth:Private Client Group", "Wealth/wealth-partners");
         containerMappings.put("Wealth:Private Investment Advice", "Wealth/wealth-partners");
         containerMappings.put("Wealth:RETAIL INVESTMENT SPECIALISTS", "Wealth/service-options");
         containerMappings.put("Wealth:TD Wealth Templates", "Wealth");
         containerMappings.put("Wealth:TDAM", "Wealth");
-        containerMappings.put("Wealth:TFSA PS&I", "Wealth/registered-plans");
+        containerMappings.put("Wealth:TFSA PS&I", "Wealth/registered-plans/tfsa");
         containerMappings.put("Wealth:Wealth Advise", "Wealth/service-options");
         containerMappings.put("Windows", "personal-banking");
         containerMappings.put("Windows:All Windows 2", "personal-banking");
@@ -246,7 +246,10 @@ public class TaxonomyChanges {
                 if (field.contains("$Containers:")) {
                     if (currentContainer.equals("")) {
                         currentContainer = field;
-                    } else {
+                    } else if (field.contains("MBNA")) {
+                        currentContainer = field;
+                        return currentContainer;
+                    } else if (!currentContainer.contains("MBNA")) {
                         int currentContainerSize = currentContainer.split(":").length;
                         int candidateContainerSize = field.split(":").length;
                         if (candidateContainerSize > currentContainerSize) {
