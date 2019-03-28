@@ -61,7 +61,7 @@ public class QATester {
         if (count % batchSize == 0) {
           System.out.println(new Date() + " - " + count + " assets compared");
         }
-        String aemAssetPath = "/content/dam/Canada/" + asset.getContainer() + "/" + asset.getFileName();
+        String aemAssetPath = "/content/dam/Canada/" + asset.getContainer() + "/" + asset.getFileName().replaceAll(" ", "%20");
         JsonObject aemAssetJson = RetrieveMetadataAEM.retrieveAssetJsonFromAem(aemAssetPath, commandLine.getOptionValue("host"));
         ComparisonResult comparisonResult = null;
         if (aemAssetJson == null) {

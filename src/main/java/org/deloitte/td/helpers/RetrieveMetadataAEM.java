@@ -21,7 +21,7 @@ public class RetrieveMetadataAEM {
     public static JsonObject retrieveAssetJsonFromAem(String aemAssetPath, String host) {
         Authenticator.setDefault(new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("jimmyhernandez", "P@ssw0rd123!".toCharArray());
+                return new PasswordAuthentication("henleung", "P@ssw0rd123!!".toCharArray());
             }
         });
 

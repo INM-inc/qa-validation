@@ -27,7 +27,7 @@ public class CompareMetadata {
         approvalStatusMappings.put("Rejected", "Draft");
 
         agencyNameMappings = new HashMap<>();
-        agencyNameMappings.put("#Not Applicable", "");
+        agencyNameMappings.put("# Not Applicable", "");
         agencyNameMappings.put("# Unknown", "");
         agencyNameMappings.put("Akshari Solutions Inc.", "Akshari Solutions Inc.");
         agencyNameMappings.put("Ariad (Archived)", "Ariad (Archived)");
@@ -50,8 +50,8 @@ public class CompareMetadata {
         agencyNameMappings.put("", "<use text box value>");
 
         languageMappings = new HashMap<>();
-        languageMappings.put("#Not Applicable", "");
-        languageMappings.put("#Unknown", "");
+        languageMappings.put("# Not Applicable", "");
+        languageMappings.put("# Unknown", "");
         languageMappings.put("Bilingual", "English");
         languageMappings.put("Cantonese", "Cantonese");
         languageMappings.put("English", "English");
@@ -363,7 +363,8 @@ public class CompareMetadata {
         }
 
         comparisonResult = compareDateValue("td:inmarket", asset.getInMarketDate(), assetJson, "d-MMM-y", "EEE MMM d yyyy hh:mm:ss 'GMT'Z", comparisonResult);
-        comparisonResult = compareStringValue("td:expiry", asset.getExpiryDate(), assetJson, comparisonResult);
+        comparisonResult = compareDateValue("td:expiry", asset.getExpiryDate(), assetJson, "dd-MMM-y", "EEE MMM d yyyy hh:mm:ss 'GMT'Z", comparisonResult);
+//        comparisonResult = compareStringValue("td:expiry", asset.getExpiryDate(), assetJson, comparisonResult);
 
         JsonElement aemChannels = assetJson.get("td:channel");
         if (aemChannels == null) {
@@ -413,7 +414,8 @@ public class CompareMetadata {
         comparisonResult = compareResolution("tiff:YResolution", asset.getResolutionVertical(), assetJson, comparisonResult);
 
         comparisonResult = compareStringValue("dc:creator", asset.getPhotographer(), assetJson, comparisonResult);
-        comparisonResult = compareDateValue("td:datefilecaptured", asset.getDateFileCaptured(), assetJson, "yyyy-MM-dd'T'HH:mm:ssXXX", "EEE MMM d yyyy hh:mm:ss 'GMT'Z", comparisonResult);
+        comparisonResult = compareStringValue("td:datefilecaptured", asset.getDateFileCaptured(), assetJson, comparisonResult);
+//        comparisonResult = compareDateValue("td:datefilecaptured", asset.getDateFileCaptured(), assetJson, "yyyy-MM-dd'T'HH:mm:ssXXX", "EEE MMM d yyyy hh:mm:ss 'GMT'Z", comparisonResult);
         comparisonResult = compareStringValue("dam:FileFormat", asset.getFileFormat(), assetJson, comparisonResult);
         comparisonResult = compareStringValue("dam:size", asset.getFileSize(), assetJson, comparisonResult);
         comparisonResult = compareDateValue("dc:modified", asset.getDateRecordLastModified(), assetJson, "yyyy-MM-dd'T'HH:mm:ssXXX", "EEE MMM d yyyy hh:mm:ss 'GMT'Z", comparisonResult);

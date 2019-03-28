@@ -64,8 +64,8 @@ public class RetrieveMetadataCSV {
                     if (
                             lines.length >= (Math.max(Math.max(indexRecordStatus, indexApprovalStatus), indexContainers) + 1) &&
                             !lines[indexRecordStatus].equalsIgnoreCase("Archived") &&
+                                    !lines[indexRecordStatus].equalsIgnoreCase("Inactive/Expired") &&
                                     !lines[indexApprovalStatus].equalsIgnoreCase("Rejected") &&
-                                    !lines[indexApprovalStatus].equalsIgnoreCase("Inactive/Expired") &&
                                     lines[indexContainers].contains("$Containers:")
                     ) {
 
@@ -78,11 +78,11 @@ public class RetrieveMetadataCSV {
                         ArrayList<String> channels = new ArrayList<>(Arrays.asList(lines[indexChannels].split(", ")));
 
                         // Additions to Initial Keywords, LOBs and Channels based on Taxonomy Tab 2.
-                        HashMap<String, String> level4AndCorrectPath = TaxonomyChanges.getLevel4AndCorrectPath(lines[indexContainers]);
+                        HashMap<String, String> level4AndCorrectPath = TaxonomyChanges.getLevel4AndCorrectPath(lines[indexContainers], lines[indexId]);
                         String level4 = level4AndCorrectPath.get("level4");
                         String correctPath = level4AndCorrectPath.get("correctPath");
 
-//                        if (lines[indexId].equals("29760")) {
+//                        if (lines[indexId].equals("147064")) {
 //                            System.out.println("Container = '" + lines[indexContainers] + "'");
 //                            System.out.println("correctPath = '" + correctPath + "'");
 //                        }
@@ -119,7 +119,7 @@ public class RetrieveMetadataCSV {
                             asset.setAgencyNameOther(lines[indexAgencyNameOther]);
                         }
                         asset.setContainer(correctPath);
-                        asset.setFileName(lines[indexFileName].replace(" ", "%20"));
+                        asset.setFileName(lines[indexFileName].replaceAll("%", "").replaceAll("#", "").replaceAll("\\[", "_").replaceAll("\\]", "_"));
                         if (lines.length >= (indexAgencyProjectId + 1)) {
                             asset.setAgencyProjectID(lines[indexAgencyProjectId]);
                         }
@@ -230,7 +230,7 @@ public class RetrieveMetadataCSV {
                         ArrayList<String> channels = new ArrayList<>(Arrays.asList(lines[34].split(", ")));
 
                         // Additions to Initial Keywords, LOBs and Channels based on Taxonomy Tab 2.
-                        HashMap<String, String> level4AndCorrectPath = TaxonomyChanges.getLevel4AndCorrectPath(lines[19]);
+                        HashMap<String, String> level4AndCorrectPath = TaxonomyChanges.getLevel4AndCorrectPath(lines[19], lines[7]);
                         String level4 = level4AndCorrectPath.get("level4");
                         String correctPath = level4AndCorrectPath.get("correctPath");
                         if (!level4.equals("NO_LEVEL_4")) {
