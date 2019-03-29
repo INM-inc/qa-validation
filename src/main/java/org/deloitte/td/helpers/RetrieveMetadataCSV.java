@@ -44,7 +44,7 @@ public class RetrieveMetadataCSV {
     private static int indexCataloguedBy = 16;
     private static int indexId = 7;
 
-    public static List<Asset> loadAllAssetsFromCsv(String csvFile) {
+    public List<Asset> loadAllAssetsFromCsv(String csvFile) {
         List<Asset> assets = new ArrayList<>();
         BufferedReader bufferedReader = null;
         FileReader fileReader = null;
@@ -72,10 +72,12 @@ public class RetrieveMetadataCSV {
                         // Initial Keywords, LOBs and Channels.
                         ArrayList<String> keywords = new ArrayList<>();
                         if (lines.length >= (indexKeywords + 1)) {
-                            keywords = new ArrayList<>(Arrays.asList(lines[indexKeywords].replace("\"", "").split(", ")));
+                            keywords = new ArrayList<>(Arrays.asList(lines[indexKeywords].replace("\"", "").split(", |: |; |,|:|;")));
                         }
                         ArrayList<String> lobs = new ArrayList<>(Arrays.asList(lines[indexGroupName].split(", ")));
                         ArrayList<String> channels = new ArrayList<>(Arrays.asList(lines[indexChannels].split(", ")));
+
+                        keywords.addAll(lobs);
 
                         // Additions to Initial Keywords, LOBs and Channels based on Taxonomy Tab 2.
                         HashMap<String, String> level4AndCorrectPath = TaxonomyChanges.getLevel4AndCorrectPath(lines[indexContainers], lines[indexId]);

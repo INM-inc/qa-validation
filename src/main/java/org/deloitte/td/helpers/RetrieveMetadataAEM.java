@@ -1,5 +1,7 @@
 package org.deloitte.td.helpers;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.deloitte.td.model.Asset;
@@ -15,10 +17,11 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class RetrieveMetadataAEM {
 
-    public static JsonObject retrieveAssetJsonFromAem(String aemAssetPath, String host) {
+    private void setAuthentication() {
         Authenticator.setDefault(new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication("henleung", "P@ssw0rd123!!".toCharArray());
@@ -59,9 +62,50 @@ public class RetrieveMetadataAEM {
 
         // Install the all-trusting host verifier
         HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+    }
 
-        JsonObject aemAssetMetadata = new JsonObject();
-        String url = host + aemAssetPath + "/jcr:content/metadata.json";
+    public String findAemPathByCantoId(String id, String host, String debugId) {
+        this.setAuthentication();
+
+        String queryUrl = host + "/bin/querybuilder.json?path=%2Fcontent%2Fdam%2FCanada&type=dam%3aAsset&1_property=jcr%3Acontent%2Fmetadata%2Ftd%3Aoriginalid&1_property.value=" + id;
+        if (id.equals(debugId) || "-1".equals(debugId)) {
+            System.out.println("Querying for URL = " + queryUrl);
+        }
+
+        String jsonResponse = getHttpResponse(queryUrl);
+        if (id.equals(debugId) || "-1".equals(debugId)) {
+            System.out.println("Query Response = " + jsonResponse);
+        }
+
+        if (jsonResponse != null) {
+            JsonParser jsonParser = new JsonParser();
+            JsonObject queryResponse = (JsonObject) jsonParser.parse(jsonResponse);
+            if (queryResponse.has("hits")) {
+                JsonArray hits = queryResponse.getAsJsonArray("hits");
+                for (Iterator<JsonElement> jsonElementIterator = hits.iterator(); jsonElementIterator.hasNext(); ) {
+                    JsonElement jsonElement = jsonElementIterator.next();
+
+                    if (id.equals(debugId) || "-1".equals(debugId)) {
+                        System.out.println("hit = " + jsonElement.toString());
+                    }
+
+                    if (jsonElement.isJsonObject()) {
+                        JsonObject hitObject = jsonElement.getAsJsonObject();
+                        if (hitObject.has("path")) {
+                            return hitObject.get("path").getAsString();
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public JsonObject retrieveAssetJsonFromAem(String aemAssetPath, String host) {
+        this.setAuthentication();
+
+        String url = host + aemAssetPath.replaceAll(" ", "%20") + "/jcr:content/metadata.json";
 
         String jsonResponse = getHttpResponse(url);
         if (jsonResponse != null) {

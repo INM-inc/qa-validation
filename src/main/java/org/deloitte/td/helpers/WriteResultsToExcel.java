@@ -44,7 +44,7 @@ public class WriteResultsToExcel {
         headerMap.put("td:cataloguedby", "Cataloged By");
     }
 
-    public static void writeHeader(String fileLocation, boolean detailed) {
+    public void writeHeader(String fileLocation, boolean detailed) {
         BufferedWriter bufferedWriter = null;
         FileOutputStream fileOutputStream = null;
         OutputStreamWriter outputStreamWriter = null;
@@ -92,7 +92,7 @@ public class WriteResultsToExcel {
         }
     }
 
-    public static void writeResult(ComparisonResult result, String fileLocation, boolean detailed) {
+    public void writeResult(ComparisonResult result, String fileLocation, boolean detailed) {
         BufferedWriter bufferedWriter = null;
         FileOutputStream fileOutputStream = null;
         OutputStreamWriter outputStreamWriter = null;

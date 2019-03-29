@@ -192,7 +192,7 @@ public class CompareMetadata {
         lobMappings.put("Haryley-Davidson", "HARLEY-DAVIDSON FINANCIAL");
     }
 
-    private static ComparisonResult compareResolution(String fieldName, String csvValue, JsonObject assetJson, ComparisonResult comparisonResult) {
+    private ComparisonResult compareResolution(String fieldName, String csvValue, JsonObject assetJson, ComparisonResult comparisonResult) {
         JsonElement aemValue = assetJson.get(fieldName);
         if (aemValue == null) {
             if (csvValue != null && !csvValue.isEmpty()) {
@@ -226,13 +226,15 @@ public class CompareMetadata {
         return comparisonResult;
     }
 
-    private static ComparisonResult compareStringWithOtherAndMappingValue(String fieldName, String csvValue, String csvOtherValue, JsonObject assetJson, ComparisonResult comparisonResult, Map<String, String> mapping) {
+    private ComparisonResult compareStringWithOtherAndMappingValue(String fieldName, String csvValue, String csvOtherValue, JsonObject assetJson, ComparisonResult comparisonResult, Map<String, String> mapping) {
         JsonElement aemValue = assetJson.get(fieldName);
         if (aemValue == null) {
             if (csvOtherValue != null && !csvOtherValue.isEmpty()) {
                 comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvOtherValue, ""));
             } else if (csvValue != null && !csvValue.isEmpty()) {
-                comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvValue, ""));
+                if (mapping.containsKey(csvValue) && !mapping.get(csvValue).isEmpty()) {
+                    comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvValue, ""));
+                }
             }
         } else if (csvValue == null) {
             if (aemValue != null && !aemValue.getAsString().isEmpty()) {
@@ -253,11 +255,13 @@ public class CompareMetadata {
         return comparisonResult;
     }
 
-    private static ComparisonResult compareStringWithMappingValue(String fieldName, String csvValue, JsonObject assetJson, ComparisonResult comparisonResult, Map<String, String> mapping, boolean ignoreCase) {
+    private ComparisonResult compareStringWithMappingValue(String fieldName, String csvValue, JsonObject assetJson, ComparisonResult comparisonResult, Map<String, String> mapping, boolean ignoreCase) {
         JsonElement aemValue = assetJson.get(fieldName);
         if (aemValue == null) {
             if (csvValue != null && !csvValue.isEmpty()) {
-                comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvValue, ""));
+                if (mapping.containsKey(csvValue) && !mapping.get(csvValue).isEmpty()) {
+                    comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvValue, ""));
+                }
             }
         } else if (csvValue == null) {
             if (aemValue != null && !aemValue.getAsString().isEmpty()) {
@@ -278,7 +282,7 @@ public class CompareMetadata {
         return comparisonResult;
     }
 
-    private static ComparisonResult compareStringValue(String fieldName, String csvValue, JsonObject assetJson, ComparisonResult comparisonResult) {
+    private ComparisonResult compareStringValue(String fieldName, String csvValue, JsonObject assetJson, ComparisonResult comparisonResult) {
         JsonElement aemValue = assetJson.get(fieldName);
         if (aemValue == null) {
             if (csvValue != null && !csvValue.isEmpty()) {
@@ -301,7 +305,7 @@ public class CompareMetadata {
         return comparisonResult;
     }
 
-    private static ComparisonResult compareDateValue(String fieldName, String csvValue, JsonObject assetJson, String cantoDateFormat, String aemDateFormat, ComparisonResult comparisonResult) {
+    private ComparisonResult compareDateValue(String fieldName, String csvValue, JsonObject assetJson, String cantoDateFormat, String aemDateFormat, ComparisonResult comparisonResult) {
         JsonElement aemValue = assetJson.get(fieldName);
         if (aemValue == null) {
             if (!csvValue.isEmpty()) {
@@ -329,7 +333,7 @@ public class CompareMetadata {
         return comparisonResult;
     }
 
-    public static ComparisonResult returnAemAssetNotFound(Asset asset, String aemAssetPath) {
+    public ComparisonResult returnAemAssetNotFound(Asset asset, String aemAssetPath) {
         ComparisonResult comparisonResult = new ComparisonResult();
         comparisonResult.setCantoId(asset.getID());
         comparisonResult.setAssetPath(aemAssetPath);
@@ -338,7 +342,7 @@ public class CompareMetadata {
         return comparisonResult;
     }
 
-    public static ComparisonResult compareCantoAemMetadata(Asset asset, JsonObject assetJson, String aemAssetPath) {
+    public ComparisonResult compareCantoAemMetadata(Asset asset, JsonObject assetJson, String aemAssetPath) {
         ComparisonResult comparisonResult = new ComparisonResult();
 
         comparisonResult.setMissingInAEM(false);
@@ -355,9 +359,16 @@ public class CompareMetadata {
                 comparisonResult.getDifferences().put("td:keywords", comparisonResult.new Difference(String.join(",", asset.getKeywords()), ""));
             }
         } else {
-            ArrayList<String> aemKeywordsAsArray = new ArrayList<>(Arrays.asList(aemKeywords.toString().replace("\"", "").split(", ")));
+            ArrayList<String> aemKeywordsAsArray = new ArrayList<>(Arrays.asList(aemKeywords.toString().replace("\"", "").split(", |: |; |,|:|;")));
             ArrayList<String> csvKeywords = asset.getKeywords();
-            if (!aemKeywordsAsArray.equals(csvKeywords)) {
+            boolean missingKeyword = false;
+            for (String keyword : csvKeywords) {
+                if (!aemKeywordsAsArray.contains(keyword)) {
+                    missingKeyword = true;
+                    break;
+                }
+            }
+            if (missingKeyword) {
                 comparisonResult.getDifferences().put("td:keywords", comparisonResult.new Difference(String.join(",", asset.getKeywords()), String.join(",", aemKeywordsAsArray)));
             }
         }
@@ -387,7 +398,7 @@ public class CompareMetadata {
         comparisonResult = compareStringValue("td:agencypid", asset.getAgencyProjectID(), assetJson, comparisonResult);
         comparisonResult = compareStringValue("dc:description", asset.getDescription(), assetJson, comparisonResult);
         comparisonResult = compareStringWithMappingValue("td:language", asset.getLanguage(), assetJson, comparisonResult, languageMappings, true);
-
+/*
         JsonElement aemLOBs = assetJson.get("td:lob");
         if (aemLOBs == null) {
             if (asset.getLOBs().size() != 0) {
@@ -403,7 +414,7 @@ public class CompareMetadata {
                 comparisonResult.getDifferences().put("td:lob", comparisonResult.new Difference(mappedLOBs.toString(), aemLOBs.getAsString()));
             }
         }
-
+*/
         comparisonResult = compareStringValue("td:photosource", asset.getPhotoSource(), assetJson, comparisonResult);
         comparisonResult = compareStringWithOtherAndMappingValue("td:usageright", asset.getUsageRights(), asset.getUsageRightsOther(), assetJson, comparisonResult, usageRightsMappings);
         comparisonResult = compareStringWithMappingValue("td:approval", asset.getApprovalStatus(), assetJson, comparisonResult, approvalStatusMappings, false);
@@ -414,8 +425,8 @@ public class CompareMetadata {
         comparisonResult = compareResolution("tiff:YResolution", asset.getResolutionVertical(), assetJson, comparisonResult);
 
         comparisonResult = compareStringValue("dc:creator", asset.getPhotographer(), assetJson, comparisonResult);
-        comparisonResult = compareStringValue("td:datefilecaptured", asset.getDateFileCaptured(), assetJson, comparisonResult);
-//        comparisonResult = compareDateValue("td:datefilecaptured", asset.getDateFileCaptured(), assetJson, "yyyy-MM-dd'T'HH:mm:ssXXX", "EEE MMM d yyyy hh:mm:ss 'GMT'Z", comparisonResult);
+//        comparisonResult = compareStringValue("td:datefilecaptured", asset.getDateFileCaptured(), assetJson, comparisonResult);
+        comparisonResult = compareDateValue("td:datefilecaptured", asset.getDateFileCaptured(), assetJson, "yyyy-MM-dd'T'HH:mm:ssXXX", "EEE MMM d yyyy hh:mm:ss 'GMT'Z", comparisonResult);
         comparisonResult = compareStringValue("dam:FileFormat", asset.getFileFormat(), assetJson, comparisonResult);
         comparisonResult = compareStringValue("dam:size", asset.getFileSize(), assetJson, comparisonResult);
         comparisonResult = compareDateValue("dc:modified", asset.getDateRecordLastModified(), assetJson, "yyyy-MM-dd'T'HH:mm:ssXXX", "EEE MMM d yyyy hh:mm:ss 'GMT'Z", comparisonResult);
