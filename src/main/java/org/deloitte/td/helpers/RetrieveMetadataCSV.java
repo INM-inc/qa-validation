@@ -75,7 +75,8 @@ public class RetrieveMetadataCSV {
                             keywords = new ArrayList<>(Arrays.asList(lines[indexKeywords].replace("\"", "").split(", |: |; |,|:|;")));
                         }
                         ArrayList<String> lobs = new ArrayList<>(Arrays.asList(lines[indexGroupName].split(", ")));
-                        ArrayList<String> channels = new ArrayList<>(Arrays.asList(lines[indexChannels].split(", ")));
+                        ArrayList<String> channels = new ArrayList<>();
+                        channels.add(lines[indexChannels]);
 
                         keywords.addAll(lobs);
 
@@ -100,6 +101,8 @@ public class RetrieveMetadataCSV {
                             ArrayList<String> channelAdditions = TaxonomyChanges.addChannels(level4);
                             channels.addAll(channelAdditions);
 
+                        } else if (correctPath.equals("personal-banking/service-options")) {
+                            channels.add("Digital-RAW");
                         }
 
                         // Eliminate empty string values as they bias the result.
@@ -111,6 +114,11 @@ public class RetrieveMetadataCSV {
                         asset.setKeywords(keywords);
                         asset.setLOBs(lobs);
                         asset.setChannels(channels);
+
+//                        if (!channels.isEmpty()) {
+//                            System.out.println("Canto ID = " + lines[indexId]);
+//                            System.out.println("Channels = " + String.join(",", channels));
+//                        }
 
                         if (lines.length >= (indexUsageRights + 1)) {
                             asset.setUsageRights(lines[indexUsageRights]);

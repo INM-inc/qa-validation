@@ -1470,6 +1470,7 @@ public class TaxonomyChanges {
         orphansMap.put("82484", "Brand/Community");
         orphansMap.put("82483", "Brand/Community");
         orphansMap.put("82482", "Brand/Community");
+        orphansMap.put("82482", "Brand/Community");
         orphansMap.put("147071", "Brand/Regional");
         orphansMap.put("147067", "Brand/Regional");
         orphansMap.put("144104", "Brand/Corporate/Employee");
@@ -1587,10 +1588,11 @@ public class TaxonomyChanges {
         taxonomy2KeysAndLOBs.put("TDAM", "TDAM");
 
         taxonomy2KeysAndChannels = new HashMap<>();
+        taxonomy2KeysAndChannels.put("ATM Innovation & Functional", "ATM");
         taxonomy2KeysAndChannels.put("Direct Investing", "Direct Investment");
         taxonomy2KeysAndChannels.put("Direct Channel Innovation & Functional", "Direct Mail");
         taxonomy2KeysAndChannels.put("Digital Banking", "Digital");
-        taxonomy2KeysAndChannels.put("Digital Production", "Digital");
+        taxonomy2KeysAndChannels.put("DIGITAL PRODUCTION", "Digital");
 
         taxonomy2KeysAndPaths = new HashMap<>();
         taxonomy2KeysAndPaths.put("EVEREST DIGITAL", "Personal Banking");

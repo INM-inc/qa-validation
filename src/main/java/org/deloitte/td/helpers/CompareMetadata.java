@@ -1,5 +1,6 @@
 package org.deloitte.td.helpers;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.deloitte.td.model.Asset;
@@ -16,6 +17,7 @@ public class CompareMetadata {
     private static Map<String, String> assetTypeMappings;
     private static Map<String, String> usageRightsMappings;
     private static Map<String, String> lobMappings;
+    private static Map<String, String> photoSourceMappings;
 
     static {
         approvalStatusMappings = new HashMap<>();
@@ -55,7 +57,7 @@ public class CompareMetadata {
         languageMappings.put("Bilingual", "English");
         languageMappings.put("Cantonese", "Cantonese");
         languageMappings.put("English", "English");
-        languageMappings.put("English & French (different versions", "English");
+        languageMappings.put("English and French (different versions)", "English");
         languageMappings.put("French", "French");
         languageMappings.put("Korean", "Korean");
         languageMappings.put("Mandarin", "Mandarin");
@@ -65,12 +67,12 @@ public class CompareMetadata {
         languageMappings.put("South Asian", "");
 
         channelMappings = new HashMap<>();
-        channelMappings.put("# Not Applicable", "Branch");
-        channelMappings.put("# Unknown", "Advisor");
+        channelMappings.put("# Not Applicable", "Advisor");
+        channelMappings.put("# Unknown", "Branch");
         channelMappings.put("Digital", "");
         channelMappings.put("Direct Marketing", "");
-        channelMappings.put("Event/ Seminars/F2F", "Event");
-        channelMappings.put("Offline/Print", "Print");
+        channelMappings.put("Event / Seminars / F2F", "Event");
+        channelMappings.put("Offline / Print", "Print");
         channelMappings.put("Other", "");
 
         assetTypeMappings = new HashMap<>();
@@ -92,7 +94,7 @@ public class CompareMetadata {
         assetTypeMappings.put("Brochure", "Brochure");
         assetTypeMappings.put("Button", "Button");
         assetTypeMappings.put("Card Carrier", "Card Carrier");
-        assetTypeMappings.put("Card Design", "Card");
+        assetTypeMappings.put("Card Design", "Card Carrier");
         assetTypeMappings.put("Cling", "Cling");
         assetTypeMappings.put("Content", "");
         assetTypeMappings.put("Contest", "Contest");
@@ -166,9 +168,9 @@ public class CompareMetadata {
         assetTypeMappings.put("Tools", "");
         assetTypeMappings.put("Training", "Info Sheet");
         assetTypeMappings.put("Video", "Video");
-        assetTypeMappings.put("Wallet Card", "Infor");
+        assetTypeMappings.put("Wallet Card", "Info Sheet");
         assetTypeMappings.put("Web Banner", "Banner");
-        assetTypeMappings.put("Web page", "Wireframes");
+        assetTypeMappings.put("Web page", "Wireframe");
         assetTypeMappings.put("Wicket Sign", "");
         assetTypeMappings.put("Wireframe", "Wireframe");
         assetTypeMappings.put("Wordmarks", "Wordmarks");
@@ -190,6 +192,14 @@ public class CompareMetadata {
 
         lobMappings = new HashMap<>();
         lobMappings.put("Haryley-Davidson", "HARLEY-DAVIDSON FINANCIAL");
+
+        photoSourceMappings = new HashMap<>();
+        photoSourceMappings.put("Shutterstock", "Shutterstock");
+        photoSourceMappings.put("Shutterstock (Offset)", "Shutterstock");
+        photoSourceMappings.put("iStock", "iStock");
+        photoSourceMappings.put("Getty Images", "Getty Images");
+        photoSourceMappings.put("Pond5", "Pond5");
+        photoSourceMappings.put("Other", "");
     }
 
     private ComparisonResult compareResolution(String fieldName, String csvValue, JsonObject assetJson, ComparisonResult comparisonResult) {
@@ -229,11 +239,13 @@ public class CompareMetadata {
     private ComparisonResult compareStringWithOtherAndMappingValue(String fieldName, String csvValue, String csvOtherValue, JsonObject assetJson, ComparisonResult comparisonResult, Map<String, String> mapping) {
         JsonElement aemValue = assetJson.get(fieldName);
         if (aemValue == null) {
-            if (csvOtherValue != null && !csvOtherValue.isEmpty()) {
-                comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvOtherValue, ""));
-            } else if (csvValue != null && !csvValue.isEmpty()) {
-                if (mapping.containsKey(csvValue) && !mapping.get(csvValue).isEmpty()) {
-                    comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvValue, ""));
+            if (csvValue != null && !csvValue.isEmpty()) {
+                if (csvValue.contains("Other")) {
+                    if (csvOtherValue != null && !csvOtherValue.isEmpty()) {
+                        comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvOtherValue, ""));
+                    }
+                } else if (mapping.containsKey(csvValue) && !mapping.get(csvValue).isEmpty()) {
+                    comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(mapping.get(csvValue), ""));
                 }
             }
         } else if (csvValue == null) {
@@ -241,13 +253,20 @@ public class CompareMetadata {
                 comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference("", aemValue.getAsString()));
             }
         } else {
-            if (csvOtherValue != null && !csvOtherValue.isEmpty()) {
-                if (!aemValue.getAsString().equals(csvOtherValue)) {
-                    comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvOtherValue, aemValue.getAsString()));
+            String cantoValue = null;
+            if (csvValue != null && !csvValue.isEmpty()) {
+                if (!csvValue.contains("Other")) {
+                    cantoValue = mapping.get(csvValue);
+                } else {
+                    if (csvOtherValue != null && !csvOtherValue.isEmpty()) {
+                        cantoValue = csvOtherValue;
+                    }
                 }
-            } else if (csvValue != null && !csvValue.isEmpty()) {
-                if (!aemValue.getAsString().equals(mapping.get(csvValue))) {
-                    comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(mapping.get(csvValue), aemValue.getAsString()));
+            }
+
+            if (cantoValue != null) {
+                if (!aemValue.getAsString().equals(cantoValue)) {
+                    comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(cantoValue, aemValue.getAsString()));
                 }
             }
         }
@@ -256,25 +275,61 @@ public class CompareMetadata {
     }
 
     private ComparisonResult compareStringWithMappingValue(String fieldName, String csvValue, JsonObject assetJson, ComparisonResult comparisonResult, Map<String, String> mapping, boolean ignoreCase) {
-        JsonElement aemValue = assetJson.get(fieldName);
-        if (aemValue == null) {
+        if (assetJson.has(fieldName)) {
+            if (assetJson.get(fieldName).isJsonArray()) {
+                JsonArray aemArrayValues = assetJson.getAsJsonArray(fieldName);
+                List<String> aemValues = new ArrayList<>();
+                for (JsonElement element : aemArrayValues) {
+                    aemValues.add(element.getAsString());
+                }
+
+                if (csvValue == null) {
+                    if (!aemValues.isEmpty()) {
+                        comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference("", String.join(",", aemValues)));
+                    }
+                } else {
+                    try {
+                        if (!ignoreCase) {
+                            if (!aemValues.contains(mapping.get(csvValue))) {
+                                comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(mapping.get(csvValue), String.join(",", aemValues)));
+                            }
+                        } else {
+                            boolean found = false;
+                            for (String aemValue : aemValues) {
+                                if (aemValue.equalsIgnoreCase(mapping.get(csvValue))) {
+                                    found = true;
+                                }
+                            }
+                            if (!found) {
+                                comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(mapping.get(csvValue), String.join(",", aemValues)));
+                            }
+                        }
+                    } catch (Exception e) {
+                        comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(mapping.get(csvValue), String.join(",", aemValues)));
+                    }
+                }
+            } else {
+                JsonElement aemValue = assetJson.get(fieldName);
+                if (csvValue == null) {
+                    if (aemValue != null && !aemValue.getAsString().isEmpty()) {
+                        comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference("", aemValue.getAsString()));
+                    }
+                } else {
+                    if (ignoreCase) {
+                        if (!aemValue.getAsString().equalsIgnoreCase(mapping.get(csvValue))) {
+                            comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(mapping.get(csvValue), aemValue.getAsString()));
+                        }
+                    } else {
+                        if (!aemValue.getAsString().equals(mapping.get(csvValue))) {
+                            comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(mapping.get(csvValue), aemValue.getAsString()));
+                        }
+                    }
+                }
+            }
+        } else {
             if (csvValue != null && !csvValue.isEmpty()) {
                 if (mapping.containsKey(csvValue) && !mapping.get(csvValue).isEmpty()) {
                     comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvValue, ""));
-                }
-            }
-        } else if (csvValue == null) {
-            if (aemValue != null && !aemValue.getAsString().isEmpty()) {
-                comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference("", aemValue.getAsString()));
-            }
-        } else {
-            if (ignoreCase) {
-                if (!aemValue.getAsString().equalsIgnoreCase(mapping.get(csvValue))) {
-                    comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(mapping.get(csvValue), aemValue.getAsString()));
-                }
-            } else {
-                if (!aemValue.getAsString().equals(mapping.get(csvValue))) {
-                    comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(mapping.get(csvValue), aemValue.getAsString()));
                 }
             }
         }
@@ -283,22 +338,47 @@ public class CompareMetadata {
     }
 
     private ComparisonResult compareStringValue(String fieldName, String csvValue, JsonObject assetJson, ComparisonResult comparisonResult) {
-        JsonElement aemValue = assetJson.get(fieldName);
-        if (aemValue == null) {
-            if (csvValue != null && !csvValue.isEmpty()) {
-                comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvValue, ""));
-            }
-        } else if (csvValue == null) {
-            if (aemValue != null && !aemValue.getAsString().isEmpty()) {
-                comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference("", aemValue.getAsString()));
+        if (assetJson.has(fieldName)) {
+            if (assetJson.get(fieldName).isJsonArray()) {
+                JsonArray aemArrayValues = assetJson.getAsJsonArray(fieldName);
+                List<String> aemValues = new ArrayList<>();
+                for (JsonElement element : aemArrayValues) {
+                    aemValues.add(element.getAsString());
+                }
+
+                if (csvValue == null) {
+                    if (!aemValues.isEmpty()) {
+                        comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference("", String.join(",", aemValues)));
+                    }
+                } else {
+                    try {
+                        if (!aemValues.contains(csvValue.trim())) {
+                            comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvValue, String.join(",", aemValues)));
+                        }
+                    } catch (Exception e) {
+                        comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvValue, String.join(",", aemValues)));
+                    }
+                }
+
+            } else {
+                JsonElement aemValue = assetJson.get(fieldName);
+                if (csvValue == null) {
+                    if (aemValue != null && !aemValue.getAsString().isEmpty()) {
+                        comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference("", aemValue.getAsString()));
+                    }
+                } else {
+                    try {
+                        if (!aemValue.getAsString().trim().equals(csvValue.trim())) {
+                            comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvValue, aemValue.getAsString()));
+                        }
+                    } catch (Exception e) {
+                        comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvValue, aemValue.toString()));
+                    }
+                }
             }
         } else {
-            try {
-                if (!aemValue.getAsString().trim().equals(csvValue.trim())) {
-                    comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvValue, aemValue.getAsString()));
-                }
-            } catch (Exception e) {
-                comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvValue, aemValue.toString()));
+            if (csvValue != null && !csvValue.isEmpty()) {
+                comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvValue, ""));
             }
         }
 
@@ -322,10 +402,13 @@ public class CompareMetadata {
                 SimpleDateFormat sd2 = new SimpleDateFormat(cantoDateFormat);
                 Date csvDateValue = sd2.parse(csvValue);
                 if (!aemDateValue.equals(csvDateValue)) {
+//                    System.out.println("Field = " + fieldName);
+//                    System.out.println("Canto Value = " + csvDateValue);
+//                    System.out.println("AEM Value = " + aemDateValue);
                     comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvValue, aemValue.getAsString()));
                 }
             } catch (Exception e) {
-                // e.printStackTrace(System.out);
+//                e.printStackTrace(System.out);
                 comparisonResult.getDifferences().put(fieldName, comparisonResult.new Difference(csvValue, aemValue.getAsString()));
             }
         }
@@ -351,7 +434,7 @@ public class CompareMetadata {
 
         comparisonResult = compareStringValue("td:apn", asset.getActivityProposalNumber(), assetJson, comparisonResult);
         comparisonResult = compareStringValue("td:projectname", asset.getProjectName(), assetJson, comparisonResult);
-        comparisonResult = compareStringWithMappingValue("td:assettype", asset.getAssetType(), assetJson, comparisonResult, assetTypeMappings, false);
+        comparisonResult = compareStringWithMappingValue("td:assettype", asset.getAssetType(), assetJson, comparisonResult, assetTypeMappings, true);
 
         JsonElement aemKeywords = assetJson.get("td:keywords");
         if (aemKeywords == null) {
@@ -373,23 +456,67 @@ public class CompareMetadata {
             }
         }
 
-        comparisonResult = compareDateValue("td:inmarket", asset.getInMarketDate(), assetJson, "d-MMM-y", "EEE MMM d yyyy hh:mm:ss 'GMT'Z", comparisonResult);
-        comparisonResult = compareDateValue("td:expiry", asset.getExpiryDate(), assetJson, "dd-MMM-y", "EEE MMM d yyyy hh:mm:ss 'GMT'Z", comparisonResult);
+        comparisonResult = compareDateValue("td:inmarket", asset.getInMarketDate(), assetJson, "d-MMM-y", "EEE MMM d yyyy HH:mm:ss 'GMT'Z", comparisonResult);
+        comparisonResult = compareDateValue("td:expiry", asset.getExpiryDate(), assetJson, "dd-MMM-y", "EEE MMM d yyyy HH:mm:ss 'GMT'Z", comparisonResult);
 //        comparisonResult = compareStringValue("td:expiry", asset.getExpiryDate(), assetJson, comparisonResult);
 
-        JsonElement aemChannels = assetJson.get("td:channel");
+//        JsonElement aemChannels = assetJson.get("td:channel");
+//        if (aemChannels == null) {
+//            if (asset.getChannels().size() != 0) {
+//                comparisonResult.getDifferences().put("td:channel", comparisonResult.new Difference(String.join(",", asset.getChannels()), ""));
+//            }
+//        } else {
+//            ArrayList<String> csvChannels = asset.getChannels();
+//            ArrayList<String> mappedCSVChannels = new ArrayList<>();
+//            for (String channel : csvChannels) {
+//                mappedCSVChannels.add(channelMappings.get(channel));
+//            }
+//            if (!aemChannels.getAsString().equals(mappedCSVChannels.toString())) {
+//                comparisonResult.getDifferences().put("td:channel", comparisonResult.new Difference(String.join(",", asset.getChannels()), String.join(",", mappedCSVChannels)));
+//            }
+//        }
+//        comparisonResult = compareStringValue("td:channel", asset.getChannel(), assetJson, comparisonResult);
+//        comparisonResult = compareStringWithMappingValue("td:channel", asset.getChannel(), assetJson, comparisonResult, channelMappings, true);
+        List<String> cantoChannels = new ArrayList<>();
+        List<String> aemChannels = new ArrayList<>();
+
+        if (asset.getChannels() != null && !asset.getChannels().isEmpty()) {
+            for (String cantoChannel : asset.getChannels()) {
+                String mappedChannel = channelMappings.get(cantoChannel);
+                if (cantoChannel.equals("Digital-RAW")) {
+                    mappedChannel = "Digital";
+                }
+                if (mappedChannel != null && !mappedChannel.isEmpty() && !cantoChannels.contains(mappedChannel)) {
+                    cantoChannels.add(mappedChannel);
+                }
+            }
+        }
+        if (assetJson.has("td:channel")) {
+            JsonArray jsonArray = assetJson.getAsJsonArray("td:channel");
+            if (jsonArray.size() > 0) {
+                for (JsonElement jsonElement : jsonArray) {
+                    String value = jsonElement.getAsString();
+                    if (value != null && !value.isEmpty() && !aemChannels.contains(value)) {
+                        aemChannels.add(value);
+                    }
+                }
+            }
+        }
+
         if (aemChannels == null) {
-            if (asset.getChannels().size() != 0) {
-                comparisonResult.getDifferences().put("td:channel", comparisonResult.new Difference(String.join(",", asset.getChannels()), ""));
+            if (!cantoChannels.isEmpty()) {
+                comparisonResult.getDifferences().put("td:channel", comparisonResult.new Difference(String.join(",", cantoChannels), ""));
+            }
+        } else if (cantoChannels == null || cantoChannels.isEmpty()) {
+            if (!aemChannels.isEmpty()) {
+                comparisonResult.getDifferences().put("td:channel", comparisonResult.new Difference("", String.join(",", aemChannels)));
             }
         } else {
-            ArrayList<String> csvChannels = asset.getChannels();
-            ArrayList<String> mappedCSVChannels = new ArrayList<>();
-            for (String channel : csvChannels) {
-                mappedCSVChannels.add(channelMappings.get(channel));
-            }
-            if (!aemChannels.getAsString().equals(mappedCSVChannels.toString())) {
-                comparisonResult.getDifferences().put("td:channel", comparisonResult.new Difference(String.join(",", asset.getChannels()), String.join(",", mappedCSVChannels)));
+            for (String cantoChannel : cantoChannels) {
+                if (!aemChannels.contains(cantoChannel)) {
+                    comparisonResult.getDifferences().put("td:channel", comparisonResult.new Difference(String.join(",", cantoChannels), String.join(",", aemChannels)));
+                    break;
+                }
             }
         }
 
@@ -415,7 +542,8 @@ public class CompareMetadata {
             }
         }
 */
-        comparisonResult = compareStringValue("td:photosource", asset.getPhotoSource(), assetJson, comparisonResult);
+//        comparisonResult = compareStringValue("td:photosource", asset.getPhotoSource(), assetJson, comparisonResult);
+        comparisonResult = compareStringWithMappingValue("td:photosource", asset.getPhotoSource(), assetJson, comparisonResult, photoSourceMappings, false);
         comparisonResult = compareStringWithOtherAndMappingValue("td:usageright", asset.getUsageRights(), asset.getUsageRightsOther(), assetJson, comparisonResult, usageRightsMappings);
         comparisonResult = compareStringWithMappingValue("td:approval", asset.getApprovalStatus(), assetJson, comparisonResult, approvalStatusMappings, false);
         comparisonResult = compareStringValue("tiff:ImageWidth", asset.getImageWidth(), assetJson, comparisonResult);
@@ -426,11 +554,11 @@ public class CompareMetadata {
 
         comparisonResult = compareStringValue("dc:creator", asset.getPhotographer(), assetJson, comparisonResult);
 //        comparisonResult = compareStringValue("td:datefilecaptured", asset.getDateFileCaptured(), assetJson, comparisonResult);
-        comparisonResult = compareDateValue("td:datefilecaptured", asset.getDateFileCaptured(), assetJson, "yyyy-MM-dd'T'HH:mm:ssXXX", "EEE MMM d yyyy hh:mm:ss 'GMT'Z", comparisonResult);
+        comparisonResult = compareDateValue("td:datefilecaptured", asset.getDateFileCaptured(), assetJson, "yyyy-MM-dd'T'HH:mm:ssXXX", "EEE MMM d yyyy HH:mm:ss 'GMT'Z", comparisonResult);
         comparisonResult = compareStringValue("dam:FileFormat", asset.getFileFormat(), assetJson, comparisonResult);
         comparisonResult = compareStringValue("dam:size", asset.getFileSize(), assetJson, comparisonResult);
-        comparisonResult = compareDateValue("dc:modified", asset.getDateRecordLastModified(), assetJson, "yyyy-MM-dd'T'HH:mm:ssXXX", "EEE MMM d yyyy hh:mm:ss 'GMT'Z", comparisonResult);
-        comparisonResult = compareDateValue("td:catalogued", asset.getDateFileCataloged(), assetJson, "yyyy-MM-dd'T'HH:mm:ssXXX", "EEE MMM d yyyy hh:mm:ss 'GMT'Z", comparisonResult);
+        comparisonResult = compareDateValue("dc:modified", asset.getDateRecordLastModified(), assetJson, "yyyy-MM-dd'T'HH:mm:ssXXX", "EEE MMM d yyyy HH:mm:ss 'GMT'Z", comparisonResult);
+        comparisonResult = compareDateValue("td:catalogued", asset.getDateFileCataloged(), assetJson, "yyyy-MM-dd'T'HH:mm:ssXXX", "EEE MMM d yyyy HH:mm:ss 'GMT'Z", comparisonResult);
         comparisonResult = compareStringValue("td:cataloguedBy", asset.getCatalogedBy(), assetJson, comparisonResult);
 
         return comparisonResult;
